@@ -17,7 +17,7 @@
   <h1>发布打包检查</h1>
 </section>
 <article class="markdown-body"><h2>AxData 发布打包验证</h2>
-<p>本文记录 AxData 发布到 PyPI 前的本地验证流程。这里的命令只构建和安装本地候选包，不会上传 PyPI、TestPyPI 或 GitHub。</p>
+<p>本文记录 AxData 发布到 PyPI 前的本地验证流程，以及 GitHub Release 与 PyPI 同步发布方式。</p>
 <h3>包边界</h3>
 <p>AxData 仓库是 workspace，不建议把根目录的 <code>axdata-workspace</code> 当作用户包发布。</p>
 <p>面向 PyPI 的候选包包括：</p>
@@ -26,7 +26,7 @@
 <p>普通用户发布后的推荐安装入口是：</p>
 <pre><code class="language-powershell">python -m pip install axdata</code></pre>
 <p><code>axdata</code> 会同时安装当前默认数据源插件：<code>axdata-source-tdx</code>、<code>axdata-source-tdx-ext</code>、<code>axdata-source-tencent</code> 和 <code>axdata-source-cninfo</code>。TDX/TDX Ext 插件安装后应默认可用，用户不需要在快速开始里手动执行 <code>plugin enable</code>。</p>
-<p>发布顺序应先发 <code>axdata-core</code>，再发数据源插件包，最后发 <code>axdata</code>。</p>
+<p>发布顺序应先发 <code>axdata-core</code>，再发数据源插件包，最后发 <code>axdata</code>。GitHub Actions 的 release workflow 已按这个顺序执行。</p>
 <h3>本地 PyPI Readiness</h3>
 <p>运行：</p>
 <pre><code class="language-powershell">.\.venv\Scripts\python scripts\pypi_readiness.py --json</code></pre>
@@ -47,7 +47,38 @@
 .\.venv\Scripts\python scripts\pypi_readiness.py --work-dir $work --json</code></pre>
 <p>如果只想跳过 <code>twine check</code>：</p>
 <pre><code class="language-powershell">.\.venv\Scripts\python scripts\pypi_readiness.py --skip-twine-check --json</code></pre>
-<h3>不包含的动作</h3>
+<h3>GitHub Release 同步 PyPI</h3>
+<p>仓库内的 <code>.github/workflows/release.yml</code> 负责发布自动化：</p>
+<ul>
+<li>发布 GitHub Release 时触发。</li>
+<li>先运行 PyPI readiness，确认 wheel、sdist、README 元数据、安装和插件发现都正常。</li>
+<li>构建 6 个候选包的 wheel 和 sdist。</li>
+<li>把构建产物附加到 GitHub Release。</li>
+<li>使用 PyPI Trusted Publishing 按顺序上传到 PyPI：先 <code>axdata-core</code>，再数据源插件包，最后 <code>axdata</code>。</li>
+</ul>
+<p>发布标签必须和包版本一致。例如当前所有候选包版本都是 <code>0.1.0</code>，则 GitHub Release 标签应为 <code>v0.1.0</code> 或 <code>0.1.0</code>。PyPI 不允许覆盖已发布的同名同版本文件；如果要重新发布，需要先提升版本号。</p>
+<h4>首次发布前的 PyPI 设置</h4>
+<p>当前 workflow 使用 PyPI Trusted Publishing，不需要在 GitHub 仓库里保存 PyPI token。首次发布前，需要在 PyPI 为以下项目配置 Trusted Publisher：</p>
+<div class="table-wrap"><table><thead><tr><th>PyPI 项目</th><th>GitHub owner</th><th>GitHub repo</th><th>Workflow</th><th>Environment</th></tr></thead><tbody><tr><td><code>axdata-core</code></td><td><code>electkismet</code></td><td><code>AxData</code></td><td><code>release.yml</code></td><td><code>pypi</code></td></tr><tr><td><code>axdata-source-tdx</code></td><td><code>electkismet</code></td><td><code>AxData</code></td><td><code>release.yml</code></td><td><code>pypi</code></td></tr><tr><td><code>axdata-source-tdx-ext</code></td><td><code>electkismet</code></td><td><code>AxData</code></td><td><code>release.yml</code></td><td><code>pypi</code></td></tr><tr><td><code>axdata-source-tencent</code></td><td><code>electkismet</code></td><td><code>AxData</code></td><td><code>release.yml</code></td><td><code>pypi</code></td></tr><tr><td><code>axdata-source-cninfo</code></td><td><code>electkismet</code></td><td><code>AxData</code></td><td><code>release.yml</code></td><td><code>pypi</code></td></tr><tr><td><code>axdata</code></td><td><code>electkismet</code></td><td><code>AxData</code></td><td><code>release.yml</code></td><td><code>pypi</code></td></tr></tbody></table></div>
+<p>如果这些 PyPI 项目还没有创建，需要在 PyPI 创建对应项目或配置 pending publisher；最终以 PyPI 后台可用选项为准。</p>
+<h4>发布前检查</h4>
+<p>正式发布前建议按顺序确认：</p>
+<ol>
+<li><code>main</code> 分支干净，CI 通过。</li>
+<li>6 个候选包的 <code>pyproject.toml</code> 版本号一致。</li>
+<li>本地 PyPI readiness 通过。</li>
+<li>PyPI 已为 6 个项目配置 Trusted Publisher。</li>
+<li>GitHub Release 标签等于当前包版本，例如 <code>v0.1.0</code>。</li>
+</ol>
+<p>可以先只跑构建检查，不上传 PyPI：</p>
+<pre><code class="language-powershell">gh workflow run release.yml --repo electkismet/AxData --ref main -f publish=false</code></pre>
+<p>确认无误后，在 GitHub 创建并发布 Release。发布 Release 后，workflow 会自动上传 PyPI：</p>
+<pre><code class="language-powershell">git tag v0.1.0
+git push origin v0.1.0
+gh release create v0.1.0 --repo electkismet/AxData --title &quot;AxData v0.1.0&quot; --notes &quot;Initial public release&quot;</code></pre>
+<p>如需手动重跑真实发布，必须从标签触发：</p>
+<pre><code class="language-powershell">gh workflow run release.yml --repo electkismet/AxData --ref v0.1.0 -f publish=true</code></pre>
+<h3>本地脚本不包含的动作</h3>
 <p>该脚本不做：</p>
 <ul>
 <li>不上传 PyPI。</li>

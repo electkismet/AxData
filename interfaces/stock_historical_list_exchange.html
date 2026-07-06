@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>历史股票列表 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 交易所</p>
+  <h1>历史股票列表</h1>
+  <p class="code-title">stock_historical_list_exchange</p>
+  <p class="lead">按交易所官方上市日期和退市日期计算一个或多个日期仍处于上市生命周期内的股票列表。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_historical_list_exchange</dd></div><div><dt>Provider</dt><dd>axdata.source.exchange</dd></div><div><dt>数据源</dt><dd>交易所 / exchange</dd></div><div><dt>目录</dt><dd>交易所 / 基础数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>是，默认 stock_historical_list_exchange.snapshot</dd></div></dl>
+  <p>传 trade_date 返回单日或多个指定日期的股票池；传 start_date/end_date 返回连续日期范围；可用 exchange 限定 SSE、SZSE 或 BSE。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>trade_date</code></td><td>string</td><td>否</td><td>目标日期或日期列表，格式 YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr><tr><td><code>start_date</code></td><td>string</td><td>否</td><td>连续日期范围的开始日期，格式 YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr><tr><td><code>end_date</code></td><td>string</td><td>否</td><td>连续日期范围的结束日期，格式 YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr><tr><td><code>exchange</code></td><td>string</td><td>否</td><td>交易所筛选：SSE、SZSE、BSE；不传默认全部。</td><td></td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>判断规则：上市日期不晚于目标日期，且未退市或退市日期不早于目标日期；trade_date 和 start_date/end_date 二选一。</p></div>
+  <div class="note"><strong>参数示例</strong><p># 指定日期和交易所
+client.call(
+    &quot;stock_historical_list_exchange&quot;,
+    trade_date=&quot;20240102&quot;,
+    exchange=&quot;SZSE&quot;,
+)
+
+# 批量指定多个日期
+client.call(
+    &quot;stock_historical_list_exchange&quot;,
+    trade_date=[&quot;20240102&quot;, &quot;20240103&quot;],
+    exchange=&quot;SZSE&quot;,
+)
+
+# 指定连续日期范围
+client.call(
+    &quot;stock_historical_list_exchange&quot;,
+    start_date=&quot;20240102&quot;,
+    end_date=&quot;20240105&quot;,
+)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>trade_date</code></td><td>date</td><td>本行对应的目标日期，格式 YYYYMMDD。</td></tr><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码，例如 000001.SZ、600000.SH、430047.BJ。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>market</code></td><td>string</td><td>市场板块，例如主板、创业板、科创板、北交所。</td></tr><tr><td><code>list_date</code></td><td>date</td><td>上市日期，格式 YYYYMMDD。</td></tr><tr><td><code>delist_date</code></td><td>date</td><td>退市日期；未退市为空。</td></tr><tr><td><code>listing_status</code></td><td>string</td><td>上市状态：listed 或 delisted。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_historical_list_exchange&quot;,
+    exchange=&#x27;SZSE&#x27;,
+    trade_date=&#x27;20240102&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_historical_list_exchange
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;trade_date&quot;: &quot;20240102&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;trade_date&quot;: &quot;20240102&quot;,
+  &quot;exchange&quot;: &quot;SZSE&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;trade_date&quot;: &quot;20240102&quot;,
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;平安银行&quot;,
+    &quot;market&quot;: &quot;主板&quot;,
+    &quot;list_date&quot;: &quot;19910403&quot;,
+    &quot;delist_date&quot;: null,
+    &quot;listing_status&quot;: &quot;listed&quot;
+  },
+  {
+    &quot;trade_date&quot;: &quot;20240102&quot;,
+    &quot;instrument_id&quot;: &quot;000005.SZ&quot;,
+    &quot;symbol&quot;: &quot;000005&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;ST星源&quot;,
+    &quot;market&quot;: null,
+    &quot;list_date&quot;: &quot;19901210&quot;,
+    &quot;delist_date&quot;: &quot;20240426&quot;,
+    &quot;listing_status&quot;: &quot;delisted&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

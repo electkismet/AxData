@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>题材强度排行 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>题材强度排行</h1>
+  <p class="code-title">stock_theme_strength_rank_tdx</p>
+  <p class="lead">按当前涨停池统计题材强度，返回涨停数量、最高板、连板股数量、封单额合计和代表股票。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_theme_strength_rank_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 股票数据 / 短线数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>是，默认 stock_theme_strength_rank_tdx.snapshot</dd></div></dl>
+  <p>这个接口用于看当前短线题材强弱：后端复用连板天梯的涨停池口径，默认只统计主板、当前封住涨停的股票，并剔除 ST / *ST。题材强度优先看涨停数量，再看最高板、连板股数量和封单额合计。默认返回完整排行；只想取前 N 条时再传 count。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>count</code></td><td>string</td><td>否</td><td>返回数量；默认 all 返回完整题材排行，也可传数字只返回前 N 条，最大 500。</td><td>&quot;all&quot;</td></tr><tr><td><code>scope</code></td><td>string</td><td>否</td><td>股票范围；默认 main 主板。可传 all、star 科创板、chinext 创业板、bse 北交所、cdr CDR，也可传数组或英文逗号分隔。</td><td>&quot;main&quot;</td></tr><tr><td><code>topic_type</code></td><td>string</td><td>否</td><td>题材类型：theme 主题题材，sector 板块题材；默认 theme。</td><td>&quot;theme&quot;</td></tr></tbody>
+</table></div>
+  
+  <div class="note"><strong>参数示例</strong><p># 主板完整题材强度排行
+client.call(&quot;stock_theme_strength_rank_tdx&quot;)
+
+# 全市场完整题材强度排行
+client.call(&quot;stock_theme_strength_rank_tdx&quot;, scope=&quot;all&quot;)
+
+# 只取前 20 个题材
+client.call(&quot;stock_theme_strength_rank_tdx&quot;, count=20)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>rank</code></td><td>integer</td><td>题材排行名次。</td></tr><tr><td><code>trade_date</code></td><td>date</td><td>排行日期，也就是这张题材强度排行对应的交易日。</td></tr><tr><td><code>topic_type</code></td><td>string</td><td>题材类型：theme 主题题材，sector 板块题材。</td></tr><tr><td><code>topic_name</code></td><td>string</td><td>题材名称。</td></tr><tr><td><code>topic_id</code></td><td>string</td><td>题材 ID；源端没有给出时为空。</td></tr><tr><td><code>theme_strength_score</code></td><td>number</td><td>题材强度分，用于排序；按涨停数量、最高板和连板股数量综合计算。</td></tr><tr><td><code>limit_up_count</code></td><td>integer</td><td>题材内当前封住涨停的股票数量。</td></tr><tr><td><code>highest_ladder_level</code></td><td>integer</td><td>题材内最高连板高度。</td></tr><tr><td><code>lianban_stock_count</code></td><td>integer</td><td>题材内连板股数量，指二连板及以上股票数量。</td></tr><tr><td><code>first_board_count</code></td><td>integer</td><td>题材内首板股票数量。</td></tr><tr><td><code>leader_instrument_id</code></td><td>string</td><td>题材内高度最高的代表股票代码。</td></tr><tr><td><code>leader_name</code></td><td>string</td><td>题材内高度最高的代表股票简称。</td></tr><tr><td><code>leader_ladder_level</code></td><td>integer</td><td>代表股票连板高度。</td></tr><tr><td><code>leader_limit_board_text</code></td><td>string</td><td>代表股票连板状态，例如 7天5板。</td></tr><tr><td><code>leader_seal_amount</code></td><td>number</td><td>代表股票当前封单额，单位：元。</td></tr><tr><td><code>seal_amount_sum</code></td><td>number</td><td>题材内涨停股封单额合计，单位：元。</td></tr><tr><td><code>amount_sum</code></td><td>number</td><td>题材内涨停股成交额合计，单位：元。</td></tr><tr><td><code>top_stock_summary</code></td><td>string</td><td>题材内代表股票摘要，按连板高度和封单额排序。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_theme_strength_rank_tdx&quot;,
+    count=&#x27;all&#x27;,
+    scope=&#x27;main&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_theme_strength_rank_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;count&quot;: &quot;all&quot;,
+    &quot;scope&quot;: &quot;main&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;count&quot;: &quot;all&quot;,
+  &quot;scope&quot;: &quot;main&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;rank&quot;: 1,
+    &quot;trade_date&quot;: &quot;20260618&quot;,
+    &quot;topic_type&quot;: &quot;theme&quot;,
+    &quot;topic_name&quot;: &quot;不可减持(新规)&quot;,
+    &quot;topic_id&quot;: &quot;2965&quot;,
+    &quot;theme_strength_score&quot;: 2255.0,
+    &quot;limit_up_count&quot;: 22,
+    &quot;highest_ladder_level&quot;: 3,
+    &quot;lianban_stock_count&quot;: 5,
+    &quot;first_board_count&quot;: 17,
+    &quot;leader_instrument_id&quot;: &quot;002141.SZ&quot;,
+    &quot;leader_name&quot;: &quot;贤丰控股&quot;,
+    &quot;leader_ladder_level&quot;: 3,
+    &quot;leader_limit_board_text&quot;: &quot;3天3板&quot;,
+    &quot;leader_seal_amount&quot;: 213785958.0,
+    &quot;seal_amount_sum&quot;: 3927163397.0,
+    &quot;amount_sum&quot;: 18376688992.0,
+    &quot;top_stock_summary&quot;: &quot;贤丰控股（3天3板） 中天精装（3天3板） 通鼎互联（2天2板） 中京电子（2天2板） 立航科技（4天3板）&quot;
+  }
+]</code></pre>
+</section>
+<section><h2>参考表</h2>
+<h3>排序口径</h3>
+<div class="table-wrap"><table><thead><tr><th>指标</th><th>含义</th><th>说明</th></tr></thead><tbody><tr><td>涨停数量</td><td>题材内当前封住涨停的股票数</td><td>只统计涨停池，ST / *ST 不纳入统计</td></tr><tr><td>最高板</td><td>题材内最高连板高度</td><td>用于识别题材高度</td></tr><tr><td>连板股数量</td><td>题材内二连板及以上股票数</td><td>不是连板高度，是股票数量</td></tr><tr><td>强度分</td><td>排序用综合分</td><td>用于稳定排序；实际阅读时优先看涨停数量、最高板和连板股数量</td></tr></tbody></table></div>
+</section>
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

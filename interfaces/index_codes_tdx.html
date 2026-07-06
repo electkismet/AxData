@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>指数列表 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>指数列表</h1>
+  <p class="code-title">index_codes_tdx</p>
+  <p class="lead">获取通达信代码表里的指数列表，默认只返回常规指数。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>index_codes_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 指数数据 / 基础数据</dd></div><div><dt>资产类型</dt><dd>index</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>这个接口和最新股票列表同源，都是从代码总表里筛选。股票列表只筛股票，指数列表只筛指数。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>name</code></td><td>string</td><td>否</td><td>指数简称过滤，例如 上证指数、沪深300。</td><td></td></tr><tr><td><code>code</code></td><td>string</td><td>否</td><td>指数代码过滤：支持 000001.SH、399001.SZ、sh000001。</td><td></td></tr><tr><td><code>exchange</code></td><td>string</td><td>否</td><td>交易所过滤：all 全部、SSE 上交所、SZSE 深交所、BSE 北交所；默认 all。</td><td>&quot;all&quot;</td></tr><tr><td><code>include_tdx_block_index</code></td><td>boolean</td><td>否</td><td>是否包含通达信板块/行业/题材指数；默认 false。</td><td>false</td></tr></tbody>
+</table></div>
+  
+  <div class="note"><strong>参数示例</strong><p># 常规指数列表
+client.call(&quot;index_codes_tdx&quot;)
+
+# 指定几个指数
+client.call(&quot;index_codes_tdx&quot;, code=[&quot;000001.SH&quot;, &quot;399001.SZ&quot;, &quot;899050.BJ&quot;])
+
+# 包含通达信板块/行业/题材指数
+client.call(&quot;index_codes_tdx&quot;, include_tdx_block_index=True)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一指数代码，例如 000001.SH。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始六位指数代码。</td></tr><tr><td><code>tdx_code</code></td><td>string</td><td>TDX 带市场前缀代码，例如 sh000001。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>AxData 交易所代码：SSE、SZSE 或 BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>指数简称。</td></tr><tr><td><code>index_type</code></td><td>string</td><td>指数类型：official_index 常规指数，tdx_block_index 通达信板块/行业/题材指数。</td></tr><tr><td><code>previous_close</code></td><td>number</td><td>代码表携带的昨收价。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;index_codes_tdx&quot;,
+    code=[&#x27;000001.SH&#x27;, &#x27;399001.SZ&#x27;, &#x27;899050.BJ&#x27;],
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/index_codes_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: [
+      &quot;000001.SH&quot;,
+      &quot;399001.SZ&quot;,
+      &quot;899050.BJ&quot;
+    ]
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: [
+    &quot;000001.SH&quot;,
+    &quot;399001.SZ&quot;,
+    &quot;899050.BJ&quot;
+  ]
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000001.SH&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;tdx_code&quot;: &quot;sh000001&quot;,
+    &quot;exchange&quot;: &quot;SSE&quot;,
+    &quot;name&quot;: &quot;上证指数&quot;,
+    &quot;index_type&quot;: &quot;official_index&quot;,
+    &quot;previous_close&quot;: 4108.0762
+  },
+  {
+    &quot;instrument_id&quot;: &quot;399001.SZ&quot;,
+    &quot;symbol&quot;: &quot;399001&quot;,
+    &quot;tdx_code&quot;: &quot;sz399001&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;深证成指&quot;,
+    &quot;index_type&quot;: &quot;official_index&quot;,
+    &quot;previous_close&quot;: 15880.9512
+  },
+  {
+    &quot;instrument_id&quot;: &quot;899050.BJ&quot;,
+    &quot;symbol&quot;: &quot;899050&quot;,
+    &quot;tdx_code&quot;: &quot;bj899050&quot;,
+    &quot;exchange&quot;: &quot;BSE&quot;,
+    &quot;name&quot;: &quot;北证50&quot;,
+    &quot;index_type&quot;: &quot;official_index&quot;,
+    &quot;previous_close&quot;: 1280.246
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>债券列表 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信扩展行情</p>
+  <h1>债券列表</h1>
+  <p class="code-title">bond_codes_tdx</p>
+  <p class="lead">返回本机扩展资产目录中可识别的债券或资金市场品种。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>bond_codes_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_ext_external</dd></div><div><dt>数据源</dt><dd>通达信扩展行情 / tdx_ext</dd></div><div><dt>目录</dt><dd>通达信扩展行情 / 债券数据</dd></div><div><dt>资产类型</dt><dd>bond</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>返回本机扩展资产目录中可识别的债券或资金市场品种。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>否</td><td>品种代码过滤；可传单个、列表或英文逗号分隔字符串。</td><td></td></tr><tr><td><code>exchange</code></td><td>string</td><td>否</td><td>交易所或资产场所过滤；不传或 all 表示全部。</td><td></td></tr><tr><td><code>name</code></td><td>string</td><td>否</td><td>名称、品种或市场关键词过滤。</td><td></td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>返回前多少行，默认 1000。</td><td>1000</td></tr><tr><td><code>tdx_root</code></td><td>string</td><td>否</td><td>本机通达信目录（可选，高级）</td><td></td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>默认不用传 tdx_root；只有 API 服务器上的通达信安装目录不是常见位置，或想指定某个 hq_cache 目录时才需要传。</p></div>
+  <div class="note"><strong>参数示例</strong><p># 债券/资金市场品种
+client.call(&quot;bond_codes_tdx&quot;, limit=3)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 扩展资产统一代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>源端品种代码。</td></tr><tr><td><code>asset_type</code></td><td>string</td><td>资产类型：futures 期货、option 期权、fund 基金、bond 债券、fx 外汇、macro 宏观。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>归一后的交易所或资产场所。</td></tr><tr><td><code>market_name</code></td><td>string</td><td>本机扩展资产目录中的市场名称。</td></tr><tr><td><code>market_group</code></td><td>string</td><td>本机扩展资产目录中的分组名称。</td></tr><tr><td><code>bond_type</code></td><td>string</td><td>债券市场类型。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;bond_codes_tdx&quot;,
+    limit=3,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/bond_codes_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;limit&quot;: 3
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;limit&quot;: 3
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;10YCDB.BOND&quot;,
+    &quot;symbol&quot;: &quot;10YCDB&quot;,
+    &quot;asset_type&quot;: &quot;bond&quot;,
+    &quot;exchange&quot;: &quot;BOND&quot;,
+    &quot;market_name&quot;: &quot;资金市场&quot;,
+    &quot;market_group&quot;: &quot;其它&quot;,
+    &quot;bond_type&quot;: &quot;资金市场&quot;
+  },
+  {
+    &quot;instrument_id&quot;: &quot;10YGB.BOND&quot;,
+    &quot;symbol&quot;: &quot;10YGB&quot;,
+    &quot;asset_type&quot;: &quot;bond&quot;,
+    &quot;exchange&quot;: &quot;BOND&quot;,
+    &quot;market_name&quot;: &quot;资金市场&quot;,
+    &quot;market_group&quot;: &quot;其它&quot;,
+    &quot;bond_type&quot;: &quot;资金市场&quot;
+  },
+  {
+    &quot;instrument_id&quot;: &quot;1YCDB.BOND&quot;,
+    &quot;symbol&quot;: &quot;1YCDB&quot;,
+    &quot;asset_type&quot;: &quot;bond&quot;,
+    &quot;exchange&quot;: &quot;BOND&quot;,
+    &quot;market_name&quot;: &quot;资金市场&quot;,
+    &quot;market_group&quot;: &quot;其它&quot;,
+    &quot;bond_type&quot;: &quot;资金市场&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

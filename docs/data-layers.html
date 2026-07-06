@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>数据分层 - AxData 文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="" href="../interfaces/index.html">接口文档</a><a class="active" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">开发文档</a></p>
+  <h1>数据分层</h1>
+</section>
+<article class="markdown-body"><h2>数据分层设计</h2>
+<p>AxData 使用 <code>raw -&gt; staging -&gt; core -&gt; factor</code> 四层数据模型。每一层都保存为 Parquet 文件，DuckDB 负责本地查询、视图和轻量缓存。Python SDK 默认在本机通过这一层直接读取已入库数据；HTTP API 是远程访问同一数据语义的通道。</p>
+<p>源端直取不属于数据分层。它是 SDK/API 对源接口的一次性请求：按 AxData 字段返回结果，默认不写入 <code>raw</code>、<code>staging</code>、<code>core</code> 或 <code>factor</code>。新增源接口时，应先定义接口目录、参数、字段和解析，再决定是否设计采集入库路径。</p>
+<p>当前默认采集能力由预装的 TDX Collector 插件提供，覆盖少量稳定示例和基础闭环。Collector 通过 <code>runner_entry</code> 产出 records，再由 AxData Writer 写出 Parquet，并记录 <code>CollectorRun</code>、<code>output_paths</code>、<code>row_count</code>、<code>quality</code> 和 metadata log。交易所、巨潮、腾讯、东方财富、新浪财经等预装源接口主要作为 source_request-only 接口使用：可以在接口页、SDK 或 CLI 中临时查询，但默认不写入本地数据层。需要长期入库的接口，应按采集器插件规范单独声明 CollectorSpec 和写入契约。</p>
+<p>兼容 DownloaderProfile 继续服务显式下载入口 <code>/v1/downloaders</code>，但它不是新采集器的推荐形态。新采集器应进入 Collector Runner，并由 AxData 统一处理队列、状态、日志、Writer、Quality 和 metadata；不要通过 <code>/v1/request</code>、SDK <code>call</code>、ProviderRegistry route 或旧 DownloaderProfile 链路套接口采集。可选脚本 <code>scripts/smoke_real_sources.py</code> 用于真实源小样本检查，默认不进入普通测试流程，也不代表所有真实源都已经具备全市场长期采集能力。</p>
+<h3>分层总览</h3>
+<div class="table-wrap"><table><thead><tr><th>层级</th><th>目的</th><th>是否面向用户</th><th>是否可重建</th><th>典型粒度</th></tr></thead><tbody><tr><td>raw</td><td>保存上游接口原始快照</td><td>否</td><td>否，作为追溯依据保留</td><td>adapter + interface + batch</td></tr><tr><td>staging</td><td>源数据标准化和清洗</td><td>否</td><td>是，可从 raw 重建</td><td>source + table + date</td></tr><tr><td>core</td><td>AxData 统一事实表和主数据</td><td>是</td><td>是，可从 staging 重建</td><td>table + business key</td></tr><tr><td>factor</td><td>因子、特征和研究数据集</td><td>是</td><td>是，可从 core 重建</td><td>factor_set + date</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>临时路径</th><th>目的</th><th>是否面向用户</th><th>是否可重建</th><th>典型粒度</th></tr></thead><tbody><tr><td>source_request</td><td>源端直取、接口调试、实时快照</td><td>是</td><td>否，不落盘</td><td>interface + params</td></tr></tbody></table></div>
+<h3>raw 层</h3>
+<p>raw 层保存上游返回结果的最小改动版本，用于追溯、回放和问题定位。</p>
+<p>职责：</p>
+<ul>
+<li>保存上游接口响应中的字段、顺序、原始类型和源侧空值。</li>
+<li>记录 adapter、interface、params、fields、request_id、batch_id、run_id、ingested_at。</li>
+<li>不做业务清洗，不改字段名，不做跨接口合并。</li>
+<li>支持重放同一个采集批次生成 staging。</li>
+</ul>
+<p>建议路径：</p>
+<pre><code class="language-text">data/raw/adapter=tushare/interface=daily/ingest_date=2026-06-07/batch_id=.../*.parquet
+data/raw/adapter=exchange/interface=stock_basic_exchange/ingest_date=2026-06-07/batch_id=.../*.parquet</code></pre>
+<p>raw 层可以保留少量 JSON 元数据文件，但表格响应优先落 Parquet，便于统一读取。</p>
+<h3>staging 层</h3>
+<p>staging 层把上游数据转换为 AxData 中间规范，但仍保留 adapter/interface 维度。</p>
+<p>职责：</p>
+<ul>
+<li>字段名转换为 snake_case。</li>
+<li>日期转换为 <code>date</code> 或 <code>timestamp</code>。</li>
+<li>代码转换为 AxData 统一代码格式。</li>
+<li>数值单位转换到 AxData 标准单位。</li>
+<li>去除同一 source、同一批次内的重复记录。</li>
+<li>标记源侧缺失、异常、停牌、退市等状态。</li>
+</ul>
+<p>建议路径：</p>
+<pre><code class="language-text">data/staging/adapter=tushare/table=daily/parquet/20260605.parquet
+data/staging/adapter=exchange/table=stock_basic_exchange/exchange=SSE/*.parquet</code></pre>
+<p>staging 层仍允许 adapter-specific 字段，但这些字段只服务采集转换、追溯和调试，不进入常规用户 schema。</p>
+<h3>core 层</h3>
+<p>core 层是 AxData 的稳定数据产品层。Python SDK 本地模式和 HTTP API 默认从 core 层读取。</p>
+<p>职责：</p>
+<ul>
+<li>输出稳定用户 schema，不暴露上游字段差异。</li>
+<li>按接口口径分别生成用户表，例如 <code>stock_basic_exchange</code>；新增口径应使用独立表名，查询层保持口径分离。</li>
+<li>提供稳定主键、唯一约束、字段单位和字段语义。</li>
+<li>只保存可解释的基础数据，不保存实验性因子。</li>
+<li>不用 provider 原始字段替代 core 字段；例如 <code>daily</code> 使用 <code>ts_code + trade_date</code> 和 <code>vol</code>，TDX 源端 <code>instrument_id + trade_time + volume</code> 需要在 staging/转换或 profile mapping 中显式映射。</li>
+</ul>
+<p>建议路径：</p>
+<pre><code class="language-text">data/core/table=stock_basic_exchange/*.parquet
+data/core/table=trade_cal/exchange=SSE/*.parquet
+data/core/table=daily/parquet/20260605.parquet
+data/core/table=adj_factor/parquet/20260605.parquet</code></pre>
+<p>核心表写入策略：</p>
+<ul>
+<li>小表如 <code>stock_basic_exchange</code> 可整表重写，也可在稳定主键明确后按 <code>instrument_id</code> upsert。</li>
+<li>日历表可按 <code>exchange</code> 和年度分区覆盖，或按 <code>cal_date</code> 范围替换。</li>
+<li>行情和复权表按 <code>trade_date</code> 分区，便于按日期增量更新、补采和全市场扫描。</li>
+<li>当前轻量 Downloader 已在 run log/CollectorRun 中记录写入 metadata；稳定 manifest/index 可继续扩展，不在当前存储架构中重写。</li>
+</ul>
+<p>本地写入模式：</p>
+<div class="table-wrap"><table><thead><tr><th>write_mode</th><th>语义</th><th>适用层级</th><th>必需声明</th><th>当前落地状态</th></tr></thead><tbody><tr><td><code>append</code></td><td>追加新文件，不做去重；同名文件已存在时写入带序号的新文件。</td><td>raw、snapshot、追溯留痕</td><td>无；可声明 <code>primary_key</code> 供 quality 使用</td><td><code>DownloadWriter</code> 支持</td></tr><tr><td><code>snapshot</code></td><td>保留一次运行快照，用原子替换写出目标文件；这是兼容旧 profile 的默认模式。</td><td>snapshot、source-only、小样本 smoke、小表快照</td><td>无</td><td>默认支持</td></tr><tr><td><code>overwrite_partition</code></td><td>只删除并重写本次数据触达的分区 Parquet 文件，其它分区不动。</td><td>staging、core、factor 的分区表</td><td><code>partition_by</code></td><td><code>DownloadWriter</code> 支持</td></tr><tr><td><code>replace_range</code></td><td>按 <code>date_field</code> 的闭区间移除旧行，再写入本次数据。</td><td>core/factor 的日期补采、修复采集</td><td><code>date_field</code>；可选 <code>replace_range_start/end</code></td><td><code>DownloadWriter</code> 支持</td></tr><tr><td><code>upsert_by_key</code></td><td>读取既有 Parquet，与本次数据合并，按 <code>primary_key</code> 保留最后一条，避免同 key 重跑重复。</td><td>core/factor 稳定事实表、小批量分区样本</td><td><code>primary_key</code>；分区表建议同时声明 <code>partition_by</code></td><td><code>DownloadWriter</code> 支持</td></tr></tbody></table></div>
+<p>写入声明来自独立 CollectorSpec 的 <code>output</code> / runner 返回 metadata，或 legacy DownloaderProfile / Provider manifest 的 <code>output</code>：</p>
+<ul>
+<li><code>write_mode</code> 缺省为 <code>snapshot</code>，旧 profile 不需要迁移。</li>
+<li><code>primary_key</code> 是 <code>upsert_by_key</code> 的硬要求；缺失时写入会失败并返回可读错误。</li>
+<li><code>partition_by</code> 是 <code>overwrite_partition</code> 的硬要求；按日期分区的 Parquet output path 表示格式目录，例如 <code>.../parquet</code>，目录下按 <code>YYYYMMDD.parquet</code> 一天一个文件写入；旧的 <code>trade_date=YYYYMMDD/*.parquet</code> 目录仍可读取。</li>
+<li><code>date_field</code> 是 <code>replace_range</code> 的硬要求；没有日期字段的接口不能声明 range 替换。</li>
+<li><code>replace_range_start</code> / <code>replace_range_end</code> 当前来自执行层可选传入；未传时用本次 frame 的日期最小/最大值。</li>
+</ul>
+<p>写入 metadata 会随 run/output 保存，并在 CLI/API/Data Browser 透传：</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td><code>write_mode</code></td><td>实际使用的写入模式。</td></tr><tr><td><code>partition_by</code></td><td>分区字段列表。</td></tr><tr><td><code>primary_key</code></td><td>写入去重使用的主键；quality 旧键 <code>primary_key</code> 仍保留为检查状态，写入主键在 quality 中使用 <code>write_primary_key</code>。</td></tr><tr><td><code>date_field</code></td><td>range 替换和日期展示使用的日期/时间字段。</td></tr><tr><td><code>replace_range_start</code> / <code>replace_range_end</code></td><td>本次替换的日期闭区间；非 range 模式为空。</td></tr><tr><td><code>rows_before</code> / <code>rows_written</code> / <code>rows_after</code></td><td>本次写入前、输入、写入后行数；能低风险获得时记录。</td></tr><tr><td><code>duplicate_rows_dropped</code></td><td><code>upsert_by_key</code> 合并时因重复 key 丢弃的行数。</td></tr><tr><td><code>partitions_touched</code></td><td>本次触达的分区标签，例如 <code>trade_date=20260618</code>。</td></tr><tr><td><code>write_metadata.formats</code></td><td>按输出格式记录的写入 metadata；Parquet 是主数据格式，CSV/DuckDB 是额外导出或查询缓存；旧 JSONL 仅作为兼容下载格式保留。</td></tr></tbody></table></div>
+<p>核心表推荐策略：</p>
+<div class="table-wrap"><table><thead><tr><th>表或接口</th><th>推荐策略</th><th>当前代码状态</th></tr></thead><tbody><tr><td><code>trade_cal</code></td><td><code>overwrite_partition</code> by <code>exchange</code> + year，或 <code>replace_range</code> by <code>cal_date</code>。</td><td>策略声明；现有轻量 profile 仍保持快照写出。</td></tr><tr><td><code>stock_basic_exchange</code></td><td><code>snapshot + latest</code> 整表重建，或稳定后 <code>upsert_by_key instrument_id</code>。</td><td>策略声明；现有轻量 profile 仍保持快照写出。</td></tr><tr><td><code>daily</code></td><td><code>replace_range</code> 或 <code>upsert_by_key ts_code + trade_date</code>，并按 <code>trade_date</code> 分区。</td><td>策略声明；<code>stock_kline_daily_tdx</code> 还未转换成稳定 <code>daily.trade_date</code> 写入。</td></tr><tr><td><code>adj_factor</code></td><td><code>upsert_by_key ts_code + trade_date</code>；发生修订时也可用 <code>replace_range</code>。</td><td>schema 和源端接口保留；当前不作为默认采集器。</td></tr><tr><td><code>stock_kline_daily_tdx</code></td><td>源端样本建议 <code>upsert_by_key instrument_id + trade_time + period</code>；正式 <code>daily</code> 前需映射为 <code>ts_code + trade_date</code>。</td><td>策略声明；当前代码保持 <code>snapshot</code>，避免在缺稳定 <code>trade_date</code> 字段时错误去重。</td></tr></tbody></table></div>
+<p>当前核心表映射与缺口：</p>
+<div class="table-wrap"><table><thead><tr><th>core 表</th><th>当前源端接口</th><th>当前入库状态</th></tr></thead><tbody><tr><td><code>stock_basic_exchange</code></td><td><code>stock_codes_tdx</code>、<code>stock_basic_info_exchange</code></td><td><code>stock_codes_tdx</code> 有 TDX 兼容 DownloaderProfile 和 <code>axdata.collector.tdx</code> 独立 CollectorSpec；<code>stock_basic_info_exchange</code> 保留为交易所源端接口和兼容 DownloaderProfile，不再提供默认采集器；生产级 core latest/history 转换仍需补齐</td></tr><tr><td><code>trade_cal</code></td><td><code>stock_trade_calendar_exchange</code></td><td>已产品化为系统基础数据：Web 展示为“基础数据 / 交易日历”，<code>trade_cal_refresh</code> 会同步本地交易日历 cache；<code>stock_trade_calendar_exchange</code> 保留为交易所源端接口和兼容 DownloaderProfile，不再提供默认采集器</td></tr><tr><td><code>daily</code></td><td><code>stock_kline_daily_tdx</code></td><td>schema、partitioned storage 和 DuckDB query 已验证；TDX independent CollectorSpec 可写显式代码小样本；生产级全市场 core 转换仍需补齐</td></tr><tr><td><code>adj_factor</code></td><td><code>stock_adj_factor_tdx</code></td><td>schema 和源端接口保留；不再作为默认采集器进入采集页，生产级复权因子重建策略仍需补齐</td></tr></tbody></table></div>
+<p>第一批 source-only / raw / snapshot 接口当前写入层建议：</p>
+<div class="table-wrap"><table><thead><tr><th>接口</th><th>输出层</th><th>说明</th></tr></thead><tbody><tr><td><code>stock_historical_list_exchange</code></td><td>snapshot</td><td>某一日期或日期范围的股票池快照，默认不作为稳定 core 表。</td></tr><tr><td><code>cninfo_announcements</code>、<code>cninfo_announcement_detail</code></td><td>raw</td><td>当前是 source_request-only；公告元信息和 PDF 元信息保留源端口径，默认不通过 Downloader/Collector 写入。</td></tr><tr><td><code>tencent_realtime_snapshot</code></td><td>snapshot</td><td>当前是 source_request-only；实时快照默认不污染历史事实表，持久化应由独立录制或快照采集器实现。</td></tr><tr><td><code>eastmoney_dragon_tiger_daily</code>、<code>eastmoney_margin_trading</code>、<code>eastmoney_research_reports</code></td><td>raw</td><td>当前是 source_request-only；公开 HTTP 源端口径，如需入库应设计独立专题采集器。</td></tr><tr><td><code>stock_financial_report_sina</code></td><td>raw</td><td>当前是 source_request-only；新浪财经 JSON 财报源端口径，如需入库应先确认稳定财务表口径。</td></tr></tbody></table></div>
+<p>可选真实源小样本检查的当前分类：</p>
+<div class="table-wrap"><table><thead><tr><th>core 表</th><th>检查状态</th><th>说明</th></tr></thead><tbody><tr><td><code>stock_basic_exchange</code></td><td>可通过交易所内置源直取小样本检查</td><td>写入指定输出目录下的 core Parquet 和 metadata，DuckDB 可读回；Registry 只显示对应源端接口/兼容 DownloaderProfile，不再显示交易所 CollectorSpec</td></tr><tr><td><code>trade_cal</code></td><td>可通过交易所内置源直取小样本检查</td><td>交易所返回的是日期范围样本；写入 core 分区后查询；Registry 只显示对应源端接口/兼容 DownloaderProfile，不再显示交易所 CollectorSpec</td></tr><tr><td><code>daily</code></td><td>需要 TDX 插件可用</td><td>当前通过 <code>stock_kline_daily_tdx</code> 源端直取或 TDX 轻量 profile 写小样本 core 分区；不是 core 内置兜底，也不是生产级全市场日线任务</td></tr><tr><td><code>adj_factor</code></td><td>需要 TDX source 插件可用</td><td>当前可通过 <code>stock_adj_factor_tdx</code> 源端直取或兼容下载入口做小样本检查；不再作为默认采集器进入采集页，也不是生产级复权因子任务</td></tr></tbody></table></div>
+<p>第一批 source-only 真实源检查不是默认目标，必须显式选择，例如：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\python scripts\smoke_real_sources.py --run `
+  --interfaces tencent_realtime_snapshot `
+  --output-dir $env:TEMP\axdata-real-source-smoke `
+  --json</code></pre>
+<h3>factor 层</h3>
+<p>factor 层保存从 core 层派生的因子、标签、训练特征和研究数据集。</p>
+<p>职责：</p>
+<ul>
+<li>明确因子名称、版本、计算窗口、依赖表、代码版本和参数。</li>
+<li>保证点时正确，不能使用未来数据。</li>
+<li>支持宽表和长表两种形态：宽表适合批量训练，长表适合因子目录和动态选择。</li>
+<li>保存质量指标，例如缺失率、极值裁剪比例、覆盖标的数。</li>
+</ul>
+<p>建议路径：</p>
+<pre><code class="language-text">data/factor/factor_set=alpha_basic/version=1/trade_date=2026-06-05/*.parquet
+data/factor/factor_set=labels/version=1/trade_date=2026-06-05/*.parquet</code></pre>
+<p>初期建议使用宽表：</p>
+<pre><code class="language-text">ts_code, trade_date, factor_mom_20, factor_vol_20, factor_turnover_20, ...</code></pre>
+<p>当因子数量快速增长后，再增加长表或因子 catalog：</p>
+<pre><code class="language-text">ts_code, trade_date, factor_name, factor_value, factor_version</code></pre>
+<h3>Parquet 与 DuckDB 分工</h3>
+<p>Parquet 是长期存储：</p>
+<ul>
+<li>作为数据真相来源。</li>
+<li>适合列式压缩、批量扫描、跨语言读取和对象存储迁移。</li>
+<li>通过按日期拆文件或目录分区表达常用过滤条件；核心日频表优先使用 <code>YYYYMMDD.parquet</code> 一天一个文件。</li>
+<li>文件可直接被 Python、DuckDB、Polars、Spark、Arrow 读取。</li>
+</ul>
+<p>DuckDB 是查询执行层：</p>
+<ul>
+<li>读取 Parquet 外部表或视图。</li>
+<li>执行本地 SQL、join、聚合和导出。</li>
+<li>保存 catalog、视图定义、临时表和可重建缓存。</li>
+<li>为 Python SDK 本地直读、HTTP API、Notebook 和回测提供一致查询语义。</li>
+</ul>
+<p>DuckDB 不应成为唯一数据真相来源。<code>catalog.duckdb</code> 损坏时，系统必须能根据 Parquet、manifest 和 schema 文件重建。</p>
+<h3>目录与视图约定</h3>
+<p>推荐在 DuckDB 中为每层建立 schema：</p>
+<pre><code class="language-sql">CREATE SCHEMA raw;
+CREATE SCHEMA staging;
+CREATE SCHEMA core;
+CREATE SCHEMA factor;</code></pre>
+<p>核心视图示例：</p>
+<pre><code class="language-sql">CREATE OR REPLACE VIEW core.daily AS
+SELECT *
+FROM read_parquet(&#x27;data/core/table=daily/**/*.parquet&#x27;, union_by_name = true);</code></pre>
+<p>SDK 和 HTTP API 的普通查询只访问 <code>core.*</code> 和 <code>factor.*</code>。管理员和调试命令可以访问 <code>raw.*</code>、<code>staging.*</code> 与元数据表。源端直取接口不查询 DuckDB，而是走 Source Request Gateway 请求源端并临时返回。</p>
+<h3>入库边界与实时数据</h3>
+<p>采集是 AxData 的写入动作。任何称为采集的流程都必须产生任务、批次和运行元数据，并按分层规则写入 raw、staging，再进入 core 或 factor。</p>
+<ul>
+<li>历史采集、增量采集、修复采集和录制任务都应写入 task/batch/run、lineage、质量结果和可重放参数。</li>
+<li>查询不是采集：SDK 和 HTTP API 查询只读已入库数据，不在查询链路临时请求第三方源。</li>
+<li>源端直取不是采集：<code>request</code>、<code>client.call(...)</code>、adapter probe/debug 可直接请求源端，但默认只返回临时结果，不写入 raw、staging、core 或 factor。</li>
+<li>实时行情默认不入库：快照、订阅和盘中流是临时数据流或内存态视图；如需持久化，必须显式启动 realtime recording 或 collection job，并使用独立 task/batch/run 元数据记录时间窗口和录制参数。</li>
+</ul>
+<p>实时录制进入历史层时，应避免污染日线事实表：</p>
+<ul>
+<li>原始 tick、盘口或快照先写入 raw/staging 对应实时源目录。</li>
+<li>派生出的分钟线或日线必须经过质量检查和时间窗口确认后再进入 core。</li>
+<li>未完成收盘确认的盘中数据不得覆盖 <code>daily</code> 的正式收盘行情。</li>
+</ul>
+<h3>数据质量约束</h3>
+<p>通用约束：</p>
+<ul>
+<li>主键不能为空。</li>
+<li>日期必须为有效交易日，除非表本身是日历表。</li>
+<li>同一主键在 core 层只能出现一条记录。</li>
+<li><code>open/high/low/close</code> 不能为负；<code>high &gt;= low</code>。</li>
+<li>成交量和成交额不能为负。</li>
+<li><code>adj_factor &gt; 0</code>。</li>
+<li>core 层字段单位必须与 schema 文档一致。</li>
+</ul>
+<p>当前已落地的 Downloader/Collector 基础质量检查：</p>
+<div class="table-wrap"><table><thead><tr><th>检查</th><th>说明</th></tr></thead><tbody><tr><td><code>row_count</code> / <code>row_count_value</code></td><td>空结果给 warning；实际行数进入 metadata。</td></tr><tr><td>required columns</td><td>检查 profile/schema 声明的 required columns 是否存在。</td></tr><tr><td>null counts</td><td>统计 required columns 的空值行数。</td></tr><tr><td>duplicate key</td><td>按主键统计重复影响行数。</td></tr><tr><td>date range</td><td>按声明的 <code>date_field</code> 或 <code>datetime_field</code> 记录最小/最大值。</td></tr><tr><td>calendar alignment</td><td>对行情/复权类数据按本地 <code>trade_cal</code> 检查交易日缺口和非交易日多出；任务声明 <code>required_datasets=[&quot;trade_cal&quot;]</code> 时，调度器会在运行前先检查本地交易日历基础数据。</td></tr><tr><td>date gaps</td><td>输出缺失交易日数量、样本和按证券代码的小样本覆盖摘要。</td></tr><tr><td>numeric positive</td><td>对价格、成交量、成交额、复权因子等声明列检查负数；列不存在时 warning，不强行失败无此字段的接口。</td></tr><tr><td>OHLC rules</td><td>对 <code>open/high/low/close</code> 检查 <code>high &gt;= low/open/close</code> 和 <code>low &lt;= open/close</code>。</td></tr><tr><td>adjustment factor</td><td>对 <code>adj_factor</code> 检查严格大于 0。</td></tr><tr><td>schema columns</td><td>记录实际列、期望列和 unexpected columns。</td></tr><tr><td>field mappings</td><td>记录源端字段到 core 字段的兼容映射，例如 TDX 日线 <code>volume -&gt; vol</code>。</td></tr></tbody></table></div>
+<p>质量结果随 Downloader run log 和 CollectorRun 保存，并可通过 CLI/API/Web 的 task/run JSON 查看；稳定 manifest 目录可继续扩展写入：</p>
+<pre><code class="language-text">metadata/quality/table=daily/run_id=.../*.json</code></pre>
+<p>质量状态分为三类：</p>
+<ul>
+<li><code>ok</code>：声明检查均通过。</li>
+<li><code>warn</code>：允许写入但记录问题，例如空结果、unexpected columns、可选数值列缺失、交易日缺口。日期缺口可能来自停牌、未上市/退市、源端遗漏或采集范围不完整。对于已经声明 <code>trade_cal</code> 基础依赖的采集任务，缺少本地交易日历会在运行前被阻止，而不是等到质量检查阶段才给 warning。</li>
+<li><code>error</code>：blocking 问题，例如 required columns 缺失、required columns 有空值、主键重复、声明的非负数值列出现负数、非交易日出现行情数据、OHLC 关系异常或 <code>adj_factor &lt;= 0</code>。当前轻量 Downloader 仍会把小样本写出，生产级 core 转换任务应据此决定是否阻止覆盖正式 core 分区。</li>
+</ul>
+<h3>本地 Dataset 发现与预览</h3>
+<p>第一版 Data Browser 不盲扫全盘，也不把 DuckDB 暴露成任意 SQL 编辑器。发现顺序如下：</p>
+<ol>
+<li>读取 <code>metadata/collector/collector_scheduler.json</code> 中最近的 <code>CollectorRun</code>，优先使用 <code>output_paths</code>、<code>quality</code>、<code>provider_id</code>、<code>downloader_profile</code>、<code>result.download_result</code>、<code>started_at/finished_at</code>；当前 discovery 只取最近窗口，避免 run metadata 很多时列表接口返回不可控历史。</li>
+<li>在已知 data root 下的 raw/staging/core/factor/snapshots 输出目录里读取最近的 Downloader <code>logs/*.json</code>，用于发现绕过 Collector task 的单次 Downloader 输出。</li>
+<li>检查已知 core 表路径，例如 <code>data/core/daily.parquet</code> 或 <code>data/core/table=daily/**/*.parquet</code>，补充没有 run metadata 的本地 core 数据。</li>
+<li>如果 run/downloader metadata 已经提供 <code>row_count</code>、<code>schema_columns</code> 和 <code>date_range</code>，列表和详情不再枚举 Parquet 数据文件；缺失时只读 Parquet footer/schema metadata 补行数、列和分区日期范围。目录型 Parquet 只在文件数和目录数上限内读取 footer；超过上限时会标记 <code>metadata.parquet_stats_limited=true</code>，优先返回列和分区日期范围，不伪造精确 <code>row_count</code>。preview 才通过 DuckDB 读取 Parquet，并始终带 limit。</li>
+</ol>
+<p>dataset metadata 暴露字段：</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td><code>dataset</code> / <code>interface_name</code></td><td>本地 dataset 名称和采集接口名。</td></tr><tr><td><code>provider</code> / <code>source</code></td><td>来自 CollectorRun、Provider 或 downloader source_meta。</td></tr><tr><td><code>layer</code></td><td>raw、staging、core、factor 或 snapshot。</td></tr><tr><td><code>output_paths</code></td><td>parquet/csv/duckdb/log 等输出路径；preview 只读 parquet。旧 JSONL 路径仅来自兼容下载历史。</td></tr><tr><td><code>row_count</code></td><td>优先取 quality/run 记录，缺失时用 Parquet footer metadata 补。</td></tr><tr><td><code>date_min/date_max</code></td><td>优先取 <code>quality.date_range</code>，缺失时按日期字段补。</td></tr><tr><td><code>columns</code></td><td>优先取 quality/schema columns，缺失时用 Parquet footer/schema metadata 补。</td></tr><tr><td><code>quality_status</code>、<code>quality_warnings/errors</code></td><td>写出质量摘要。</td></tr><tr><td><code>write_mode</code>、<code>partition_by</code>、<code>primary_key</code>、<code>date_field</code></td><td>写入策略摘要；旧 metadata 缺失时为空。</td></tr><tr><td><code>rows_before</code>、<code>rows_written</code>、<code>rows_after</code></td><td>写入前、本次输入和写入后行数；只在 writer 可低风险获得时填充。</td></tr><tr><td><code>duplicate_rows_dropped</code>、<code>partitions_touched</code></td><td>upsert 去重行数和本次触达的分区标签。</td></tr><tr><td><code>latest_run_id</code>、<code>latest_run_status</code>、<code>updated_at</code></td><td>最近 run 和更新时间。</td></tr><tr><td><code>missing_paths</code></td><td>run metadata 指向但当前不存在的文件路径。</td></tr></tbody></table></div>
+<p>CLI/API/Web 的 Data Browser preview/query 默认限制返回行数，单次最多 100 行。Data Browser preview 对目录型 Parquet 如果识别到 <code>YYYYMMDD.parquet</code> 日期文件或旧的 <code>trade_date=...</code> 日期分区，会按 <code>start/end</code> 裁剪到匹配文件/分区；没有匹配日期文件或分区时返回空结果，不回退扫描整棵目录。core <code>query_table()</code> 会按字段投影和过滤条件构造 DuckDB 查询；当 core 表按 schema 日期字段拆文件，并传入 <code>start/end</code> 时，也会优先裁剪到匹配日期路径。它们只用于确认数据是否存在、字段是否正确和抽样查看；批量分析仍应使用本地 DuckDB、Python SDK 或导出任务。</p>
+<p>当前 JSON metadata store 适合本地单机和中等规模 run history。Collector run 列表默认只返回最近记录，API/CLI 会限制单次列表窗口；status 摘要只返回最近窗口、总数、状态计数、active runs 和每个 task 的 latest run；run detail 仍可按 <code>run_id</code> 查看完整记录。如果 run metadata 明显增长，应升级到 SQLite/DuckDB metadata 或增加 manifest/index，而不是把所有历史 run 放进一个无限增长的列表响应。</p>
+<h3>更新与重算策略</h3>
+<ul>
+<li>全量初始化：按表和历史日期分片写入 raw，再逐层构建。</li>
+<li>日常增量：交易日收盘后采集 <code>daily</code>，交易日前后更新 <code>trade_cal</code>；<code>adj_factor</code> 更适合作为派生/重建能力按需生成，不作为默认高频采集任务。core/factor 层优先使用 <code>overwrite_partition</code>、<code>replace_range</code> 或 <code>upsert_by_key</code> 避免同一逻辑数据重复膨胀。</li>
+<li>主数据修复：<code>stock_basic_exchange</code> 可按口径整表刷新，并与历史版本比较；稳定主键路径可演进为 <code>upsert_by_key instrument_id</code>。</li>
+<li>数据修订：源数据变更时新增批次并重建受影响分区，不直接覆盖 raw；raw 层保留 <code>append</code>/追溯快照，core 层使用明确分区或主键语义。</li>
+<li>因子重算：当 core 数据修订、因子代码变更或参数变更时，生成新的 factor version。</li>
+</ul></article>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

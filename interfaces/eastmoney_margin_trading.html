@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>融资融券明细 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 东方财富</p>
+  <h1>融资融券明细</h1>
+  <p class="code-title">eastmoney_margin_trading</p>
+  <p class="lead">低频获取单股融资融券明细，金额单位为元，融券数量单位为股。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>eastmoney_margin_trading</dd></div><div><dt>Provider</dt><dd>axdata.source.eastmoney</dd></div><div><dt>数据源</dt><dd>东方财富 / eastmoney</dd></div><div><dt>目录</dt><dd>东方财富 / 融资融券数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>这个接口只保留已确认字段；金额字段单位为元，遇到源端空结果返回空表。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>股票代码，支持 000001、000001.SZ。</td><td></td></tr><tr><td><code>start_date</code></td><td>string</td><td>否</td><td>开始日期，YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr><tr><td><code>end_date</code></td><td>string</td><td>否</td><td>结束日期，YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr><tr><td><code>page</code></td><td>integer</td><td>否</td><td>页码，默认 1。</td><td>1</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>每页条数，默认 50，最大 200。</td><td>50</td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>不传 fields 时返回上方全部字段；临时调用只查一次。</p></div>
+  <div class="note"><strong>参数示例</strong><p>client.call(&quot;eastmoney_margin_trading&quot;, code=&quot;000001.SZ&quot;, start_date=&quot;20240102&quot;, end_date=&quot;20240105&quot;, limit=5)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>trade_date</code></td><td>date</td><td>交易日期，格式 YYYYMMDD。</td></tr><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>market</code></td><td>string</td><td>交易市场标签。</td></tr><tr><td><code>close_price</code></td><td>number</td><td>收盘价，单位：元。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>涨跌幅，百分比数值。</td></tr><tr><td><code>margin_balance</code></td><td>number</td><td>融资余额，单位：元。</td></tr><tr><td><code>margin_buy_amount</code></td><td>number</td><td>融资买入额，单位：元。</td></tr><tr><td><code>margin_repay_amount</code></td><td>number</td><td>融资偿还额，单位：元。</td></tr><tr><td><code>margin_net_buy_amount</code></td><td>number</td><td>融资净买入额，单位：元。</td></tr><tr><td><code>short_balance</code></td><td>number</td><td>融券余额，单位：元。</td></tr><tr><td><code>short_sell_volume</code></td><td>number</td><td>融券卖出量，单位：股。</td></tr><tr><td><code>short_repay_volume</code></td><td>number</td><td>融券偿还量，单位：股。</td></tr><tr><td><code>short_net_sell_volume</code></td><td>number</td><td>融券净卖出量，单位：股。</td></tr><tr><td><code>total_balance</code></td><td>number</td><td>融资融券余额，单位：元。</td></tr><tr><td><code>market_value</code></td><td>number</td><td>总市值，单位：元。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;eastmoney_margin_trading&quot;,
+    code=&#x27;000001.SZ&#x27;,
+    end_date=&#x27;20240105&#x27;,
+    limit=5,
+    start_date=&#x27;20240102&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/eastmoney_margin_trading
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;000001.SZ&quot;,
+    &quot;start_date&quot;: &quot;20240102&quot;,
+    &quot;end_date&quot;: &quot;20240105&quot;,
+    &quot;limit&quot;: 5
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;000001.SZ&quot;,
+  &quot;start_date&quot;: &quot;20240102&quot;,
+  &quot;end_date&quot;: &quot;20240105&quot;,
+  &quot;limit&quot;: 5
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;trade_date&quot;: &quot;20240105&quot;,
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;平安银行&quot;,
+    &quot;market&quot;: &quot;深交所主板&quot;,
+    &quot;close_price&quot;: 9.27,
+    &quot;change_pct&quot;: 1.7563,
+    &quot;margin_balance&quot;: 5105063089.0,
+    &quot;margin_buy_amount&quot;: 266715372.0,
+    &quot;margin_repay_amount&quot;: 325760031.0,
+    &quot;margin_net_buy_amount&quot;: -59044659.0,
+    &quot;short_balance&quot;: 106309509.0,
+    &quot;short_sell_volume&quot;: 564400.0,
+    &quot;short_repay_volume&quot;: 201500.0,
+    &quot;short_net_sell_volume&quot;: 362900.0,
+    &quot;total_balance&quot;: 5211372598.0,
+    &quot;market_value&quot;: 179889420226.5
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

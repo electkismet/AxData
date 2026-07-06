@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>发布打包检查 - AxData 文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="" href="../interfaces/index.html">接口文档</a><a class="active" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">开发文档</a></p>
+  <h1>发布打包检查</h1>
+</section>
+<article class="markdown-body"><h2>AxData 发布打包验证</h2>
+<p>本文记录 AxData 发布到 PyPI 前的本地验证流程。这里的命令只构建和安装本地候选包，不会上传 PyPI、TestPyPI 或 GitHub。</p>
+<h3>包边界</h3>
+<p>AxData 仓库是 workspace，不建议把根目录的 <code>axdata-workspace</code> 当作用户包发布。</p>
+<p>面向 PyPI 的候选包包括：</p>
+<div class="table-wrap"><table><thead><tr><th>包名</th><th>目录</th><th>用途</th></tr></thead><tbody><tr><td><code>axdata-core</code></td><td><code>libs/axdata_core</code></td><td>核心协议、存储、查询、插件、CLI 和采集框架</td></tr><tr><td><code>axdata</code></td><td><code>packages/axdata-sdk</code></td><td>用户侧 Python SDK 和 <code>import axdata</code> 入口</td></tr><tr><td><code>axdata-source-tdx</code></td><td><code>packages/axdata-source-tdx</code></td><td>通达信数据源 Provider</td></tr><tr><td><code>axdata-source-tdx-ext</code></td><td><code>packages/axdata-source-tdx-ext</code></td><td>通达信扩展行情 Provider</td></tr><tr><td><code>axdata-source-tencent</code></td><td><code>packages/axdata-source-tencent</code></td><td>腾讯财经 Provider</td></tr><tr><td><code>axdata-source-cninfo</code></td><td><code>packages/axdata-source-cninfo</code></td><td>巨潮 Provider</td></tr></tbody></table></div>
+<p><code>axdata</code> 用户主包依赖 <code>axdata-core[parquet]</code>，并带上本地诊断和 API 运行所需的 FastAPI、uvicorn、pydantic、python-multipart 等依赖；直接安装 <code>axdata-core</code> 仍保持更轻量，插件开发者可按需安装 <code>axdata-core[parquet]</code>。</p>
+<p>普通用户发布后的推荐安装入口是：</p>
+<pre><code class="language-powershell">python -m pip install axdata</code></pre>
+<p><code>axdata</code> 会同时安装当前默认数据源插件：<code>axdata-source-tdx</code>、<code>axdata-source-tdx-ext</code>、<code>axdata-source-tencent</code> 和 <code>axdata-source-cninfo</code>。TDX/TDX Ext 插件安装后应默认可用，用户不需要在快速开始里手动执行 <code>plugin enable</code>。</p>
+<p>发布顺序应先发 <code>axdata-core</code>，再发数据源插件包，最后发 <code>axdata</code>。</p>
+<h3>本地 PyPI Readiness</h3>
+<p>运行：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\python scripts\pypi_readiness.py --json</code></pre>
+<p>脚本会在临时目录内完成：</p>
+<ul>
+<li>复制各候选包源码，避免在仓库源码目录生成 <code>dist/</code>、<code>build/</code> 或 <code>*.egg-info</code>。</li>
+<li>为每个候选包构建 wheel 和 sdist。</li>
+<li>运行 <code>twine check</code> 检查包元数据和 README 渲染。</li>
+<li>创建全新的安装 venv，从本地 wheel 安装候选包。</li>
+<li>验证 <code>import axdata</code>、<code>import axdata_core</code> 和各数据源插件模块。</li>
+<li>验证 Provider entry point、包内 <code>axdata-provider.json</code> 和关键资源文件。</li>
+<li>验证 <code>axdata</code> 的 wheel 元数据包含当前默认数据源插件依赖。</li>
+<li>验证随项目提供的 TDX/TDX Ext Provider 安装后默认进入 enabled 状态。</li>
+<li>运行 <code>axdata --help</code>、<code>axdata init</code>、<code>axdata doctor</code>、<code>axdata status</code>、<code>axdata plugin list</code>。</li>
+</ul>
+<p>保留临时目录以便排错：</p>
+<pre><code class="language-powershell">$work = &quot;$env:TEMP\axdata-pypi-readiness&quot;
+.\.venv\Scripts\python scripts\pypi_readiness.py --work-dir $work --json</code></pre>
+<p>如果只想跳过 <code>twine check</code>：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\python scripts\pypi_readiness.py --skip-twine-check --json</code></pre>
+<h3>不包含的动作</h3>
+<p>该脚本不做：</p>
+<ul>
+<li>不上传 PyPI。</li>
+<li>不上传 TestPyPI。</li>
+<li>不创建 GitHub release。</li>
+<li>不修改 git remote。</li>
+<li>不推送代码。</li>
+<li>不请求真实数据源。</li>
+</ul>
+<p>真正发布前还应先在 TestPyPI 演练一次完整安装链路，并确认包名、版本号、依赖、README 渲染、命令行入口和插件发现都符合预期。</p></article>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

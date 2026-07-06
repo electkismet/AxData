@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>期权历史分时 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信扩展行情</p>
+  <h1>期权历史分时</h1>
+  <p class="code-title">option_intraday_history_tdx</p>
+  <p class="lead">请求指定交易日的期权历史分时。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>option_intraday_history_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_ext_external</dd></div><div><dt>数据源</dt><dd>通达信扩展行情 / tdx_ext</dd></div><div><dt>目录</dt><dd>通达信扩展行情 / 期权数据</dd></div><div><dt>资产类型</dt><dd>option</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>请求指定交易日的期权历史分时。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>品种代码；可传单个、列表或英文逗号分隔字符串。</td><td></td></tr><tr><td><code>trade_date</code></td><td>date</td><td>是</td><td>交易日期，YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr><tr><td><code>tdx_root</code></td><td>string</td><td>否</td><td>本机通达信目录（可选，高级）</td><td></td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>默认不用传 tdx_root；只有 API 服务器上的通达信安装目录不是常见位置，或想指定某个 hq_cache 目录时才需要传。</p></div>
+  <div class="note"><strong>参数示例</strong><p># 期权历史分时
+client.call(&quot;option_intraday_history_tdx&quot;, code=&quot;AP2610-C-10000.CZCE&quot;, trade_date=&quot;20260703&quot;)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一品种代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>源端品种代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所或资产场所。</td></tr><tr><td><code>name</code></td><td>string</td><td>可确认时返回品种名称。</td></tr><tr><td><code>trade_date</code></td><td>date</td><td>历史分时的交易日期；当日分时为空。</td></tr><tr><td><code>time_label</code></td><td>string</td><td>分时时间。</td></tr><tr><td><code>price</code></td><td>number</td><td>分时价格或数值。</td></tr><tr><td><code>average_price</code></td><td>number</td><td>分时均价或均值。</td></tr><tr><td><code>volume</code></td><td>integer</td><td>分时成交量，按源端口径返回。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;option_intraday_history_tdx&quot;,
+    code=&#x27;AP2610-C-10000.CZCE&#x27;,
+    trade_date=&#x27;20260703&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/option_intraday_history_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;AP2610-C-10000.CZCE&quot;,
+    &quot;trade_date&quot;: &quot;20260703&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;AP2610-C-10000.CZCE&quot;,
+  &quot;trade_date&quot;: &quot;20260703&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;AP2610-C-10000.CZCE&quot;,
+    &quot;symbol&quot;: &quot;AP2610-C-10000&quot;,
+    &quot;exchange&quot;: &quot;CZCE&quot;,
+    &quot;name&quot;: &quot;苹果&quot;,
+    &quot;trade_date&quot;: &quot;20260703&quot;,
+    &quot;time_label&quot;: &quot;09:00&quot;,
+    &quot;price&quot;: 7.0,
+    &quot;average_price&quot;: 7.0,
+    &quot;volume&quot;: 0
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

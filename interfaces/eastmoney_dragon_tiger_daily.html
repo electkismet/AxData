@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>龙虎榜每日汇总 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 东方财富</p>
+  <h1>龙虎榜每日汇总</h1>
+  <p class="code-title">eastmoney_dragon_tiger_daily</p>
+  <p class="lead">低频获取东方财富龙虎榜每日汇总，金额单位为元。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>eastmoney_dragon_tiger_daily</dd></div><div><dt>Provider</dt><dd>axdata.source.eastmoney</dd></div><div><dt>数据源</dt><dd>东方财富 / eastmoney</dd></div><div><dt>目录</dt><dd>东方财富 / 龙虎榜数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>这个接口只保留已确认字段；金额字段单位为元，遇到源端空结果返回空表。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>trade_date</code></td><td>string</td><td>是</td><td>交易日期，YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr><tr><td><code>page</code></td><td>integer</td><td>否</td><td>页码，默认 1。</td><td>1</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>每页条数，默认 50，最大 200。</td><td>50</td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>不传 fields 时返回上方全部字段；临时调用只查一次。</p></div>
+  <div class="note"><strong>参数示例</strong><p>client.call(&quot;eastmoney_dragon_tiger_daily&quot;, trade_date=&quot;20240102&quot;, limit=5)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>trade_date</code></td><td>date</td><td>交易日期，格式 YYYYMMDD。</td></tr><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>reason</code></td><td>string</td><td>上榜原因。</td></tr><tr><td><code>close_price</code></td><td>number</td><td>收盘价，单位：元。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>涨跌幅，百分比数值。</td></tr><tr><td><code>turnover_rate</code></td><td>number</td><td>换手率，百分比数值。</td></tr><tr><td><code>buy_amount</code></td><td>number</td><td>龙虎榜买入额，单位：元。</td></tr><tr><td><code>sell_amount</code></td><td>number</td><td>龙虎榜卖出额，单位：元。</td></tr><tr><td><code>net_buy_amount</code></td><td>number</td><td>龙虎榜净买入额，单位：元。</td></tr><tr><td><code>total_amount</code></td><td>number</td><td>龙虎榜成交额，单位：元。</td></tr><tr><td><code>market</code></td><td>string</td><td>交易市场标签。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;eastmoney_dragon_tiger_daily&quot;,
+    limit=5,
+    trade_date=&#x27;20240102&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/eastmoney_dragon_tiger_daily
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;trade_date&quot;: &quot;20240102&quot;,
+    &quot;limit&quot;: 5
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;trade_date&quot;: &quot;20240102&quot;,
+  &quot;limit&quot;: 5
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;trade_date&quot;: &quot;20240102&quot;,
+    &quot;instrument_id&quot;: &quot;000595.SZ&quot;,
+    &quot;symbol&quot;: &quot;000595&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;*ST宝实&quot;,
+    &quot;reason&quot;: &quot;连续三个交易日内，涨幅偏离值累计达到20%的证券&quot;,
+    &quot;close_price&quot;: 5.7,
+    &quot;change_pct&quot;: 10.0386,
+    &quot;turnover_rate&quot;: 5.0939,
+    &quot;buy_amount&quot;: 79387344.0,
+    &quot;sell_amount&quot;: 41045941.7,
+    &quot;net_buy_amount&quot;: 38341402.3,
+    &quot;total_amount&quot;: 120433285.7,
+    &quot;market&quot;: &quot;深交所风险警示板&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

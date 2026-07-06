@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新闻公告路演 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>新闻公告路演</h1>
+  <p class="code-title">stock_disclosure_feed_tdx</p>
+  <p class="lead">查询个股新闻、公告或路演列表；不同类型返回字段会有差异，缺失项返回 null。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_disclosure_feed_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 股票数据 / F10数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>查询个股新闻、公告或路演列表；不同类型返回字段会有差异，缺失项返回 null。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>股票代码：支持 000001、000001.SZ、sz000001；批量可传列表或英文逗号分隔字符串。</td><td></td></tr><tr><td><code>category</code></td><td>string</td><td>否</td><td>类型：news 新闻、announcement 公告、roadshow 路演；默认 announcement。</td><td>&quot;announcement&quot;</td></tr><tr><td><code>count</code></td><td>integer</td><td>否</td><td>返回条数，默认 20。</td><td>20</td></tr></tbody>
+</table></div>
+  
+  <div class="note"><strong>参数示例</strong><p># 单个标的
+client.call(&quot;stock_disclosure_feed_tdx&quot;, code=&quot;000034.SZ&quot;, category=&quot;announcement&quot;, count=5)
+
+# 批量请求多个标的
+client.call(&quot;stock_disclosure_feed_tdx&quot;, code=[&quot;000034.SZ&quot;, &quot;000001.SZ&quot;], category=&quot;announcement&quot;, count=5)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码，例如 000001.SZ。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始六位代码。</td></tr><tr><td><code>category</code></td><td>string</td><td>资讯类型。</td></tr><tr><td><code>issue_date</code></td><td>datetime</td><td>发布时间或公告日期；路演通常为空。</td></tr><tr><td><code>title</code></td><td>string</td><td>标题。</td></tr><tr><td><code>source</code></td><td>string</td><td>来源；路演通常为空。</td></tr><tr><td><code>detail_table</code></td><td>string</td><td>详情来源表。</td></tr><tr><td><code>detail_id</code></td><td>string</td><td>记录 ID；路演通常为空。</td></tr><tr><td><code>type_code</code></td><td>string</td><td>公告类型码；非公告通常为空。</td></tr><tr><td><code>type_name</code></td><td>string</td><td>公告类型名；非公告通常为空。</td></tr><tr><td><code>url</code></td><td>string</td><td>PDF、新闻或活动链接；源端无链接时为空。</td></tr><tr><td><code>summary</code></td><td>string</td><td>摘要；源端无摘要时为空。</td></tr><tr><td><code>start_date</code></td><td>date</td><td>路演开始日期；非路演为空。</td></tr><tr><td><code>start_time</code></td><td>string</td><td>路演开始时间；非路演为空。</td></tr><tr><td><code>end_time</code></td><td>string</td><td>路演结束时间；非路演为空。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_disclosure_feed_tdx&quot;,
+    category=&#x27;announcement&#x27;,
+    code=&#x27;000001.SZ&#x27;,
+    count=20,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_disclosure_feed_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;000001.SZ&quot;,
+    &quot;category&quot;: &quot;announcement&quot;,
+    &quot;count&quot;: 20
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;000001.SZ&quot;,
+  &quot;category&quot;: &quot;announcement&quot;,
+  &quot;count&quot;: 20
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

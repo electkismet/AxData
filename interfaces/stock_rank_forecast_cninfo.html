@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>投资评级 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>投资评级</h1>
+  <p class="code-title">stock_rank_forecast_cninfo</p>
+  <p class="lead">临时获取巨潮投资评级数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_rank_forecast_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 评级预测</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求巨潮投资评级专题统计，按日期返回，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>date</code></td><td>string</td><td>否</td><td>查询日期，YYYYMMDD 或 YYYY-MM-DD；默认 20230817。</td><td>&quot;20230817&quot;</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多返回行数，默认 100，最大 1000。</td><td>100</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>publish_date</code></td><td>date</td><td>发布日期，格式 YYYYMMDD。</td></tr><tr><td><code>institution_short_name</code></td><td>string</td><td>研究机构简称。</td></tr><tr><td><code>analyst_name</code></td><td>string</td><td>研究员名称。</td></tr><tr><td><code>rating</code></td><td>string</td><td>投资评级。</td></tr><tr><td><code>is_first_rating</code></td><td>string</td><td>是否首次评级，沿用巨潮源端文本。</td></tr><tr><td><code>rating_change</code></td><td>string</td><td>评级变化。</td></tr><tr><td><code>previous_rating</code></td><td>string</td><td>前一次投资评级。</td></tr><tr><td><code>target_price_low</code></td><td>number</td><td>目标价格下限，单位：元。</td></tr><tr><td><code>target_price_high</code></td><td>number</td><td>目标价格上限，单位：元。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_rank_forecast_cninfo&quot;,
+    date=&#x27;20230817&#x27;,
+    limit=1,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_rank_forecast_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;date&quot;: &quot;20230817&quot;,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;date&quot;: &quot;20230817&quot;,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000552.SZ&quot;,
+    &quot;symbol&quot;: &quot;000552&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;甘肃能化&quot;,
+    &quot;publish_date&quot;: &quot;20230817&quot;,
+    &quot;institution_short_name&quot;: &quot;民生证券&quot;,
+    &quot;analyst_name&quot;: &quot;周泰,李航&quot;,
+    &quot;rating&quot;: &quot;增持&quot;,
+    &quot;is_first_rating&quot;: &quot;不是首次评级&quot;,
+    &quot;rating_change&quot;: &quot;维持&quot;,
+    &quot;previous_rating&quot;: &quot;增持&quot;,
+    &quot;target_price_low&quot;: null,
+    &quot;target_price_high&quot;: null
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

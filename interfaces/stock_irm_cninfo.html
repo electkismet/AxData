@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>互动易提问 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>互动易提问</h1>
+  <p class="code-title">stock_irm_cninfo</p>
+  <p class="lead">临时获取巨潮互动易提问数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_irm_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 互动易</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求互动易提问列表，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>股票代码，支持 002594、002594.SZ。</td><td></td></tr><tr><td><code>page</code></td><td>integer</td><td>否</td><td>页码，默认 1。</td><td>1</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>每页条数，默认 30，最大 1000。</td><td>30</td></tr><tr><td><code>start_date</code></td><td>string</td><td>否</td><td>开始日期，YYYYMMDD 或 YYYY-MM-DD；可选。</td><td></td></tr><tr><td><code>end_date</code></td><td>string</td><td>否</td><td>结束日期，YYYYMMDD 或 YYYY-MM-DD；可选。</td><td></td></tr><tr><td><code>keyword</code></td><td>string</td><td>否</td><td>关键词；可选。</td><td></td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>公司简称。</td></tr><tr><td><code>industry</code></td><td>string</td><td>源端行业名称。</td></tr><tr><td><code>industry_code</code></td><td>string</td><td>源端行业代码。</td></tr><tr><td><code>question_id</code></td><td>string</td><td>互动易问题编号。</td></tr><tr><td><code>question</code></td><td>string</td><td>提问内容。</td></tr><tr><td><code>questioner</code></td><td>string</td><td>提问者。</td></tr><tr><td><code>questioner_id</code></td><td>string</td><td>提问者编号。</td></tr><tr><td><code>source</code></td><td>string</td><td>提问来源：APP、公众号、网站等。</td></tr><tr><td><code>question_time</code></td><td>datetime</td><td>提问时间，Asia/Shanghai，格式 YYYYMMDDHHMMSS。</td></tr><tr><td><code>update_time</code></td><td>datetime</td><td>更新时间，Asia/Shanghai，格式 YYYYMMDDHHMMSS。</td></tr><tr><td><code>answer_id</code></td><td>string</td><td>已关联回答 ID；未回答时为空。</td></tr><tr><td><code>answer</code></td><td>string</td><td>已关联回答内容；未回答时为空。</td></tr><tr><td><code>answerer</code></td><td>string</td><td>回答者；未回答时为空。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_irm_cninfo&quot;,
+    code=&#x27;002594.SZ&#x27;,
+    limit=1,
+    page=1,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_irm_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;002594.SZ&quot;,
+    &quot;page&quot;: 1,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;002594.SZ&quot;,
+  &quot;page&quot;: 1,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;002594.SZ&quot;,
+    &quot;symbol&quot;: &quot;002594&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;比亚迪&quot;,
+    &quot;industry&quot;: &quot;制造业&quot;,
+    &quot;industry_code&quot;: &quot;012002&quot;,
+    &quot;question_id&quot;: &quot;2301823909845012480&quot;,
+    &quot;question&quot;: &quot;尊敬的董秘你好，贵司的研发费用，Q2Q3财报上面，请部分资本化率一些，不要太难看了，让小股东对贵司有点信心，也让投资者对中国新能源产业有点信心，谢谢&quot;,
+    &quot;questioner&quot;: &quot;irm3229095&quot;,
+    &quot;questioner_id&quot;: &quot;2227137287091273728&quot;,
+    &quot;source&quot;: &quot;APP&quot;,
+    &quot;question_time&quot;: &quot;20260629112612&quot;,
+    &quot;update_time&quot;: &quot;20260703145809&quot;,
+    &quot;answer_id&quot;: null,
+    &quot;answer&quot;: null,
+    &quot;answerer&quot;: null
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

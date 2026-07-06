@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>行业分类数据 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>行业分类数据</h1>
+  <p class="code-title">stock_industry_category_cninfo</p>
+  <p class="lead">临时获取巨潮行业分类数据数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_industry_category_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 行业数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求巨潮行业分类字典，返回分类树行，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>industry_type</code></td><td>string</td><td>否</td><td>行业分类标准：证监会行业分类标准、巨潮行业分类标准、申银万国行业分类标准、新财富行业分类标准、国资委行业分类标准、巨潮产业细分标准、天相行业分类标准、全球行业分类标准；默认 证监会行业分类标准。巨潮行业分类标准源端当前可能失败。</td><td>&quot;证监会行业分类标准&quot;</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>parent_code</code></td><td>string</td><td>父类编码。</td></tr><tr><td><code>category_code</code></td><td>string</td><td>类目编码。</td></tr><tr><td><code>category_name</code></td><td>string</td><td>类目名称。</td></tr><tr><td><code>category_name_en</code></td><td>string</td><td>类目英文名称。</td></tr><tr><td><code>end_date</code></td><td>date</td><td>终止日期，格式 YYYYMMDD；仍有效时可能为空。</td></tr><tr><td><code>industry_type_code</code></td><td>string</td><td>行业类型编码。</td></tr><tr><td><code>industry_type</code></td><td>string</td><td>行业类型。</td></tr><tr><td><code>level</code></td><td>integer</td><td>按类目编码长度推导的层级，从 0 开始。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_industry_category_cninfo&quot;,
+    industry_type=&#x27;008001&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_industry_category_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;industry_type&quot;: &quot;008001&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;industry_type&quot;: &quot;008001&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;parent_code&quot;: &quot;008&quot;,
+    &quot;category_code&quot;: &quot;0&quot;,
+    &quot;category_name&quot;: &quot;中国上市公司协会上市公司行业分类&quot;,
+    &quot;category_name_en&quot;: &quot;CAPCO Industry Classification&quot;,
+    &quot;end_date&quot;: null,
+    &quot;industry_type_code&quot;: &quot;008001&quot;,
+    &quot;industry_type&quot;: &quot;中国上市公司协会上市公司行业分类标准&quot;,
+    &quot;level&quot;: 0
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

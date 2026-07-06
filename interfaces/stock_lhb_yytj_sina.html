@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>龙虎榜营业部上榜统计 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>龙虎榜营业部上榜统计</h1>
+  <p class="code-title">stock_lhb_yytj_sina</p>
+  <p class="lead">临时获取新浪财经龙虎榜营业部上榜统计数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_lhb_yytj_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 龙虎榜</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪龙虎榜营业部统计单页，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>symbol</code></td><td>string</td><td>否</td><td>统计窗口天数：5、10、30、60；默认 5。</td><td>&quot;5&quot;</td></tr><tr><td><code>page</code></td><td>integer</td><td>否</td><td>页码，默认 1。</td><td>1</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>当前页最多返回行数，默认 40，最大 1000。</td><td>40</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>recent_days</code></td><td>integer</td><td>统计窗口天数：5、10、30、60。</td></tr><tr><td><code>page</code></td><td>integer</td><td>源端页码。</td></tr><tr><td><code>rank</code></td><td>integer</td><td>当前页内序号，从 1 开始。</td></tr><tr><td><code>brokerage_name</code></td><td>string</td><td>营业部名称。</td></tr><tr><td><code>list_count</code></td><td>integer</td><td>上榜次数。</td></tr><tr><td><code>buy_amount_10k_yuan</code></td><td>number</td><td>累积购买额，单位：万元。</td></tr><tr><td><code>buy_seat_count</code></td><td>integer</td><td>买入席位数。</td></tr><tr><td><code>sell_amount_10k_yuan</code></td><td>number</td><td>累积卖出额，单位：万元。</td></tr><tr><td><code>sell_seat_count</code></td><td>integer</td><td>卖出席位数。</td></tr><tr><td><code>top_buy_stocks</code></td><td>string</td><td>买入前三股票，源端逗号分隔文本。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_lhb_yytj_sina&quot;,
+    limit=1,
+    page=1,
+    symbol=&#x27;5&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_lhb_yytj_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;symbol&quot;: &quot;5&quot;,
+    &quot;page&quot;: 1,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;symbol&quot;: &quot;5&quot;,
+  &quot;page&quot;: 1,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;recent_days&quot;: 5,
+    &quot;page&quot;: 1,
+    &quot;rank&quot;: 1,
+    &quot;brokerage_name&quot;: &quot;招商证券股份有限公司深圳建安路证券营业部&quot;,
+    &quot;list_count&quot;: 1,
+    &quot;buy_amount_10k_yuan&quot;: 0.0,
+    &quot;buy_seat_count&quot;: 0,
+    &quot;sell_amount_10k_yuan&quot;: 15.12,
+    &quot;sell_seat_count&quot;: 1,
+    &quot;top_buy_stocks&quot;: &quot;国华退&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

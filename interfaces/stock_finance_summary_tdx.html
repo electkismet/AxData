@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>财务基础摘要 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>财务基础摘要</h1>
+  <p class="code-title">stock_finance_summary_tdx</p>
+  <p class="lead">获取通达信 0x0010 基础财务快照中的常用财务、股本和每股指标。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_finance_summary_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 股票数据 / 财务数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>这个接口来自 TDX 0x0010 基础财务快照，适合做快速字段预览和轻量对照；它不是完整 F10 财务报表，也不写入本地数据层。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>证券代码：支持 000001、000001.SZ、sz000001；批量可传列表或英文逗号分隔字符串。</td><td></td></tr></tbody>
+</table></div>
+  
+  <div class="note"><strong>参数示例</strong><p># 单个标的
+client.call(&quot;stock_finance_summary_tdx&quot;, code=&quot;000001.SZ&quot;)
+
+# 批量请求多个标的
+client.call(&quot;stock_finance_summary_tdx&quot;, code=[&quot;000001.SZ&quot;, &quot;600000.SH&quot;])</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码，例如 000001.SZ。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始六位代码。</td></tr><tr><td><code>tdx_code</code></td><td>string</td><td>TDX 带市场前缀代码，例如 sz000001。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>AxData 交易所代码：SSE、SZSE 或 BSE。</td></tr><tr><td><code>updated_date</code></td><td>date</td><td>财务快照更新/报告日期，YYYYMMDD。</td></tr><tr><td><code>ipo_date</code></td><td>date</td><td>TDX 财务快照携带的上市日期，YYYYMMDD。</td></tr><tr><td><code>total_share</code></td><td>number</td><td>总股本，单位：股。</td></tr><tr><td><code>float_share</code></td><td>number</td><td>流通股本，单位：股。</td></tr><tr><td><code>eps</code></td><td>number</td><td>每股收益，单位：元/股。</td></tr><tr><td><code>bps</code></td><td>number</td><td>每股净资产，单位：元/股。</td></tr><tr><td><code>total_assets</code></td><td>number</td><td>总资产，单位：元。</td></tr><tr><td><code>net_assets</code></td><td>number</td><td>净资产，单位：元。</td></tr><tr><td><code>revenue</code></td><td>number</td><td>营业收入，单位：元。</td></tr><tr><td><code>net_profit</code></td><td>number</td><td>净利润，单位：元。</td></tr><tr><td><code>operating_cashflow</code></td><td>number</td><td>经营现金流量，单位：元。</td></tr><tr><td><code>shareholder_count</code></td><td>integer</td><td>股东人数。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_finance_summary_tdx&quot;,
+    code=&#x27;000001.SZ&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_finance_summary_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;000001.SZ&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;000001.SZ&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;tdx_code&quot;: &quot;sz000001&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;updated_date&quot;: &quot;20260425&quot;,
+    &quot;ipo_date&quot;: &quot;19910403&quot;,
+    &quot;total_share&quot;: 19405918750.0,
+    &quot;float_share&quot;: 19405601250.0,
+    &quot;eps&quot;: 0.67,
+    &quot;bps&quot;: 23.91,
+    &quot;total_assets&quot;: 35277000000.0,
+    &quot;net_assets&quot;: 7000000.0,
+    &quot;revenue&quot;: 35277000000.0,
+    &quot;net_profit&quot;: 14523000000.0,
+    &quot;operating_cashflow&quot;: 12000000.0,
+    &quot;shareholder_count&quot;: 457610
+  }
+]</code></pre>
+</section>
+<section><h2>参考表</h2>
+<h3>单位说明</h3>
+<p>这些字段直接返回统一后的数值单位。</p>
+<div class="table-wrap"><table><thead><tr><th>字段类型</th><th>单位</th><th>示例字段</th></tr></thead><tbody><tr><td>股本类</td><td>股</td><td>total_share / float_share / b_share / h_share</td></tr><tr><td>金额类</td><td>元</td><td>total_assets / revenue / net_profit / operating_cashflow</td></tr><tr><td>每股类</td><td>元/股</td><td>eps / bps</td></tr></tbody></table></div>
+</section>
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

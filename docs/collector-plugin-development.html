@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>采集器插件开发 - AxData 文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="" href="../interfaces/index.html">接口文档</a><a class="active" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">开发文档</a></p>
+  <h1>采集器插件开发</h1>
+</section>
+<article class="markdown-body"><h2>AxData 采集器插件开发教程</h2>
+<p>采集器插件负责把数据生产成本地资产。它回答的问题是：“这个任务怎么运行、写到哪个 dataset、怎么限流、怎么记录进度、怎么做质量检查。”</p>
+<p>采集器和数据源接口是独立的。采集器可以自带取数逻辑，也可以读取本地文件或公共库；它不要求存在对应 Provider、<code>interface_name</code> 或 <code>downloader_profile</code>。但只要要落盘，就必须进入 AxData Collector Runner。</p>
+<p>本教程的术语和边界以 <a href="axdata-development-standards.html">axdata-development-standards.md</a> 为准：Collector 负责 task、run、write、progress、logs 和 quality；Provider / Adapter 只负责临时 <code>source_request</code>。</p>
+<h3>1. 什么时候写采集器插件</h3>
+<p>适合写采集器插件的场景：</p>
+<ul>
+<li>用户需要创建任务。</li>
+<li>需要手动采集或交易日定时采集。</li>
+<li>需要写 Parquet 主数据，并可选额外导出 CSV 或 DuckDB 查询缓存。</li>
+<li>需要进度、日志、失败记录。</li>
+<li>需要质量规则和数据集元信息。</li>
+<li>需要全局资源组和并发限制。</li>
+</ul>
+<p>不适合采集器插件的场景：</p>
+<ul>
+<li>只是临时查一次。</li>
+<li>不需要落盘。</li>
+<li>不需要任务状态。</li>
+</ul>
+<p>这类场景写数据源 Provider 即可。</p>
+<h3>2. 最小目录</h3>
+<p>collector-only 插件推荐目录：</p>
+<pre><code class="language-text">axdata-collector-demo/
+  pyproject.toml
+  README.md
+  LICENSE
+  src/
+    axdata_collector_demo/
+      __init__.py
+      plugin.py
+      collectors.py
+      runner.py
+      axdata-plugin.json
+      samples/
+        demo_rows.jsonl
+  tests/
+    test_manifest.py
+    test_runner.py</code></pre>
+<p>最小 <code>pyproject.toml</code>：</p>
+<pre><code class="language-toml">[project]
+name = &quot;axdata-collector-demo&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [&quot;axdata-core&gt;=0.1.0&quot;]
+
+[project.entry-points.&quot;axdata.plugins&quot;]
+demo = &quot;axdata_collector_demo.plugin:plugin&quot;
+
+[tool.setuptools.package-data]
+axdata_collector_demo = [&quot;axdata-plugin.json&quot;, &quot;samples/*.jsonl&quot;]</code></pre>
+<h3>3. CollectorSpec</h3>
+<p>CollectorSpec 是采集器的身份和契约：</p>
+<pre><code class="language-json">{
+  &quot;collector_id&quot;: &quot;demo.stock_snapshot.snapshot&quot;,
+  &quot;display_name_zh&quot;: &quot;示例股票快照采集&quot;,
+  &quot;description&quot;: &quot;采集示例股票快照并写出本地文件。&quot;,
+  &quot;collector_plugin_id&quot;: &quot;axdata.collector.demo&quot;,
+  &quot;dataset_id&quot;: &quot;demo.stock_snapshot&quot;,
+  &quot;asset_class&quot;: &quot;stock&quot;,
+  &quot;category&quot;: &quot;snapshot&quot;,
+  &quot;resource_group&quot;: &quot;demo.http&quot;,
+  &quot;runner_entry&quot;: &quot;axdata_collector_demo.runner:run&quot;,
+  &quot;default_schedule&quot;: {
+    &quot;kind&quot;: &quot;manual&quot;
+  },
+  &quot;default_params&quot;: {
+    &quot;code&quot;: &quot;000001.SZ&quot;
+  },
+  &quot;required_interfaces&quot;: [],
+  &quot;output&quot;: {
+    &quot;layer&quot;: &quot;snapshot&quot;,
+    &quot;formats&quot;: [&quot;parquet&quot;]
+  },
+  &quot;quality&quot;: {
+    &quot;required_columns&quot;: [&quot;instrument_id&quot;, &quot;trade_date&quot;],
+    &quot;primary_key&quot;: [&quot;instrument_id&quot;, &quot;trade_date&quot;]
+  }
+}</code></pre>
+<p>重要字段：</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td><code>collector_id</code></td><td>采集器 ID，不等于接口名</td></tr><tr><td><code>collector_plugin_id</code></td><td>贡献该采集器的插件 ID</td></tr><tr><td><code>dataset_id</code></td><td>写出的数据集 ID</td></tr><tr><td><code>runner_entry</code></td><td>Collector Runner 调用的 Python 入口</td></tr><tr><td><code>resource_group</code></td><td>全局资源组，用于限流和排队</td></tr><tr><td><code>default_params</code></td><td>创建任务时的默认参数</td></tr><tr><td><code>output</code></td><td>输出层、dataset、格式、路径和写入策略</td></tr><tr><td><code>quality</code></td><td>质量规则、主键、必填字段</td></tr><tr><td><code>required_datasets</code></td><td>运行前必须存在的基础数据，例如交易日历</td></tr></tbody></table></div>
+<h3>4. runner_entry</h3>
+<p><code>runner_entry</code> 是实际运行入口。它应该只做一次任务运行，不要自己常驻后台。</p>
+<p>示例：</p>
+<pre><code class="language-python">def run(params=None, context=None):
+    params = dict(params or {})
+    code = params.get(&quot;code&quot;, &quot;000001.SZ&quot;)
+
+    rows = [
+        {
+            &quot;instrument_id&quot;: code,
+            &quot;trade_date&quot;: &quot;20260703&quot;,
+            &quot;value&quot;: 1.0,
+        }
+    ]
+
+    return {
+        &quot;rows&quot;: rows,
+        &quot;metadata&quot;: {
+            &quot;source&quot;: &quot;demo&quot;,
+            &quot;row_count&quot;: len(rows),
+        },
+    }</code></pre>
+<p>真实插件里，runner 可以请求上游、读取文件或复用公共库。但不要通过 <code>/v1/request</code>、SDK <code>call</code> 或 ProviderRegistry route 把接口临时调用伪装成采集。</p>
+<h3>5. 输入参数</h3>
+<p>采集器需要把用户可填参数声明清楚：</p>
+<ul>
+<li>参数名。</li>
+<li>类型。</li>
+<li>是否必填。</li>
+<li>默认值。</li>
+<li>枚举值。</li>
+<li>示例。</li>
+<li>说明。</li>
+</ul>
+<p>例如：</p>
+<div class="table-wrap"><table><thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th></tr></thead><tbody><tr><td><code>code</code></td><td>string/list</td><td>否</td><td>证券代码，支持单个或多个</td></tr><tr><td><code>start_date</code></td><td>string</td><td>否</td><td>开始日期</td></tr><tr><td><code>end_date</code></td><td>string</td><td>否</td><td>结束日期</td></tr><tr><td><code>formats</code></td><td>list</td><td>否</td><td>输出格式列表；<code>parquet</code> 是主数据格式，<code>csv</code> 和 <code>duckdb</code> 可作为额外导出/缓存</td></tr></tbody></table></div>
+<p>Web 采集页会根据这些声明展示输入框、选择器和默认值。采集器如果声明了关联接口，Web 可以复用 runtime interface catalog 的参数说明和字段说明；不要依赖 Web 旧静态接口 catalog 为采集器补页面内容。没有关联接口时，采集器自己的 <code>default_params</code>、<code>output</code>、<code>quality</code> 和数据集声明必须足够让用户理解如何创建任务。</p>
+<h3>6. 输出和路径</h3>
+<p>采集器要声明数据写到哪里。<code>output</code> 是采集器和数据页之间的数据集声明契约，至少要表达 <code>dataset_id</code>、<code>layer</code>、<code>formats</code>、<code>write_mode</code>、<code>primary_key</code>、<code>date_field</code>、<code>partition_by</code> 和是否支持 DuckDB 查询缓存。</p>
+<pre><code class="language-json">{
+  &quot;output&quot;: {
+    &quot;layer&quot;: &quot;core&quot;,
+    &quot;dataset_id&quot;: &quot;demo.stock_snapshot&quot;,
+    &quot;formats&quot;: [&quot;parquet&quot;, &quot;csv&quot;, &quot;duckdb&quot;],
+    &quot;write_mode&quot;: &quot;upsert_by_key&quot;,
+    &quot;primary_key&quot;: [&quot;instrument_id&quot;, &quot;trade_date&quot;],
+    &quot;date_field&quot;: &quot;trade_date&quot;
+  }
+}</code></pre>
+<p>Parquet 是正式数据文件，默认必选且不应被用户取消。CSV 是导出格式；JSON/JSONL 只适合作为调试或兼容输出；DuckDB 是查询缓存或查询层，可重建，不能替代 Parquet。</p>
+<p>常见写入策略：</p>
+<div class="table-wrap"><table><thead><tr><th>策略</th><th>说明</th></tr></thead><tbody><tr><td><code>snapshot</code></td><td>每次生成一份快照</td></tr><tr><td><code>append</code></td><td>追加写入</td></tr><tr><td><code>replace_range</code></td><td>替换某个日期范围</td></tr><tr><td><code>upsert_by_key</code></td><td>按主键去重更新</td></tr><tr><td><code>overwrite_partition</code></td><td>覆盖分区</td></tr></tbody></table></div>
+<p>日线类数据通常按交易日写文件。比如 Parquet 格式可以落到：</p>
+<pre><code class="language-text">data/core/table=daily/parquet/20260703.parquet</code></pre>
+<p>不要把一天拆成很多层无意义目录，除非数据量和查询模式真的需要。</p>
+<h3>7. 质量规则</h3>
+<p>质量规则用于防止坏数据悄悄入库：</p>
+<pre><code class="language-json">{
+  &quot;quality&quot;: {
+    &quot;required_columns&quot;: [&quot;instrument_id&quot;, &quot;trade_date&quot;, &quot;close&quot;],
+    &quot;primary_key&quot;: [&quot;instrument_id&quot;, &quot;trade_date&quot;],
+    &quot;non_negative_columns&quot;: [&quot;open&quot;, &quot;high&quot;, &quot;low&quot;, &quot;close&quot;, &quot;volume&quot;, &quot;amount&quot;],
+    &quot;date_field&quot;: &quot;trade_date&quot;
+  }
+}</code></pre>
+<p>常见检查：</p>
+<ul>
+<li>必填字段存在。</li>
+<li>主键不重复。</li>
+<li>日期范围正确。</li>
+<li>数值非负。</li>
+<li>复权因子大于 0。</li>
+<li>交易日历覆盖。</li>
+<li>写入前后行数合理。</li>
+</ul>
+<h3>8. 调度</h3>
+<p>采集器只声明默认建议，用户最终在任务列表里决定手动采集还是定时采集。</p>
+<p>示例：</p>
+<pre><code class="language-json">{
+  &quot;default_schedule&quot;: {
+    &quot;kind&quot;: &quot;trading_day&quot;,
+    &quot;time&quot;: &quot;18:30&quot;,
+    &quot;timezone&quot;: &quot;Asia/Shanghai&quot;
+  }
+}</code></pre>
+<p>“每天定时”对 A 股日线类任务通常应该理解为交易日每天。没有交易日历缓存时，应提示用户去配置页更新交易日历缓存，而不是静默按自然日跑。</p>
+<h3>9. 并发和资源组</h3>
+<p>插件可以声明建议预算，但实际资源由 AxData 统一裁决。</p>
+<pre><code class="language-json">{
+  &quot;resource_group&quot;: &quot;demo.http&quot;,
+  &quot;default_limits&quot;: {
+    &quot;mode&quot;: &quot;balanced&quot;,
+    &quot;source_server_count&quot;: 1,
+    &quot;connections_per_server&quot;: 2,
+    &quot;max_concurrency&quot;: 2
+  }
+}</code></pre>
+<p>规则：</p>
+<ul>
+<li>共享上游配额的采集器使用同一个 <code>resource_group</code>。</li>
+<li>不要在 runner 里无限开线程。</li>
+<li>不要绕过 AxData 的资源池。</li>
+<li>默认给保守档，允许用户自定义。</li>
+</ul>
+<h3>10. Web 页面应该展示什么</h3>
+<p>采集器详情页至少要展示：</p>
+<ul>
+<li>基本参数：任务名称、格式、路径、并发档位。</li>
+<li>输入参数：用户真正要填的业务参数。</li>
+<li>输出参数：字段、类型、质量规则。</li>
+<li>创建任务按钮。</li>
+<li>任务列表：窄行展示任务名称、状态、手动采集、定时开关、定时时间、删除。</li>
+<li>最近采集记录：默认 3 条即可。</li>
+<li>进度：放在当前任务行或任务详情的运行状态区域。</li>
+<li>日志或 run detail：展示错误摘要、日志路径和下一步动作。</li>
+</ul>
+<p>这些内容的事实源是 CollectorSpec / CollectorRegistry，以及可选关联的 runtime interface catalog。Web 不为具体采集器维护静态页面副本，不把旧接口静态 catalog 当作采集器详情来源。</p>
+<p>不要展示历史兼容字段作为主信息，例如 <code>downloader_profile</code>、legacy interface 映射等。这些适合诊断，不适合普通配置页。</p>
+<h3>11. 本地验证</h3>
+<p>安装开发插件：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\python -m pip install -e C:\path\to\axdata-collector-demo</code></pre>
+<p>查看采集器目录：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata plugin collectors --json
+curl http://127.0.0.1:8666/v1/plugins/collectors</code></pre>
+<p>创建任务并运行：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata collector task create demo.stock_snapshot.snapshot --name &quot;示例快照&quot;
+.\.venv\Scripts\axdata collector run-now &lt;task_id&gt;
+.\.venv\Scripts\axdata collector runs --task-id &lt;task_id&gt;</code></pre>
+<p>检查数据：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata data list
+.\.venv\Scripts\axdata data inspect demo.stock_snapshot
+.\.venv\Scripts\axdata data preview demo.stock_snapshot --limit 3</code></pre>
+<h3>12. 常见错误</h3>
+<div class="table-wrap"><table><thead><tr><th>现象</th><th>常见原因</th><th>修复</th></tr></thead><tbody><tr><td>采集器不出现</td><td>缺 <code>axdata-plugin.json</code></td><td>把 manifest 打进 wheel</td></tr><tr><td>可以看到插件但不能运行</td><td><code>runner_entry</code> 不存在或导入失败</td><td>检查入口路径</td></tr><tr><td>任务一直 blocked</td><td>required dataset 缺失</td><td>先采集或同步基础数据</td></tr><tr><td>定时任务不跑</td><td>调度未启用或交易日历缺失</td><td>开启定时并更新交易日历</td></tr><tr><td>写入失败</td><td>output/quality/字段不匹配</td><td>对齐 dataset 字段和质量规则</td></tr><tr><td>插件禁用后任务不可跑</td><td>这是正常状态</td><td>重新启用插件或删除任务</td></tr></tbody></table></div>
+<h3>13. 边界红线</h3>
+<p>采集器插件不要做这些事：</p>
+<ul>
+<li>import 时联网。</li>
+<li>自己长期运行后台线程。</li>
+<li>自己维护一套任务数据库。</li>
+<li>绕过 AxData Writer 写 core/factor。</li>
+<li>绕过资源池开大量连接。</li>
+<li>把临时接口调用包装成采集。</li>
+<li>删除用户数据、metadata 或 run history。</li>
+</ul>
+<p>采集器只声明和执行单次运行，任务生命周期由 AxData 管。</p></article>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

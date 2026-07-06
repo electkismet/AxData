@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>上交所期权实时行情 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>上交所期权实时行情</h1>
+  <p class="code-title">option_sse_spot_price_sina</p>
+  <p class="lead">临时获取新浪财经上交所期权实时行情数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>option_sse_spot_price_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 期权行情</dd></div><div><dt>资产类型</dt><dd>option</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪上交所期权实时行情，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>symbol</code></td><td>string</td><td>否</td><td>期权合约代码，支持 10011799 或 CON_OP_10011799；默认 10011799。</td><td>&quot;10011799&quot;</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>option_code</code></td><td>string</td><td>上交所期权合约数字代码。</td></tr><tr><td><code>sina_symbol</code></td><td>string</td><td>新浪期权行情代码，例如 CON_OP_10011799。</td></tr><tr><td><code>buy_volume</code></td><td>number</td><td>买量，源端口径。</td></tr><tr><td><code>buy_price</code></td><td>number</td><td>买价，单位/口径沿用新浪源端。</td></tr><tr><td><code>latest_price</code></td><td>number</td><td>最新价，单位/口径沿用新浪源端。</td></tr><tr><td><code>sell_price</code></td><td>number</td><td>卖价，单位/口径沿用新浪源端。</td></tr><tr><td><code>sell_volume</code></td><td>number</td><td>卖量，源端口径。</td></tr><tr><td><code>open_interest</code></td><td>number</td><td>持仓量，源端口径。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>涨幅，源端百分比数值口径。</td></tr><tr><td><code>exercise_price</code></td><td>number</td><td>行权价，单位/口径沿用新浪源端。</td></tr><tr><td><code>prev_close</code></td><td>number</td><td>昨收价，单位/口径沿用新浪源端。</td></tr><tr><td><code>open</code></td><td>number</td><td>开盘价，单位/口径沿用新浪源端。</td></tr><tr><td><code>limit_up</code></td><td>number</td><td>涨停价，单位/口径沿用新浪源端。</td></tr><tr><td><code>limit_down</code></td><td>number</td><td>跌停价，单位/口径沿用新浪源端。</td></tr><tr><td><code>quote_time</code></td><td>string</td><td>行情时间，源端字符串。</td></tr><tr><td><code>quote_status</code></td><td>string</td><td>源端行情状态。</td></tr><tr><td><code>status_code</code></td><td>string</td><td>源端状态码。</td></tr><tr><td><code>underlying_type</code></td><td>string</td><td>标的证券类型，源端编码。</td></tr><tr><td><code>underlying</code></td><td>string</td><td>期权标的证券代码。</td></tr><tr><td><code>contract_name</code></td><td>string</td><td>期权合约简称。</td></tr><tr><td><code>amplitude</code></td><td>number</td><td>振幅，源端百分比数值口径。</td></tr><tr><td><code>high</code></td><td>number</td><td>最高价，单位/口径沿用新浪源端。</td></tr><tr><td><code>low</code></td><td>number</td><td>最低价，单位/口径沿用新浪源端。</td></tr><tr><td><code>volume</code></td><td>number</td><td>成交量，单位/口径沿用新浪源端。</td></tr><tr><td><code>amount</code></td><td>number</td><td>成交额，金额单位/口径沿用新浪源端。</td></tr><tr><td><code>main_contract_flag</code></td><td>string</td><td>源端主力/状态标识。</td></tr><tr><td><code>option_type</code></td><td>string</td><td>期权类型源端编码，例如 C/P。</td></tr><tr><td><code>expire_date</code></td><td>date</td><td>到期日，格式 YYYYMMDD。</td></tr><tr><td><code>remaining_days</code></td><td>integer</td><td>剩余天数，源端口径。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;option_sse_spot_price_sina&quot;,
+    symbol=&#x27;10011799&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/option_sse_spot_price_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;symbol&quot;: &quot;10011799&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;symbol&quot;: &quot;10011799&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;option_code&quot;: &quot;10011799&quot;,
+    &quot;sina_symbol&quot;: &quot;CON_OP_10011799&quot;,
+    &quot;buy_volume&quot;: 1.0,
+    &quot;buy_price&quot;: 0.3171,
+    &quot;latest_price&quot;: 0.3267,
+    &quot;sell_price&quot;: 0.3203,
+    &quot;sell_volume&quot;: 1.0,
+    &quot;open_interest&quot;: 838.0,
+    &quot;change_pct&quot;: 7.82,
+    &quot;exercise_price&quot;: 2.7,
+    &quot;prev_close&quot;: 0.3028,
+    &quot;open&quot;: 0.3005,
+    &quot;limit_up&quot;: 0.6033,
+    &quot;limit_down&quot;: 0.0027,
+    &quot;quote_time&quot;: &quot;2026-07-03 14:26:17&quot;,
+    &quot;quote_status&quot;: &quot;0&quot;,
+    &quot;status_code&quot;: &quot;E 00&quot;,
+    &quot;underlying_type&quot;: &quot;EBS&quot;,
+    &quot;underlying&quot;: &quot;510050&quot;,
+    &quot;contract_name&quot;: &quot;50ETF购7月2700&quot;,
+    &quot;amplitude&quot;: 15.82,
+    &quot;high&quot;: 0.3407,
+    &quot;low&quot;: 0.2928,
+    &quot;volume&quot;: 84.0,
+    &quot;amount&quot;: 272948.0,
+    &quot;main_contract_flag&quot;: &quot;M&quot;,
+    &quot;option_type&quot;: &quot;C&quot;,
+    &quot;expire_date&quot;: &quot;20260722&quot;,
+    &quot;remaining_days&quot;: 18
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新浪分级子基金规模 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>新浪分级子基金规模</h1>
+  <p class="code-title">fund_scale_structured_sina</p>
+  <p class="lead">临时获取新浪财经新浪分级子基金规模数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>fund_scale_structured_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 基金规模</dd></div><div><dt>资产类型</dt><dd>fund</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪基金规模分级子基金单页 JSONP，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>page</code></td><td>integer</td><td>否</td><td>页码，默认 1。</td><td>1</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>当前页最多返回行数，默认 100，最大 1000。</td><td>100</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>rank</code></td><td>integer</td><td>源端排序序号，从 1 开始。</td></tr><tr><td><code>fund_code</code></td><td>string</td><td>六位基金代码。</td></tr><tr><td><code>fund_name</code></td><td>string</td><td>基金简称。</td></tr><tr><td><code>fund_category</code></td><td>string</td><td>基金规模分类，例如 封闭式基金。</td></tr><tr><td><code>unit_nav</code></td><td>number</td><td>单位净值，单位：元。</td></tr><tr><td><code>total_raised_scale</code></td><td>number</td><td>总募集规模，单位/口径沿用新浪源端。</td></tr><tr><td><code>latest_total_share</code></td><td>number</td><td>最近总份额，单位/口径沿用新浪源端。</td></tr><tr><td><code>established_date</code></td><td>date</td><td>成立日期，格式 YYYYMMDD。</td></tr><tr><td><code>fund_manager</code></td><td>string</td><td>基金经理。</td></tr><tr><td><code>nav_date</code></td><td>date</td><td>净值更新日期，格式 YYYYMMDD。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;fund_scale_structured_sina&quot;,
+    limit=1,
+    page=1,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/fund_scale_structured_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;page&quot;: 1,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;page&quot;: 1,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;rank&quot;: 1,
+    &quot;fund_code&quot;: &quot;150006&quot;,
+    &quot;fund_name&quot;: &quot;长盛同庆封闭A&quot;,
+    &quot;fund_category&quot;: &quot;分级子基金&quot;,
+    &quot;unit_nav&quot;: null,
+    &quot;total_raised_scale&quot;: 1468670.0,
+    &quot;latest_total_share&quot;: null,
+    &quot;established_date&quot;: &quot;20090512&quot;,
+    &quot;fund_manager&quot;: &quot;王宁&quot;,
+    &quot;nav_date&quot;: null
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>对外担保 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>对外担保</h1>
+  <p class="code-title">stock_cg_guarantee_cninfo</p>
+  <p class="lead">临时获取巨潮对外担保数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_cg_guarantee_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 公司治理</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求巨潮对外担保专题统计，按公告区间和市场返回，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>market</code></td><td>string</td><td>否</td><td>市场板块：全部、沪市、深市主板、创业板、科创板；默认 全部。</td><td>&quot;全部&quot;</td></tr><tr><td><code>start_date</code></td><td>string</td><td>否</td><td>公告统计开始日期，YYYYMMDD 或 YYYY-MM-DD；默认 20180630。</td><td>&quot;20180630&quot;</td></tr><tr><td><code>end_date</code></td><td>string</td><td>否</td><td>公告统计结束日期，YYYYMMDD 或 YYYY-MM-DD；默认 20210927。</td><td>&quot;20210927&quot;</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多返回行数，默认 100，最大 1000。</td><td>100</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>announcement_period</code></td><td>string</td><td>公告统计区间，沿用巨潮源端文本。</td></tr><tr><td><code>guarantee_count</code></td><td>number</td><td>担保笔数，单位：笔。</td></tr><tr><td><code>guarantee_amount</code></td><td>number</td><td>担保金额，金额单位/口径沿用巨潮源端。</td></tr><tr><td><code>parent_equity</code></td><td>number</td><td>归属于母公司所有者权益，金额单位/口径沿用巨潮源端。</td></tr><tr><td><code>guarantee_amount_net_asset_pct</code></td><td>number</td><td>担保金额占净资产比例，源端百分比数值口径。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_cg_guarantee_cninfo&quot;,
+    end_date=&#x27;20210927&#x27;,
+    limit=1,
+    market=&#x27;全部&#x27;,
+    start_date=&#x27;20180630&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_cg_guarantee_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;market&quot;: &quot;全部&quot;,
+    &quot;start_date&quot;: &quot;20180630&quot;,
+    &quot;end_date&quot;: &quot;20210927&quot;,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;market&quot;: &quot;全部&quot;,
+  &quot;start_date&quot;: &quot;20180630&quot;,
+  &quot;end_date&quot;: &quot;20210927&quot;,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000031.SZ&quot;,
+    &quot;symbol&quot;: &quot;000031&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;大悦城&quot;,
+    &quot;announcement_period&quot;: &quot;2018-06-30---2021-09-27&quot;,
+    &quot;guarantee_count&quot;: 190.0,
+    &quot;guarantee_amount&quot;: 24667281.89,
+    &quot;parent_equity&quot;: 1022714.87,
+    &quot;guarantee_amount_net_asset_pct&quot;: 2411.94
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

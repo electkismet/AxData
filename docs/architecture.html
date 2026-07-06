@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>架构设计 - AxData 文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="" href="../interfaces/index.html">接口文档</a><a class="active" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">开发文档</a></p>
+  <h1>架构设计</h1>
+</section>
+<article class="markdown-body"><h2>AxData 架构设计</h2>
+<p>本文说明 AxData 的整体架构、模块边界和部署形态。AxData 是本地优先的量化数据底座：个人研究可以在单机目录内完成，团队共享可以通过局域网 API 扩展，云端部署可沿用同一套数据语义。</p>
+<h3>目标</h3>
+<ul>
+<li>本地优先：单机即可完成源端直取、采集、存储、查询、因子计算和回测数据供给。</li>
+<li>数据可追溯：每次写入都能通过 metadata/manifest 追到采集任务、批次、运行参数、处理版本和质量检查结果。</li>
+<li>接口统一：无论底层来自 Tushare、RQData、xtdata、AKShare、OpenBB 扩展还是自有文件，用户优先使用同一套 Python SDK；HTTP API 是远程访问、Web 控制台和跨语言集成的通道。</li>
+<li>存储开放：以 Parquet 作为长期数据文件，以 DuckDB 作为本地查询执行层，避免早期绑定重型数据库。</li>
+<li>渐进部署：同一套核心模型可从桌面目录升级到局域网服务，再升级到云端多租户。</li>
+</ul>
+<p>当前边界：</p>
+<ul>
+<li>当前版本不追求覆盖所有资产类别。</li>
+<li>当前版本不提供高频 tick 的完整历史归档。</li>
+<li>不把第三方源的 token、额度、权限模型直接暴露给最终用户 API。</li>
+</ul>
+<h3>整体架构</h3>
+<pre><code class="language-mermaid">flowchart TD
+    Sources[&quot;数据源\nTushare / RQData / xtdata / AKShare / OpenBB / 文件&quot;]
+    SourceRegistry[&quot;Source Provider Registry\n接口 / 字段 / 临时查询路由&quot;]
+    CollectorRegistry[&quot;Collector Registry\n采集器 / runner entry / 输出契约&quot;]
+    Direct[&quot;源端直取\n字段契约 / 立即请求 / 默认不入库&quot;]
+    Ingest[&quot;采集任务\n全量 / 增量 / 修复 / 回放&quot;]
+    Raw[&quot;raw Parquet\n不可变源快照&quot;]
+    Staging[&quot;staging Parquet\n字段标准化 / 类型归一 / 去重&quot;]
+    Core[&quot;core Parquet\n接口口径主数据与行情事实表&quot;]
+    Factor[&quot;factor Parquet\n因子与特征宽表&quot;]
+    DuckDB[&quot;DuckDB\n视图 / SQL 查询 / 本地缓存&quot;]
+    SDK[&quot;Python SDK\n默认本地直读 / 可走远程 API&quot;]
+    HTTP[&quot;HTTP API\n远程通道 / Web / 跨语言&quot;]
+    CLI[&quot;CLI\n采集 / 管理 / 调试&quot;]
+    Apps[&quot;研究与应用\nNotebook / 回测 / Dashboard / 服务&quot;]
+    Meta[&quot;元数据\nschema / lineage / jobs / quality&quot;]
+
+    Sources --&gt; SourceRegistry
+    SourceRegistry --&gt; Direct
+    Sources --&gt; Ingest
+    CollectorRegistry --&gt; Ingest
+    Ingest --&gt; Raw
+    Raw --&gt; Staging
+    Staging --&gt; Core
+    Core --&gt; Factor
+    Raw --&gt; Meta
+    Staging --&gt; Meta
+    Core --&gt; Meta
+    Factor --&gt; Meta
+    Core --&gt; DuckDB
+    Factor --&gt; DuckDB
+    DuckDB --&gt; SDK
+    DuckDB --&gt; HTTP
+    Direct --&gt; SDK
+    Direct --&gt; HTTP
+    HTTP --&gt; SDK
+    SDK --&gt; Apps
+    HTTP --&gt; Apps
+    CLI --&gt; Ingest
+    Meta --&gt; SDK
+    Meta --&gt; HTTP</code></pre>
+<h3>模块边界</h3>
+<ul>
+<li>Source Adapter：封装第三方数据源的认证、分页、字段选择、限流、重试和原始响应解析。适配器只负责拿到源数据，不输出 AxData 的核心表。</li>
+<li>Source Provider Registry：记录每个源 Provider 支持的市场、资产、频率、接口、字段、权限要求、更新时点、可靠性等级和调用性质；它只负责接口目录和临时查询路由，不再作为采集器 catalog 的事实源。</li>
+<li>Collector Registry：记录独立 Collector 插件、collector specs、runner entry、资源组、输出数据集和质量契约；它支持 collector-only 插件，并兼容导入旧 Provider manifest collectors。</li>
+<li>Source Request Gateway：按 AxData 接口契约直接请求源端，完成参数校验、协议调用、字段归一和响应包络；默认不写入任何数据层。</li>
+<li>Ingestion Engine：执行采集计划，支持按表、日期、标的、交易所切片；产出 raw 快照和采集日志。</li>
+<li>Transform Pipeline：将 raw 转为 staging，再转为 core；所有类型转换、代码规范、日历对齐、接口口径整理和复权处理都在这里完成。</li>
+<li>Storage Manager：管理 Parquet 路径、分区、schema 版本、manifest、压缩、文件合并和过期策略。</li>
+<li>Query Engine：基于 DuckDB 暴露 SQL、表查询和便捷接口；默认只读 core 与 factor。Python SDK 本地模式默认使用这一层直接读取本机 Parquet/DuckDB 视图。</li>
+<li>Python SDK：用户主入口。默认不需要本地 HTTP 服务，直接读取本机 AxData 数据目录；传入 <code>api_base</code> 时切换为远程 HTTP API 客户端，读取目标 AxData 服务的数据。</li>
+<li>HTTP API：远程 SDK/API 通道，同时服务本机 Web 控制台和非 Python 客户端；它不定义另一套产品语义，只承载 SDK 同一套查询与管理能力。</li>
+<li>CLI：面向初始化、采集入库、修复、导出和管理任务；不作为研究取数主入口。</li>
+<li>Metadata Service：维护数据血缘、任务状态、质量报告、schema 版本、manifest 和可用区间。</li>
+</ul>
+<h3>插件化边界</h3>
+<p>AxData 的插件体系以本地优先为前提：插件是用户本地安装、本地启用、本地运行的 Python 扩展包，用户自行选择来源并承担运行风险。AxData 不做中心化插件市场、不做插件审核、不做签名信任体系；checksum 只用于 <code>.axp</code> 文件完整性和打包一致性检查。</p>
+<p>插件不只等于数据源。一个插件可以提供 Provider、Collector、DownloaderProfile、工具能力，或这些能力的组合。核心边界如下：</p>
+<ul>
+<li><code>axdata-core</code> 保持中立，只提供数据库、插件协议、Registry、AXP 管理、依赖提示、Collector/Downloader 框架、Writer、Quality、Storage 和 API 契约；Core 不包含不可卸载的数据源。</li>
+<li>随 AxData 提供的数据源是预装插件，而不是 core 内置能力；预装插件可启用、禁用、逻辑卸载和重新启用。</li>
+<li>Provider 插件提供接口、参数、字段、样例和 Adapter，进入 Source Provider Registry；源端直取默认不入库。</li>
+<li>Collector 插件提供 CollectorSpec、runner entry、输出数据集、资源组和质量契约，进入 Collector Registry；它可以不提供 Provider，也不要求存在对应 <code>interface_name</code> 或 <code>downloader_profile</code>。</li>
+<li>Collector Runner 通过 <code>runner_entry</code> 执行新采集器，统一排队、状态、日志、取消、失败退避、资源组、写入锁、Writer、Quality 和 metadata。新 runner 不通过 <code>/v1/request</code>、SDK <code>call</code>、ProviderRegistry interface route 或旧 DownloaderProfile -&gt; Adapter 链路。</li>
+<li>DownloaderProfile 和 RequestPlanner 描述旧接口下载路径如何拆请求、控制并发、调用 Adapter、写 Parquet 和做质量检查；它们继续服务 legacy collectors，但不是新采集器身份。</li>
+<li>插件依赖默认离线处理；AxData 负责安装前提示缺失依赖、版本风险和包内 wheels，不负责复杂自动冲突治理。</li>
+<li>插件卸载不会删除已采集 Parquet、metadata、用户创建的 Task 或 Run History；Provider 插件贡献的接口/下载器会从 Source Provider Registry 消失，Collector 插件贡献的采集器/task template 会从 Collector Registry 消失。两者独立启停、独立卸载。</li>
+<li>TDX、TDX Ext、交易所、腾讯、巨潮、东方财富、新浪等具体数据源都按源插件管理；TDX 普通行情、F10、服务器列表、缓存和采集 profile 由 <code>axdata-source-tdx</code> / <code>axdata-source-tdx-ext</code> 承载，core 不保留可运行兜底能力。</li>
+</ul>
+<p>截至 2026-07-04，默认 CollectorRegistry catalog 为 8 个 independent / non-legacy collectors，均由 <code>axdata.collector.tdx</code> 提供。交易所保留为 Source Provider 接口和本地基础数据能力，不再提供默认 CollectorSpec；<code>stock_capital_changes_tdx</code> 与 <code>stock_adj_factor_tdx</code> 保留为源端接口和兼容 DownloaderProfile，不再作为采集器进入采集页。巨潮、腾讯、东方财富和新浪财经仍是 source_request Provider 接口，默认不提供采集器。</p>
+<h3>数据流</h3>
+<p>AxData 有两条读数路径。</p>
+<p>源端直取路径：</p>
+<ol>
+<li>SDK 或 HTTP API 指定 AxData 接口名，例如第一版源端预览接口 <code>stock_codes_tdx</code>。</li>
+<li>Source Request Gateway 读取接口契约，校验参数和字段。</li>
+<li>适配器请求源端，协议层解析原始响应。</li>
+<li>归一层返回 AxData 字段、中文说明和响应包络。</li>
+<li>默认不写入 <code>raw</code>、<code>staging</code>、<code>core</code> 或 <code>factor</code>。</li>
+</ol>
+<p>采集入库路径：</p>
+<ol>
+<li>采集任务读取 Collector Registry，解析 <code>collector_id</code>、<code>collector_plugin_id</code>、<code>dataset_id</code>、<code>runner_entry</code>、资源组、输出和质量契约。</li>
+<li>Collector Runner 在 AxData 队列和资源池下调用 <code>runner_entry</code>。新采集器可以自带取数逻辑、请求上游、读取本地文件或复用公共库，但不得通过 <code>/v1/request</code>、SDK <code>call</code>、ProviderRegistry route 或旧 DownloaderProfile 链路套接口采集。</li>
+<li>Writer 将采集器产出的记录按 raw/staging/core/factor 规则写入 Parquet，并写入批次元数据。兼容的旧 Provider manifest collectors 仍可通过 DownloaderProfile -&gt; Adapter -&gt; Writer 路径执行，但必须标记为 legacy。</li>
+<li>staging 层执行字段整理、类型转换、代码标准化、日期规范、基础去重。</li>
+<li>core 层按数据集或接口口径形成稳定、面向业务语义的主表和事实表，例如 <code>stock_basic_exchange</code>；新增口径应使用独立表名或接口名表达。</li>
+<li>factor 层从 core 层生成因子，记录计算窗口、依赖表、代码版本和数据截止点。</li>
+<li>DuckDB 以外部表或视图方式查询 Parquet，为 SDK 的本地直读、HTTP API 服务、Notebook 和回测提供一致语义。</li>
+</ol>
+<p>采集与实时数据的边界：</p>
+<ul>
+<li>采集是入库动作：只要称为采集，就必须产生批次元数据，并按 raw、staging、core/factor 的规则写入本地数据目录。</li>
+<li>查询是读库动作：<code>query</code>、本地表查询和便捷历史查询默认只读已入库数据。</li>
+<li>源端直取是即时请求动作：<code>request</code> 或 <code>client.call(...)</code> 可以临时请求源端，返回 AxData 字段，但默认不入库。</li>
+<li>实时行情、快照和订阅默认不入库，只作为临时数据流或内存态视图；如需持久化，必须显式启动采集/录制任务并写入独立批次。</li>
+</ul>
+<h3>本地优先部署形态</h3>
+<p>本地版默认是一个目录、一组 Parquet 文件和一个可选的 DuckDB 元数据/缓存文件：</p>
+<pre><code class="language-text">axdata-home/
+  data/
+    raw/
+    staging/
+    core/
+    factor/
+  metadata/
+    catalog.duckdb
+    manifests/
+    quality/
+  logs/
+  cache/</code></pre>
+<p>本地部署原则：</p>
+<ul>
+<li>默认监听 <code>127.0.0.1</code>，不开启远程访问。</li>
+<li>AxData 自有 token 只用于本机以外的访问鉴权；第三方源凭据由对应 Provider 和用户运行环境自行处理，AxData core 不托管、不注入、不代理。</li>
+<li>远程访问可使用单个 <code>AXDATA_API_TOKEN</code>，也可创建多个命名设备 token；命名 token 保存在本机 <code>metadata/api_tokens.json</code>，Web 默认隐藏、点击显示，丢失设备时删除对应 token。</li>
+<li>Web 控制台只作为本机管理台，固定监听本机回环地址；不提供远程 Web 入口。其他机器应通过 Python SDK 或 HTTP API 访问 <code>8666</code>。</li>
+<li>Parquet 是数据真相来源；DuckDB 可重建，不作为唯一存储。</li>
+<li>对研究者优先暴露 Python SDK；SDK 默认本地直读 Parquet/DuckDB，HTTP 本地端口主要服务本机 Web、远程 SDK/API 和跨语言调用。</li>
+<li>任务调度可以从简单 cron 或本地命令开始，也可以替换为服务化 scheduler。</li>
+</ul>
+<h3>局域网部署形态</h3>
+<p>局域网版在本地版基础上增加一个常驻 API 服务和共享存储：</p>
+<ul>
+<li>API 服务部署在工作站或内网服务器，作为远程 SDK/API 访问同一数据目录的通道。</li>
+<li><code>data/</code> 目录位于 NAS、本机高速盘或共享对象存储。</li>
+<li>读请求可多用户并发，写请求仅由采集任务和管理员执行。</li>
+<li>使用 AxData 自有 token 做用户鉴权；第三方源凭据留在服务端 Provider 自己的运行环境中，不进入最终用户 API、响应、日志或导出文件。</li>
+<li>建议为每台研究电脑、Notebook 或自动化脚本创建独立命名 token；Python SDK 通过 <code>token=</code> 或 <code>AXDATA_TOKEN</code> 发送 Bearer token。Web 控制台只管理本机 AxData，不提供连接其它 API 的产品入口。</li>
+<li>DuckDB 可按服务实例维护本地查询缓存，也可只通过 Parquet 外部表查询。</li>
+<li>Python SDK 在局域网模式下通过 <code>api_base</code> 指向内网 API；脚本代码保持同一套方法名和字段语义。</li>
+</ul>
+<h3>云端部署形态</h3>
+<p>云端版保持同一套表结构和 API 语义，只替换运行组件：</p>
+<ul>
+<li>Parquet 可升级到对象存储。</li>
+<li>采集任务可升级到队列和任务工作进程。</li>
+<li>API 前置网关、限流、访问记录和用户管理。</li>
+<li>元数据可从本地 DuckDB/文件升级到托管数据库。</li>
+<li>质量报告、任务日志和指标接入云端观测系统。</li>
+<li>对外发布时区分只读数据 API、管理 API 和后台采集 API；Python SDK 继续作为推荐客户端，通过 <code>api_base</code> 接入云端服务。</li>
+</ul>
+<h3>参考系统取舍</h3>
+<div class="table-wrap"><table><thead><tr><th>系统</th><th>借鉴点</th><th>不直接照搬的原因</th></tr></thead><tbody><tr><td>Tushare</td><td><code>api_name + params + fields</code> 的统一调用模型、清晰的 token 认证、A 股字段命名习惯</td><td>AxData 不把第三方接口形态作为核心事实模型；额度、积分、权限只属于 source adapter</td></tr><tr><td>RQData</td><td>专业数据源的稳定标的编码、Python/HTTP 双入口、交易日函数和多资产数据模型</td><td>不采用当天 token 或 CSV 响应作为 AxData 核心协议；返回统一 JSON/Arrow/Parquet</td></tr><tr><td>xtdata</td><td>本地终端桥接、历史补充与实时订阅分离、桌面环境可用</td><td>不让核心服务依赖 MiniQMT 进程；xtdata 只作为边缘采集源或实时补充源，实时默认不写入 core</td></tr><tr><td>AKShare</td><td>开源、覆盖广、DataFrame 友好、适合交叉校验和低成本补充</td><td>多数接口依赖公开网页或第三方站点稳定性，不能作为唯一权威源</td></tr><tr><td>OpenBB</td><td>扩展式数据接入、统一入口、多前端形态、凭据集中管理</td><td>AxData 当前聚焦本地 A 股数据底座，不追求金融全品类聚合平台</td></tr><tr><td>Qlib</td><td>数据层、因子层、研究/回测衔接、点时数据意识</td><td>不以 Qlib <code>.bin</code> 作为主存储；AxData 使用开放 Parquet，并可向 Qlib 格式导出</td></tr></tbody></table></div>
+<p>源端接口目录、字段先行策略和实时/直取边界按实际需求逐个补充。</p>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://tushare.pro/document/1?doc_id=40">Tushare HTTP 协议</a></li>
+<li><a href="https://www.ricequant.com/doc/rqdata/python/generic-api">RQData Python API</a></li>
+<li><a href="https://www.ricequant.com/doc/rqdata/http/data-process">RQData HTTP API</a></li>
+<li><a href="https://dict.thinktrader.net/nativeApi/xtdata.html">xtdata 行情模块</a></li>
+<li><a href="https://akshare.akfamily.xyz/">AKShare 文档</a></li>
+<li><a href="https://docs.openbb.co/">OpenBB 文档</a></li>
+<li><a href="https://qlib.readthedocs.io/en/latest/component/data.html">Qlib Data Layer</a></li>
+</ul>
+<h3>架构原则</h3>
+<ul>
+<li>源数据和产品接口解耦：第三方源变化不应迫使调用方修改代码。</li>
+<li>接口即口径：用户接口名表达数据口径和来源；当前源端直取保留通达信与交易所两类入口，例如 <code>_tdx</code> 和 <code>_exchange</code>。</li>
+<li>源端目录分离：通达信和交易所保留各自接口目录、原始数据目录和特色字段；源目录下再按股票数据、ETF 数据、指数数据等资产大类分层；进入 core 后才输出统一用户语义。</li>
+<li>Python SDK 是用户主入口：本地研究默认直读本机数据目录，远程共享才通过 <code>api_base</code> 走 HTTP API。</li>
+<li>HTTP API 是通道而不是产品入口本体：它承载远程、Web 和跨语言访问，不改变字段、表和错误语义。</li>
+<li>每层只做一类事情：raw 保存，staging 标准化，core 统一语义，factor 生成特征。</li>
+<li>本地可解释优先：文件、SQL、日志和 manifest 都应能被人直接检查。</li>
+<li>字段先行，存储后置：新源先完成接口目录、参数、字段和源端直取，再为适合沉淀的数据补采集入库。</li>
+<li>写入少而准，读取快而宽：采集任务严格校验，查询层偏向宽表和批量读取。</li>
+<li>采集才入库：实时订阅、源端预览和临时调试默认不落盘，只有显式采集/录制任务才写入 raw/staging/core/factor。</li>
+<li>非实时不保活：普通源端直取用短连接/请求级连接；心跳和常驻连接只在实时行情、订阅或长连接采集任务中启用。</li>
+<li>复权可重算：保留未复权价格和复权因子，前复权/后复权视图由查询层或因子层派生。</li>
+<li>失败可恢复：任何采集批次都能重放，任何衍生层都能从上游重新生成。</li>
+</ul>
+<h3>关键设计决策</h3>
+<ul>
+<li>统一代码格式：A 股使用 <code>000001.SZ</code>、<code>600000.SH</code>、<code>430047.BJ</code> 这类后缀格式，源适配器负责与各源编码互转。</li>
+<li>日期格式：API 和当前 core 层统一使用 <code>YYYYMMDD</code> 字符串，HTTP 层兼容 ISO 日期输入；如切换 Parquet <code>date</code> 类型，必须由 schema 版本显式标记。</li>
+<li>价格存储：core 层 <code>daily</code> 保存未复权 OHLC，<code>adj_factor</code> 单独保存复权因子。</li>
+<li>单表粒度：日频事实表以 <code>ts_code + trade_date</code> 为主键；分钟线可扩展为 <code>ts_code + trade_time + frequency</code>。</li>
+<li>采集追溯隔离：task、batch、run、adapter、参数和质量结果写入 metadata/manifest，不进入常规用户 schema。</li>
+<li>Schema 演进：只允许向后兼容地增加字段；字段改名、单位变化、语义变化必须新建 schema 版本。</li>
+</ul></article>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

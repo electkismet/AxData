@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>历史板块成分股 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 开盘红</p>
+  <h1>历史板块成分股</h1>
+  <p class="code-title">kph_sector_constituents_history</p>
+  <p class="lead">临时获取开盘红历史板块成分股数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>kph_sector_constituents_history</dd></div><div><dt>Provider</dt><dd>axdata.source.kph</dd></div><div><dt>数据源</dt><dd>开盘红 / kph</dd></div><div><dt>目录</dt><dd>开盘红 / 板块数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>按开盘红板块 ID 和历史日期请求成分股，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>plate_id</code></td><td>string</td><td>是</td><td>板块 ID。</td><td></td></tr><tr><td><code>trade_date</code></td><td>string</td><td>是</td><td>历史交易日期，必须早于今天。</td><td></td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>trade_date</code></td><td>date</td><td>交易日期。</td></tr><tr><td><code>plate_id</code></td><td>string</td><td>板块 ID。</td></tr><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>股票简称。</td></tr><tr><td><code>tags</code></td><td>string</td><td>概念标签。</td></tr><tr><td><code>last_price</code></td><td>number</td><td>现价。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>涨跌幅。</td></tr><tr><td><code>amount</code></td><td>number</td><td>成交额。</td></tr><tr><td><code>turnover_rate</code></td><td>number</td><td>换手率。</td></tr><tr><td><code>float_market_value</code></td><td>number</td><td>流通市值。</td></tr><tr><td><code>main_net</code></td><td>number</td><td>主力净额。</td></tr><tr><td><code>limit_tag</code></td><td>string</td><td>连板标签。</td></tr><tr><td><code>rank_tag</code></td><td>string</td><td>龙虎榜/龙头标签。</td></tr><tr><td><code>limit_count</code></td><td>integer</td><td>近期涨停次数。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;kph_sector_constituents_history&quot;,
+    plate_id=&#x27;801001&#x27;,
+    trade_date=&#x27;20260513&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/kph_sector_constituents_history
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;plate_id&quot;: &quot;801001&quot;,
+    &quot;trade_date&quot;: &quot;20260513&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;plate_id&quot;: &quot;801001&quot;,
+  &quot;trade_date&quot;: &quot;20260513&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;plate_id&quot;: &quot;801001&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

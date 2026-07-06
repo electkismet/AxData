@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>股本变迁 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>股本变迁</h1>
+  <p class="code-title">stock_capital_changes_tdx</p>
+  <p class="lead">查询通达信 0x000f 股本变迁、除权除息等事件记录，是复权因子计算的追溯依据。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_capital_changes_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 股票数据 / 基础数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>是，默认 stock_capital_changes_tdx.snapshot</dd></div></dl>
+  <p>这个接口返回 TDX 0x000f 事件的 AxData 化视图，不做复权价格计算，也不写入本地数据层。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>scope</code></td><td>string</td><td>否</td><td>股票范围：code 不传或为 all 时生效；all 全部、main 主板、star 科创板、chinext 创业板、bse 北交所、cdr CDR；默认 all。</td><td>&quot;all&quot;</td></tr><tr><td><code>code</code></td><td>string</td><td>否</td><td>证券代码：可选；支持 000001、000001.SZ、sz000001；批量可传列表或英文逗号分隔字符串。不填则按股票范围请求全量。</td><td></td></tr><tr><td><code>category</code></td><td>string</td><td>否</td><td>可选 TDX 事件类别过滤：可传任意 TDX 原始类别码；常用别名：1/xdxr 为除权除息，5/equity 为股本变化，15/restructure 为重整调整。当前复权因子只直接使用 category=1，其余类别作为股本变迁和公司行为证据保留。</td><td></td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>code 不填时按 scope 展开股票池；不传 category 时返回全部事件；传 category=xdxr 或 1 时只返回除权除息记录。</p></div>
+  <div class="note"><strong>参数示例</strong><p># 单票全部股本变迁事件
+client.call(&quot;stock_capital_changes_tdx&quot;, code=&quot;000001.SZ&quot;)
+
+# 只看除权除息事件
+client.call(&quot;stock_capital_changes_tdx&quot;, code=&quot;000001.SZ&quot;, category=&quot;xdxr&quot;)
+
+# 全市场源端查询口径
+client.call(&quot;stock_capital_changes_tdx&quot;, scope=&quot;all&quot;, category=&quot;xdxr&quot;)
+
+# 批量查询
+client.call(&quot;stock_capital_changes_tdx&quot;, code=[&quot;000001.SZ&quot;, &quot;600000.SH&quot;], category=&quot;xdxr&quot;)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码，例如 000001.SZ。</td></tr><tr><td><code>ts_code</code></td><td>string</td><td>与 instrument_id 相同，用于兼容股票事件类字段。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始六位代码。</td></tr><tr><td><code>tdx_code</code></td><td>string</td><td>TDX 带市场前缀代码，例如 sz000001。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>AxData 交易所代码：SSE、SZSE 或 BSE。</td></tr><tr><td><code>event_date</code></td><td>date</td><td>事件日期，YYYYMMDD。</td></tr><tr><td><code>category_raw</code></td><td>integer</td><td>TDX 原始事件类别码。</td></tr><tr><td><code>category_name</code></td><td>string</td><td>按 TDX 客户端内置类别表映射的事件名称。</td></tr><tr><td><code>c1</code></td><td>number</td><td>事件参数槽 1；具体含义取决于 category_raw。</td></tr><tr><td><code>c2</code></td><td>number</td><td>事件参数槽 2；具体含义取决于 category_raw。</td></tr><tr><td><code>c3</code></td><td>number</td><td>事件参数槽 3；具体含义取决于 category_raw。</td></tr><tr><td><code>c4</code></td><td>number</td><td>事件参数槽 4；具体含义取决于 category_raw。</td></tr><tr><td><code>c1_raw_hex</code></td><td>string</td><td>参数 1 的 TDX 原始字节，主要用于解析排查。</td></tr><tr><td><code>c2_raw_hex</code></td><td>string</td><td>参数 2 的 TDX 原始字节，主要用于解析排查。</td></tr><tr><td><code>c3_raw_hex</code></td><td>string</td><td>参数 3 的 TDX 原始字节，主要用于解析排查。</td></tr><tr><td><code>c4_raw_hex</code></td><td>string</td><td>参数 4 的 TDX 原始字节，主要用于解析排查。</td></tr><tr><td><code>record_hex</code></td><td>string</td><td>完整 TDX 原始记录；源端未带原始记录时返回 AxData 根据事件字段生成的稳定行键。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_capital_changes_tdx&quot;,
+    category=&#x27;xdxr&#x27;,
+    code=&#x27;000001.SZ&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_capital_changes_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;000001.SZ&quot;,
+    &quot;category&quot;: &quot;xdxr&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;000001.SZ&quot;,
+  &quot;category&quot;: &quot;xdxr&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;ts_code&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;tdx_code&quot;: &quot;sz000001&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;event_date&quot;: &quot;20240614&quot;,
+    &quot;category_raw&quot;: 1,
+    &quot;category_name&quot;: &quot;除权除息&quot;,
+    &quot;c1&quot;: 7.19,
+    &quot;c2&quot;: 0.0,
+    &quot;c3&quot;: 0.0,
+    &quot;c4&quot;: 0.0,
+    &quot;c1_raw_hex&quot;: &quot;0000e640&quot;,
+    &quot;c2_raw_hex&quot;: &quot;00000000&quot;,
+    &quot;c3_raw_hex&quot;: &quot;00000000&quot;,
+    &quot;c4_raw_hex&quot;: &quot;00000000&quot;,
+    &quot;record_hex&quot;: null
+  }
+]</code></pre>
+</section>
+<section><h2>参考表</h2>
+<h3>类别码参考</h3>
+<p>c1/c2/c3/c4 是固定的 4 个参数槽；同一列在不同 category 下含义不同。当前复权因子只直接使用 category=1；其他类别作为股本变迁和公司行为证据保留。</p>
+<div class="table-wrap"><table><thead><tr><th>category</th><th>名称</th><th>复权因子关系</th><th>c1</th><th>c2</th><th>c3</th><th>c4</th></tr></thead><tbody><tr><td>1</td><td>除权除息</td><td>直接参与</td><td>现金分红</td><td>配股价</td><td>送转股</td><td>配股</td></tr><tr><td>2</td><td>送配股上市</td><td>不直接参与</td><td>前流通股本</td><td>前总股本</td><td>后流通股本</td><td>后总股本</td></tr><tr><td>3</td><td>非流通股上市</td><td>不直接参与</td><td>前流通股本</td><td>前总股本</td><td>后流通股本</td><td>后总股本</td></tr><tr><td>4</td><td>未知股本变动</td><td>不直接参与</td><td>未知/保留</td><td>未知/保留</td><td>未知/保留</td><td>未知/保留</td></tr><tr><td>5</td><td>股本变化</td><td>不直接参与</td><td>前流通股本</td><td>前总股本</td><td>后流通股本</td><td>后总股本</td></tr><tr><td>6</td><td>增发新股</td><td>不直接参与</td><td>保留</td><td>增发价</td><td>增发数量</td><td>保留</td></tr><tr><td>7</td><td>股份回购</td><td>不直接参与</td><td>前流通股本</td><td>前总股本</td><td>后流通股本</td><td>后总股本</td></tr><tr><td>8</td><td>增发新股上市</td><td>不直接参与</td><td>前流通股本</td><td>前总股本</td><td>后流通股本</td><td>后总股本</td></tr><tr><td>9</td><td>转配股上市</td><td>不直接参与</td><td>前流通股本</td><td>前总股本</td><td>后流通股本</td><td>后总股本</td></tr><tr><td>10</td><td>可转债上市</td><td>不直接参与</td><td>前流通股本</td><td>前总股本</td><td>后流通股本</td><td>后总股本</td></tr><tr><td>11</td><td>扩缩股</td><td>不直接参与</td><td>保留</td><td>保留</td><td>扩缩股比例</td><td>保留</td></tr><tr><td>12</td><td>非流通股缩股</td><td>不直接参与</td><td>保留</td><td>保留</td><td>缩股比例</td><td>保留</td></tr><tr><td>13</td><td>送认购权证</td><td>不直接参与</td><td>权证行权价</td><td>保留</td><td>权证份数/比例</td><td>保留</td></tr><tr><td>14</td><td>送认沽权证</td><td>不直接参与</td><td>权证行权价</td><td>保留</td><td>权证份数/比例</td><td>保留</td></tr><tr><td>15</td><td>重整调整</td><td>不直接参与</td><td>通常为 0</td><td>通常为 0</td><td>重整比例</td><td>通常为 0</td></tr></tbody></table></div>
+</section>
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

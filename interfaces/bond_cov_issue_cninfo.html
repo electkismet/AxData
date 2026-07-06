@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>可转债发行 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>可转债发行</h1>
+  <p class="code-title">bond_cov_issue_cninfo</p>
+  <p class="lead">临时获取巨潮可转债发行数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>bond_cov_issue_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 债券报表</dd></div><div><dt>资产类型</dt><dd>bond</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求巨潮可转债发行专题统计，按日期范围返回，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>start_date</code></td><td>string</td><td>否</td><td>开始统计日期，YYYYMMDD 或 YYYY-MM-DD；默认 20210913。</td><td>&quot;20210913&quot;</td></tr><tr><td><code>end_date</code></td><td>string</td><td>否</td><td>结束统计日期，YYYYMMDD 或 YYYY-MM-DD；默认 20211112。</td><td>&quot;20211112&quot;</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多返回行数，默认 100，最大 1000。</td><td>100</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>bond_code</code></td><td>string</td><td>债券代码。</td></tr><tr><td><code>bond_short_name</code></td><td>string</td><td>债券简称。</td></tr><tr><td><code>announcement_date</code></td><td>date</td><td>公告日期，格式 YYYYMMDD。</td></tr><tr><td><code>issue_start_date</code></td><td>date</td><td>发行起始日，格式 YYYYMMDD。</td></tr><tr><td><code>issue_end_date</code></td><td>date</td><td>发行终止日，格式 YYYYMMDD。</td></tr><tr><td><code>planned_issue_amount</code></td><td>number</td><td>计划发行总量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>actual_issue_amount</code></td><td>number</td><td>实际发行总量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>par_value</code></td><td>number</td><td>发行面值，单位：元。</td></tr><tr><td><code>issue_price</code></td><td>number</td><td>发行价格，单位：元。</td></tr><tr><td><code>issue_method</code></td><td>string</td><td>发行方式。</td></tr><tr><td><code>issue_target</code></td><td>string</td><td>发行对象。</td></tr><tr><td><code>issue_scope</code></td><td>string</td><td>发行范围。</td></tr><tr><td><code>underwriting_method</code></td><td>string</td><td>承销方式。</td></tr><tr><td><code>fundraising_use</code></td><td>string</td><td>募资用途说明。</td></tr><tr><td><code>initial_conversion_price</code></td><td>number</td><td>初始转股价格，单位：元。</td></tr><tr><td><code>conversion_start_date</code></td><td>date</td><td>转股开始日期，格式 YYYYMMDD。</td></tr><tr><td><code>conversion_end_date</code></td><td>date</td><td>转股终止日期，格式 YYYYMMDD。</td></tr><tr><td><code>online_subscription_date</code></td><td>date</td><td>网上申购日期，格式 YYYYMMDD。</td></tr><tr><td><code>online_subscription_code</code></td><td>string</td><td>网上申购代码。</td></tr><tr><td><code>online_subscription_short_name</code></td><td>string</td><td>网上申购简称。</td></tr><tr><td><code>online_subscription_max</code></td><td>number</td><td>网上申购数量上限，单位/口径沿用巨潮源端。</td></tr><tr><td><code>online_subscription_min</code></td><td>number</td><td>网上申购数量下限，单位/口径沿用巨潮源端。</td></tr><tr><td><code>online_subscription_unit</code></td><td>number</td><td>网上申购单位，单位/口径沿用巨潮源端。</td></tr><tr><td><code>online_lottery_result_refund_date</code></td><td>date</td><td>网上申购中签结果公告日及退款日，格式 YYYYMMDD。</td></tr><tr><td><code>priority_subscription_date</code></td><td>date</td><td>优先申购日，格式 YYYYMMDD。</td></tr><tr><td><code>allotment_price</code></td><td>number</td><td>配售价格，单位：元。</td></tr><tr><td><code>bondholder_record_date</code></td><td>date</td><td>债权登记日，格式 YYYYMMDD。</td></tr><tr><td><code>priority_subscription_payment_date</code></td><td>date</td><td>优先申购缴款日，格式 YYYYMMDD。</td></tr><tr><td><code>conversion_code</code></td><td>string</td><td>转股代码。</td></tr><tr><td><code>trading_market</code></td><td>string</td><td>交易市场。</td></tr><tr><td><code>bond_name</code></td><td>string</td><td>债券名称。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;bond_cov_issue_cninfo&quot;,
+    end_date=&#x27;20211112&#x27;,
+    limit=1,
+    start_date=&#x27;20210913&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/bond_cov_issue_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;start_date&quot;: &quot;20210913&quot;,
+    &quot;end_date&quot;: &quot;20211112&quot;,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;start_date&quot;: &quot;20210913&quot;,
+  &quot;end_date&quot;: &quot;20211112&quot;,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;bond_code&quot;: &quot;110083&quot;,
+    &quot;bond_short_name&quot;: &quot;苏租转债&quot;,
+    &quot;announcement_date&quot;: &quot;20211109&quot;,
+    &quot;issue_start_date&quot;: &quot;20211111&quot;,
+    &quot;issue_end_date&quot;: &quot;20211111&quot;,
+    &quot;planned_issue_amount&quot;: 500000.0,
+    &quot;actual_issue_amount&quot;: 500000.0,
+    &quot;par_value&quot;: 100.0,
+    &quot;issue_price&quot;: 100.0,
+    &quot;issue_method&quot;: &quot;网上网下优先配售,交易所系统网上向社会公众投资者发行&quot;,
+    &quot;issue_target&quot;: &quot;本次可转债的发行对象为持有中国证券登记结算有限责任公司上海分公司证券账户的自然人、法人、证券投资基金、符合法律规定的其他投资者等（国家法律、法规禁止者除外）。&quot;,
+    &quot;issue_scope&quot;: &quot;上交所固定收益平台&quot;,
+    &quot;underwriting_method&quot;: &quot;余额包销&quot;,
+    &quot;fundraising_use&quot;: &quot;补充公司的核心一级资本&quot;,
+    &quot;initial_conversion_price&quot;: 5.42,
+    &quot;conversion_start_date&quot;: &quot;20220517&quot;,
+    &quot;conversion_end_date&quot;: &quot;20211110&quot;,
+    &quot;online_subscription_date&quot;: &quot;20211111&quot;,
+    &quot;online_subscription_code&quot;: &quot;733901&quot;,
+    &quot;online_subscription_short_name&quot;: &quot;苏租发债&quot;,
+    &quot;online_subscription_max&quot;: 100.0,
+    &quot;online_subscription_min&quot;: 0.1,
+    &quot;online_subscription_unit&quot;: 0.1,
+    &quot;online_lottery_result_refund_date&quot;: &quot;20211115&quot;,
+    &quot;priority_subscription_date&quot;: &quot;20211111&quot;,
+    &quot;allotment_price&quot;: 100.0,
+    &quot;bondholder_record_date&quot;: &quot;20241017&quot;,
+    &quot;priority_subscription_payment_date&quot;: &quot;20211111&quot;,
+    &quot;conversion_code&quot;: &quot;600901&quot;,
+    &quot;trading_market&quot;: &quot;上交所&quot;,
+    &quot;bond_name&quot;: &quot;2021年江苏金融租赁股份有限公司公开发行A股可转换公司债券&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

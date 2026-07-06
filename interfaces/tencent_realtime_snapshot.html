@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>实时快照 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 腾讯财经</p>
+  <h1>实时快照</h1>
+  <p class="code-title">tencent_realtime_snapshot</p>
+  <p class="lead">临时获取腾讯财经快照，覆盖 A 股、指数和 ETF 的确认字段。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>tencent_realtime_snapshot</dd></div><div><dt>Provider</dt><dd>axdata.source.tencent</dd></div><div><dt>数据源</dt><dd>腾讯财经 / tencent</dd></div><div><dt>目录</dt><dd>腾讯财经 / 行情数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>这个接口返回源端快照时间；价格单位为元或指数点，比例字段是百分比数值。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>证券代码，支持 000001.SZ、600000.SH、920000.BJ、000001.SH、510050.SH 或列表。</td><td></td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>不传 fields 时返回上方全部字段；临时调用只查一次。</p></div>
+  <div class="note"><strong>参数示例</strong><p>client.call(&quot;tencent_realtime_snapshot&quot;, code=[&quot;000001.SZ&quot;, &quot;600000.SH&quot;])</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>asset_type</code></td><td>string</td><td>资产类型：stock、index、etf。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>quote_time</code></td><td>datetime</td><td>源端行情时间，格式 YYYYMMDDHHMMSS。</td></tr><tr><td><code>last_price</code></td><td>number</td><td>最新价，单位：元或指数点。</td></tr><tr><td><code>pre_close</code></td><td>number</td><td>昨收价，单位：元或指数点。</td></tr><tr><td><code>open</code></td><td>number</td><td>开盘价，单位：元或指数点。</td></tr><tr><td><code>high</code></td><td>number</td><td>最高价，单位：元或指数点。</td></tr><tr><td><code>low</code></td><td>number</td><td>最低价，单位：元或指数点。</td></tr><tr><td><code>change</code></td><td>number</td><td>涨跌额，单位：元或指数点。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>涨跌幅，百分比数值。</td></tr><tr><td><code>volume</code></td><td>number</td><td>成交量，沿用源端口径。</td></tr><tr><td><code>amount</code></td><td>number</td><td>成交额，单位：元。</td></tr><tr><td><code>turnover_rate</code></td><td>number</td><td>换手率，百分比数值；指数可能为空。</td></tr><tr><td><code>pe_dynamic</code></td><td>number</td><td>动态市盈率；不适用时为空。</td></tr><tr><td><code>pb</code></td><td>number</td><td>市净率；不适用时为空。</td></tr><tr><td><code>total_market_value</code></td><td>number</td><td>总市值，源端确认口径为亿元。</td></tr><tr><td><code>float_market_value</code></td><td>number</td><td>流通市值，源端确认口径为亿元。</td></tr><tr><td><code>limit_up_price</code></td><td>number</td><td>涨停价；不适用时为空。</td></tr><tr><td><code>limit_down_price</code></td><td>number</td><td>跌停价；不适用时为空。</td></tr><tr><td><code>currency</code></td><td>string</td><td>币种。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;tencent_realtime_snapshot&quot;,
+    code=[&#x27;000001.SZ&#x27;, &#x27;600000.SH&#x27;],
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/tencent_realtime_snapshot
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: [
+      &quot;000001.SZ&quot;,
+      &quot;600000.SH&quot;
+    ]
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: [
+    &quot;000001.SZ&quot;,
+    &quot;600000.SH&quot;
+  ]
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;asset_type&quot;: &quot;stock&quot;,
+    &quot;name&quot;: &quot;平安银行&quot;,
+    &quot;quote_time&quot;: &quot;20260622144633&quot;,
+    &quot;last_price&quot;: 10.64,
+    &quot;pre_close&quot;: 10.52,
+    &quot;open&quot;: 10.52,
+    &quot;high&quot;: 10.67,
+    &quot;low&quot;: 10.42,
+    &quot;change&quot;: 0.12,
+    &quot;change_pct&quot;: 1.14,
+    &quot;volume&quot;: 1208120.0,
+    &quot;amount&quot;: 1273923383.0,
+    &quot;turnover_rate&quot;: 0.62,
+    &quot;pe_dynamic&quot;: 4.8,
+    &quot;pb&quot;: 0.45,
+    &quot;total_market_value&quot;: 2064.79,
+    &quot;float_market_value&quot;: 2064.76,
+    &quot;limit_up_price&quot;: 11.57,
+    &quot;limit_down_price&quot;: 9.47,
+    &quot;currency&quot;: &quot;CNY&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

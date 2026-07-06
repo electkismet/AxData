@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>市场情绪 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 开盘红</p>
+  <h1>市场情绪</h1>
+  <p class="code-title">kph_market_emotion</p>
+  <p class="lead">临时获取开盘红市场情绪数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>kph_market_emotion</dd></div><div><dt>Provider</dt><dd>axdata.source.kph</dd></div><div><dt>数据源</dt><dd>开盘红 / kph</dd></div><div><dt>目录</dt><dd>开盘红 / 情绪数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>请求开盘红市场情绪，传历史日期走历史接口，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>trade_date</code></td><td>string</td><td>否</td><td>交易日期，YYYYMMDD 或 YYYY-MM-DD，默认今天。</td><td></td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>trade_date</code></td><td>date</td><td>交易日期。</td></tr><tr><td><code>limit_up_count</code></td><td>integer</td><td>涨停总数。</td></tr><tr><td><code>limit_down_count</code></td><td>integer</td><td>跌停总数。</td></tr><tr><td><code>real_limit_up_count</code></td><td>integer</td><td>实际涨停（非 ST）。</td></tr><tr><td><code>real_limit_down_count</code></td><td>integer</td><td>实际跌停（非 ST）。</td></tr><tr><td><code>st_limit_up_count</code></td><td>integer</td><td>ST 涨停数。</td></tr><tr><td><code>st_limit_down_count</code></td><td>integer</td><td>ST 跌停数。</td></tr><tr><td><code>rise_count</code></td><td>integer</td><td>上涨家数。</td></tr><tr><td><code>fall_count</code></td><td>integer</td><td>下跌家数。</td></tr><tr><td><code>flat_count</code></td><td>integer</td><td>平盘家数。</td></tr><tr><td><code>market_sign</code></td><td>string</td><td>市场人气判断。</td></tr><tr><td><code>raw_rise_dist</code></td><td>string</td><td>上涨分布。</td></tr><tr><td><code>raw_fall_dist</code></td><td>string</td><td>下跌分布。</td></tr><tr><td><code>total_amount</code></td><td>number</td><td>全市成交额，单位：元。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;kph_market_emotion&quot;,
+    trade_date=&#x27;20260513&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/kph_market_emotion
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;trade_date&quot;: &quot;20260513&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;trade_date&quot;: &quot;20260513&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;trade_date&quot;: &quot;20260513&quot;,
+    &quot;limit_up_count&quot;: 112
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Schema 与字段 - AxData 文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="" href="../interfaces/index.html">接口文档</a><a class="active" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">开发文档</a></p>
+  <h1>Schema 与字段</h1>
+</section>
+<article class="markdown-body"><h2>AxData Schema 与字段规范</h2>
+<p>本文说明 AxData 当前核心用户表：<code>stock_basic_exchange</code>、<code>trade_cal</code>、<code>daily</code>、<code>adj_factor</code>，以及源端接口进入 Downloader/Collector 写出链路时使用的字段规范。主键、日期格式、价格/成交量/成交额单位和 provider 原始字段兼容策略属于稳定契约；新增字段应保持向后兼容，字段改名或单位变化必须进入新版本或显式映射。</p>
+<h3>通用约定</h3>
+<ul>
+<li>表层级：以下表位于 core 层，面向 Python SDK、HTTP API 和 DuckDB 查询视图。</li>
+<li>接口即口径：<code>stock_basic_exchange</code> 表示交易所股票列表口径；新增接口应以独立名称表达独立口径。</li>
+<li>事实源：Parquet 文件是长期事实源；DuckDB 是本地查询引擎和可重建视图层。</li>
+<li>代码格式：A 股统一为 <code>000001.SZ</code>、<code>600000.SH</code>、<code>430047.BJ</code>。</li>
+<li>交易所代码：查询筛选统一使用 <code>SSE</code>、<code>SZSE</code>、<code>BSE</code>；证券代码后缀 <code>.SH</code>、<code>.SZ</code>、<code>.BJ</code> 只属于 <code>instrument_id</code> 或 <code>ts_code</code>。</li>
+<li>日期格式：API 和当前 Parquet 字段统一使用量化常见的 <code>YYYYMMDD</code> 字符串；HTTP API 兼容传入 <code>YYYY-MM-DD</code> 并转成 <code>YYYYMMDD</code>。</li>
+<li>价格类型：当前使用 <code>double</code>；如需严格财务精度，再评估 decimal。</li>
+<li>价格单位：A 股价格字段 <code>open</code>、<code>high</code>、<code>low</code>、<code>close</code>、<code>pre_close</code>、<code>change</code> 使用人民币元。</li>
+<li>成交量单位：core <code>daily.vol</code> 使用手；源端接口如果返回 <code>volume</code>，必须在 profile/schema 中声明映射到 <code>vol</code> 或说明保留源端口径。</li>
+<li>成交额单位：core <code>daily.amount</code> 使用千元；source/raw/snapshot 接口可保留源端单位，但必须在字段说明或 profile quality contract 中声明。</li>
+<li>采集追溯：task、batch、run、adapter、原始参数、质量结果和 manifest 属于 metadata，不作为常规用户表字段返回。</li>
+</ul>
+<p>兼容说明：旧的 <code>stock_basic</code> 查询名保留为 <code>stock_basic_exchange</code> 的兼容别名；新文档、示例和用户主路径统一使用 <code>stock_basic_exchange</code>。</p>
+<h3>字段命名规范 v1</h3>
+<p>字段规范优先尊重已经闭环的 core 表，不为了统一命名破坏现有查询：</p>
+<div class="table-wrap"><table><thead><tr><th>概念</th><th>对外稳定字段</th><th>当前兼容/源端字段</th><th>说明</th></tr></thead><tbody><tr><td>统一证券代码</td><td><code>instrument_id</code>、<code>ts_code</code></td><td><code>symbol</code> 概念名、<code>provider_symbol</code></td><td><code>stock_basic_exchange</code> 使用 <code>instrument_id</code>；<code>daily</code> 和 <code>adj_factor</code> 保留 Tushare 风格 <code>ts_code</code>。文档中“统一证券代码 / canonical symbol”指 <code>000001.SZ</code> 这一语义，不把既有 <code>stock_basic_exchange.symbol</code> 粗暴改名。</td></tr><tr><td>原始证券代码</td><td><code>provider_symbol</code>、<code>raw_code</code></td><td>既有 <code>symbol</code></td><td>既有 <code>stock_basic_exchange.symbol</code> 是交易所六位代码，例如 <code>000001</code>；新 source/raw 字段如需保留原始代码，优先使用 <code>provider_symbol</code> 或 <code>raw_code</code>。</td></tr><tr><td>交易所/市场源代码</td><td><code>exchange</code>、<code>secid</code></td><td><code>tdx_code</code></td><td><code>exchange</code> 使用 AxData 交易所代码；<code>secid</code>、<code>tdx_code</code> 等只作为 provider 原始字段保留，不能替代统一证券代码。</td></tr><tr><td>交易日期</td><td><code>trade_date</code>、<code>cal_date</code></td><td><code>date</code></td><td>行情、复权、专题快照使用 <code>trade_date=YYYYMMDD</code>；日历表使用 <code>cal_date=YYYYMMDD</code>；源端 <code>date</code> 必须映射。</td></tr><tr><td>更细粒度时间</td><td><code>datetime</code>、<code>trade_time</code>、<code>quote_time</code></td><td>provider 原始时间</td><td>分钟、逐笔、快照等可以使用更具体字段；进入 core 日线时仍需可映射到 <code>trade_date</code>。</td></tr><tr><td>价格</td><td><code>open</code>、<code>high</code>、<code>low</code>、<code>close</code>、<code>pre_close</code></td><td>provider 原始价格列</td><td>A 股 core 价格单位为人民币元，未复权。</td></tr><tr><td>成交量</td><td><code>vol</code></td><td><code>volume</code></td><td>core <code>daily</code> 使用 <code>vol</code>，源端常见 <code>volume</code> 通过 profile <code>field_mappings</code> 标明。</td></tr><tr><td>成交额</td><td><code>amount</code></td><td>provider 原始成交额</td><td>core <code>daily.amount</code> 单位为千元；source/snapshot 接口如为元或其它单位，字段说明必须写清。</td></tr><tr><td>复权因子</td><td><code>adj_factor</code></td><td>provider 原始因子</td><td>必须大于 0。</td></tr><tr><td>采集来源</td><td>metadata 中的 <code>provider</code>、<code>source</code>、<code>interface_name</code></td><td>不进入常规用户表</td><td>写出链路在 run metadata/quality 中保留来源，core 用户表默认不加采集追踪列。</td></tr></tbody></table></div>
+<p>字段兼容策略：</p>
+<ul>
+<li>对外 core/query 以表 schema 的稳定字段为准；<code>daily.ts_code</code>、<code>daily.vol</code>、<code>stock_basic_exchange.instrument_id</code> 不在本阶段改名。</li>
+<li>provider 原始字段可以保留在 raw/snapshot/source 输出中，但不能替代 canonical 字段；需要映射时在 DownloaderProfile <code>output.field_mappings</code> 或 schema <code>provider_field_mappings</code> 中声明。</li>
+<li>第一批 source-only 接口仍以 catalog/manifest 字段为真相源；进入 core 前必须经过映射、单位确认和质量检查。</li>
+<li>新增接口如需表达统一证券代码，优先使用 <code>instrument_id</code> 或目标 core 表既有字段；避免把 raw 六位代码继续命名为 <code>symbol</code>。</li>
+</ul>
+<p>当前可用能力说明：以下 schema、主键、storage 和 query 路径已经可用，并有小样本测试覆盖。第一批内置交易所/HTTP 源接口保留轻量 DownloaderProfile 和 source_request 能力，可服务 <code>stock_basic_exchange</code> / <code>trade_cal</code> 的小样本检查，但不再提供默认 CollectorSpec。TDX 插件中保留 DownloaderProfile 作为 <code>/v1/downloaders</code> 兼容入口，同时 8 个 TDX 核心采集器由 <code>axdata.collector.tdx</code> 独立 CollectorSpec 提供；<code>stock_capital_changes_tdx</code> 与 <code>stock_adj_factor_tdx</code> 保留为源端接口和兼容 DownloaderProfile，不再作为采集器进入采集页。TDX source Provider manifest 不再声明 collectors。<code>stock_kline_daily_tdx</code> 可通过默认独立采集器写显式代码小样本；<code>stock_adj_factor_tdx</code> 保留 schema、source_request 和兼容下载入口，用于复权因子口径验证和重建能力，不作为默认高频采集任务。文档中的其它写入策略表示推荐设计，不应理解为所有真实源都已经具备全市场长期采集能力。</p>
+<h3>第一批源端接口 schema 摘要</h3>
+<p>这批接口的字段真相源仍是各自 <code>sources/*/catalog.py</code> 和 Provider manifest，下面只列主键、默认写入层和主要字段，便于判断采集输出形态。</p>
+<div class="table-wrap"><table><thead><tr><th>interface_name</th><th>层级</th><th>主键</th><th>主要字段</th></tr></thead><tbody><tr><td><code>stock_trade_calendar_exchange</code></td><td>core</td><td><code>cal_date</code></td><td><code>cal_date</code>、<code>is_open</code>、<code>pretrade_date</code>、<code>next_trade_date</code></td></tr><tr><td><code>stock_historical_list_exchange</code></td><td>snapshot</td><td><code>trade_date + instrument_id</code></td><td><code>trade_date</code>、<code>instrument_id</code>、<code>symbol</code>、<code>exchange</code>、<code>name</code>、<code>market</code>、<code>list_date</code>、<code>delist_date</code>、<code>listing_status</code></td></tr><tr><td><code>stock_basic_info_exchange</code></td><td>core</td><td><code>instrument_id</code></td><td>复用 <code>stock_basic_exchange</code> 字段</td></tr><tr><td><code>cninfo_announcements</code></td><td>raw</td><td><code>instrument_id + announcement_id</code></td><td><code>instrument_id</code>、<code>announcement_id</code>、<code>title</code>、<code>publish_date</code>、<code>file_type</code>、<code>file_size_kb</code>、<code>download_url</code></td></tr><tr><td><code>cninfo_announcement_detail</code></td><td>raw</td><td><code>download_url</code></td><td><code>announcement_id</code>、<code>title</code>、<code>content_type</code>、<code>file_size_bytes</code>、<code>download_url</code></td></tr><tr><td><code>tencent_realtime_snapshot</code></td><td>snapshot</td><td><code>instrument_id</code></td><td><code>instrument_id</code>、<code>quote_time</code>、<code>last_price</code>、<code>pre_close</code>、<code>open</code>、<code>high</code>、<code>low</code>、<code>change_pct</code>、<code>amount</code>、<code>turnover_rate</code>、<code>pe_dynamic</code>、<code>pb</code>、<code>limit_up_price</code>、<code>limit_down_price</code></td></tr><tr><td><code>eastmoney_dragon_tiger_daily</code></td><td>raw</td><td><code>trade_date + instrument_id + reason</code></td><td><code>trade_date</code>、<code>instrument_id</code>、<code>reason</code>、<code>close_price</code>、<code>change_pct</code>、<code>buy_amount</code>、<code>sell_amount</code>、<code>net_buy_amount</code>、<code>total_amount</code></td></tr><tr><td><code>eastmoney_margin_trading</code></td><td>raw</td><td><code>trade_date + instrument_id</code></td><td><code>trade_date</code>、<code>instrument_id</code>、<code>margin_balance</code>、<code>margin_buy_amount</code>、<code>margin_repay_amount</code>、<code>short_balance</code>、<code>total_balance</code></td></tr><tr><td><code>eastmoney_research_reports</code></td><td>raw</td><td><code>report_id</code></td><td><code>report_id</code>、<code>instrument_id</code>、<code>title</code>、<code>publish_date</code>、<code>org_name</code>、<code>rating</code>、<code>researcher</code>、<code>eps_forecast_this_year</code>、<code>pe_forecast_this_year</code></td></tr><tr><td><code>stock_financial_report_sina</code></td><td>raw</td><td><code>statement_type + instrument_id + report_date + item_name</code></td><td><code>statement_type</code>、<code>instrument_id</code>、<code>report_date</code>、<code>statement_name</code>、<code>item_name</code>、<code>item_value</code>、<code>publish_date</code>、<code>currency</code></td></tr></tbody></table></div>
+<h3>第二批 TDX 源端接口 schema 摘要</h3>
+<p>这两个接口进入 TDX 插件的源端接口和兼容 DownloaderProfile 链路，用于显式代码样本或小批量检查。其中 <code>stock_kline_daily_tdx</code> 另有默认独立 CollectorSpec 可写日线小样本；<code>stock_adj_factor_tdx</code> 只保留接口、schema 和兼容下载能力，不作为默认采集器。如需全市场长期更新，应按采集器规范补充专用转换任务。</p>
+<div class="table-wrap"><table><thead><tr><th>interface_name</th><th>层级</th><th>主键</th><th>主要字段</th></tr></thead><tbody><tr><td><code>stock_kline_daily_tdx</code></td><td>core</td><td><code>instrument_id + trade_time + period</code></td><td><code>instrument_id</code>、<code>symbol</code>、<code>tdx_code</code>、<code>exchange</code>、<code>trade_time</code>、<code>period</code>、<code>open</code>、<code>high</code>、<code>low</code>、<code>close</code>、<code>volume</code>、<code>amount</code></td></tr><tr><td><code>stock_adj_factor_tdx</code></td><td>core</td><td><code>ts_code + trade_date</code></td><td><code>instrument_id</code>、<code>ts_code</code>、<code>symbol</code>、<code>tdx_code</code>、<code>exchange</code>、<code>trade_date</code>、<code>adj_factor</code></td></tr></tbody></table></div>
+<p>TDX 日 K 线目前是源端 core 样本口径，保留 <code>instrument_id</code>、<code>trade_time</code>、<code>volume</code> 等源端字段；profile 已声明 <code>instrument_id -&gt; ts_code</code>、<code>trade_time -&gt; trade_date</code>、<code>volume -&gt; vol</code> 映射。真正写入稳定 <code>core.daily</code> 生产分区前仍需 raw/staging -&gt; core 转换任务把这些字段落到 <code>daily</code> schema。</p>
+<p>写入策略说明：<code>stock_adj_factor_tdx</code> 的推荐目标是 <code>upsert_by_key ts_code + trade_date</code> 并按 <code>trade_date</code> 分区，但当前不作为默认采集器进入采集页。<code>stock_kline_daily_tdx</code> 的推荐目标是 <code>upsert_by_key instrument_id + trade_time + period</code> 或转换后 <code>upsert_by_key ts_code + trade_date</code>；在正式写入稳定 <code>core.daily</code> 前，仍需确认 <code>trade_time -&gt; trade_date</code>、<code>volume -&gt; vol</code> 等映射和质量规则。</p>
+<h3>写出质量摘要 v1</h3>
+<p>Downloader/Collector 写出链路的 <code>quality</code> 字段保留旧键：</p>
+<ul>
+<li><code>schema</code></li>
+<li><code>primary_key</code></li>
+<li><code>row_count</code></li>
+</ul>
+<p>同时新增以下摘要字段，供 CLI/API/Web 现有 JSON 展示直接序列化：</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>含义</th></tr></thead><tbody><tr><td><code>quality_status</code></td><td><code>ok</code>、<code>warn</code>、<code>error</code>。有 blocking 错误为 <code>error</code>，只有非阻塞提示为 <code>warn</code>。</td></tr><tr><td><code>row_count_value</code></td><td>实际写出行数。</td></tr><tr><td><code>required_columns_present</code></td><td>profile/schema 声明的 required columns 是否全部存在。</td></tr><tr><td><code>missing_required_columns</code></td><td>缺失的 required columns。</td></tr><tr><td><code>null_counts</code></td><td>required columns 的空值行数。</td></tr><tr><td><code>duplicate_key_count</code></td><td>主键重复影响的行数。</td></tr><tr><td><code>duplicate_key_samples</code></td><td>主键重复样本，限制条数，避免 quality JSON 过大。</td></tr><tr><td><code>date_field</code>、<code>date_range</code></td><td>声明日期/时间字段及最小、最大值。</td></tr><tr><td><code>min_date</code>、<code>max_date</code>、<code>actual_date_count</code></td><td>日期字段归一化到 <code>YYYYMMDD</code> 后的最小/最大日期和实际日期数。</td></tr><tr><td><code>schema_columns</code>、<code>expected_columns</code>、<code>unexpected_columns</code></td><td>实际列、期望列和额外列。</td></tr><tr><td><code>numeric_positive_checks</code></td><td>对价格、成交量、成交额、复权因子等非负/正数列的检查摘要。</td></tr><tr><td><code>field_mappings</code></td><td>provider/source 字段到 core canonical 字段的兼容映射。</td></tr><tr><td><code>write_mode</code></td><td>本次写入模式，例如 <code>snapshot</code>、<code>append</code>、<code>overwrite_partition</code>、<code>replace_range</code>、<code>upsert_by_key</code>。</td></tr><tr><td><code>partition_by</code>、<code>write_primary_key</code>、<code>write_date_field</code></td><td>写入策略使用的分区字段、主键和日期字段；<code>primary_key</code> 旧键仍表示质量检查状态。</td></tr><tr><td><code>replace_range_start</code>、<code>replace_range_end</code></td><td><code>replace_range</code> 本次替换的日期闭区间。</td></tr><tr><td><code>rows_before</code>、<code>rows_written</code>、<code>rows_after</code></td><td>写入前、输入和写入后行数；只在 writer 可低风险获得时填充。</td></tr><tr><td><code>duplicate_rows_dropped</code>、<code>partitions_touched</code></td><td>upsert 去重行数和本次触达的分区标签。</td></tr><tr><td><code>calendar_coverage_status</code></td><td>交易日历对齐状态：<code>ok</code>、<code>warn</code>、<code>error</code>；缺少本地交易日历时为 <code>warn</code>。</td></tr><tr><td><code>expected_trading_day_count</code>、<code>actual_trading_day_count</code></td><td>数据日期范围内预期交易日数和实际数据日期数。</td></tr><tr><td><code>missing_trading_dates</code>、<code>extra_non_trading_dates</code></td><td>缺失交易日样本和非交易日多出样本，限制条数。</td></tr><tr><td><code>date_gap_count</code>、<code>missing_date_samples</code></td><td>日期缺口数量和样本。</td></tr><tr><td><code>per_symbol_date_coverage</code></td><td>按证券代码汇总的小样本日期覆盖摘要。</td></tr><tr><td><code>unexplained_missing_dates</code>、<code>suspension_explained_missing_dates</code></td><td>缺口解释样本；没有停牌数据时缺口只标记为 unexplained。</td></tr><tr><td><code>price_ohlc_anomaly_count</code>、<code>negative_volume_count</code>、<code>negative_amount_count</code>、<code>invalid_adj_factor_count</code></td><td>日 K 线和复权因子专项异常计数。</td></tr><tr><td><code>quality_warnings</code>、<code>quality_errors</code></td><td>可读的问题摘要。</td></tr></tbody></table></div>
+<p>这些检查按 profile/schema 声明执行：没有日期字段的接口不会因为缺日期而失败；source-only 接口也可以只检查 row_count、required columns 和 primary key。 交易日历检查只对 <code>daily</code>、<code>adj_factor</code>、<code>stock_kline_daily_tdx</code>、<code>stock_adj_factor_tdx</code> 等行情/复权样本启用。当前采集任务层已经支持 <code>required_datasets=[&quot;trade_cal&quot;]</code>：任务运行前会先检查本地交易日历基础数据，缺失或覆盖不足时阻止运行并返回清楚的 <code>dependency_missing</code> 提示；质量检查阶段则在已有日历基础上继续记录日期缺口、非交易日和 <code>calendar_next_action</code>。日期缺口不必然表示源端错误，可能来自停牌、未上市/退市、源端遗漏或采集范围不完整。当前没有历史停牌日期库时，缺口默认归入 <code>unexplained_missing_dates</code>。</p>
+<p>Data Browser 会直接消费这些字段：列表页优先展示 <code>quality_status</code>、<code>row_count_value</code>、<code>date_field/date_range</code>、<code>schema_columns</code>、<code>quality_warnings</code>、<code>quality_errors</code>、<code>field_mappings</code> 和写入 metadata。旧 run metadata 没有这些 richer 字段时，浏览层会从候选 Parquet 补充 <code>columns</code>、<code>row_count</code> 和日期范围，写入字段保持空值；补充查询只针对已发现的 parquet 路径，并带默认 limit，不会触发源端请求。</p>
+<h3>stock_basic_exchange</h3>
+<p>股票列表（交易所）。一行代表交易所官方股票列表口径下的一只证券。</p>
+<p>主键：<code>instrument_id</code></p>
+<p>建议写入策略：交易所当前完整列表每日 22:00 拉取；raw 每次保存，core latest 可整表 <code>snapshot</code> 重建，core history 只在 diff 变化时写入版本；稳定主键路径可演进为 <code>upsert_by_key instrument_id</code>。采集任务、批次、运行参数、质量结果和写入 metadata 写入 metadata/manifest。</p>
+<p>调用和识别约定：</p>
+<div class="table-wrap"><table><thead><tr><th>概念</th><th>示例</th><th>说明</th></tr></thead><tbody><tr><td>精确查一只股票</td><td><code>instrument_id=600000.SH</code></td><td>推荐方式；后缀已经说明上市交易所</td></tr><tr><td>按交易所查</td><td><code>exchange=SSE</code></td><td><code>SSE</code>=上交所，<code>SZSE</code>=深交所，<code>BSE</code>=北交所</td></tr><tr><td>原始证券代码</td><td><code>symbol=600000</code></td><td>不带后缀，主要用于和交易所列表核对</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead><tbody><tr><td><code>instrument_id</code></td><td>string</td><td>是</td><td>AxData 统一证券代码，例如 <code>000001.SZ</code>、<code>600000.SH</code>、<code>430047.BJ</code>；后缀已表示上市交易所</td></tr><tr><td><code>symbol</code></td><td>string</td><td>是</td><td>交易所原始证券代码，例如 <code>000001</code></td></tr><tr><td><code>exchange</code></td><td>string</td><td>是</td><td>交易所筛选代码，建议值 <code>SSE</code>、<code>SZSE</code>、<code>BSE</code></td></tr><tr><td><code>asset_type</code></td><td>string</td><td>是</td><td>资产类型，本表固定为 <code>stock</code></td></tr><tr><td><code>name</code></td><td>string</td><td>是</td><td>证券简称</td></tr><tr><td><code>security_full_name</code></td><td>string</td><td>否</td><td>证券全称，源不提供时为空</td></tr><tr><td><code>market_code</code></td><td>string</td><td>否</td><td>市场板块代码</td></tr><tr><td><code>market</code></td><td>string</td><td>否</td><td>市场板块，例如主板、创业板、科创板、北交所</td></tr><tr><td><code>industry_code</code></td><td>string</td><td>否</td><td>行业代码，使用交易所官方列表口径</td></tr><tr><td><code>industry</code></td><td>string</td><td>否</td><td>行业名称，使用交易所官方列表口径</td></tr><tr><td><code>region_code</code></td><td>string</td><td>否</td><td>地区代码</td></tr><tr><td><code>region</code></td><td>string</td><td>否</td><td>地区名称</td></tr><tr><td><code>company_code</code></td><td>string</td><td>否</td><td>交易所官方公司代码</td></tr><tr><td><code>company_short_name</code></td><td>string</td><td>否</td><td>交易所官方公司简称</td></tr><tr><td><code>company_full_name</code></td><td>string</td><td>否</td><td>公司法定全称</td></tr><tr><td><code>company_short_name_en</code></td><td>string</td><td>否</td><td>公司英文简称</td></tr><tr><td><code>company_full_name_en</code></td><td>string</td><td>否</td><td>公司英文全称</td></tr><tr><td><code>listing_status</code></td><td>string</td><td>是</td><td>AxData 上市状态，建议值 <code>listed</code>、<code>delisted</code>、<code>suspended</code>、<code>unknown</code></td></tr><tr><td><code>list_date</code></td><td>string</td><td>否</td><td>上市日期，<code>YYYYMMDD</code></td></tr><tr><td><code>delist_date</code></td><td>string</td><td>否</td><td>退市日期，未退市为空</td></tr><tr><td><code>total_share</code></td><td>double</td><td>否</td><td>总股本，单位：亿股</td></tr><tr><td><code>float_share</code></td><td>double</td><td>否</td><td>流通股本，单位：亿股</td></tr><tr><td><code>is_profit</code></td><td>string</td><td>否</td><td>是否尚未盈利，保留交易所列表标记</td></tr><tr><td><code>is_vie</code></td><td>string</td><td>否</td><td>是否具有协议控制架构，保留交易所列表标记</td></tr><tr><td><code>has_weighted_voting_rights</code></td><td>string</td><td>否</td><td>是否具有表决权差异安排，保留交易所列表标记</td></tr><tr><td><code>sponsor</code></td><td>string</td><td>否</td><td>保荐机构或主办券商，源不提供时为空</td></tr><tr><td><code>share_report_date</code></td><td>string</td><td>否</td><td>股本数据报告日期，<code>YYYYMMDD</code></td></tr></tbody></table></div>
+<p>索引建议：</p>
+<ul>
+<li><code>instrument_id</code></li>
+<li><code>exchange</code></li>
+<li><code>listing_status</code></li>
+<li><code>industry</code></li>
+<li><code>region</code></li>
+</ul>
+<h3>trade_cal</h3>
+<p>交易日历表，一行代表一个交易所的一个自然日。</p>
+<p>主键：<code>exchange + cal_date</code></p>
+<p>建议写入策略：按交易所和年份 <code>overwrite_partition</code>，或按 <code>cal_date</code> 使用 <code>replace_range</code>；节假日发布后允许修订未来日期。</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead><tbody><tr><td><code>exchange</code></td><td>string</td><td>是</td><td>交易所，建议值 <code>SSE</code>、<code>SZSE</code>、<code>BSE</code></td></tr><tr><td><code>cal_date</code></td><td>string</td><td>是</td><td>自然日期，<code>YYYYMMDD</code></td></tr><tr><td><code>is_open</code></td><td>boolean</td><td>是</td><td>是否交易日</td></tr><tr><td><code>pretrade_date</code></td><td>string</td><td>否</td><td>上一个交易日，<code>YYYYMMDD</code>；非交易日也可填写最近上一交易日</td></tr></tbody></table></div>
+<p>约束：</p>
+<ul>
+<li>同一 <code>exchange + cal_date</code> 只能有一行。</li>
+<li><code>is_open = true</code> 时，<code>pretrade_date</code> 应早于 <code>cal_date</code>，首个交易日可为空。</li>
+</ul>
+<h3>daily</h3>
+<p>股票日行情表，一行代表一只股票在一个交易日的未复权日线行情。</p>
+<p>主键：<code>ts_code + trade_date</code></p>
+<p>建议写入策略：按 <code>trade_date</code> 分区增量写入；历史修订按分区重写或按 <code>date_field=trade_date</code> 使用 <code>replace_range</code>；稳定 core 写入可使用 <code>upsert_by_key ts_code + trade_date</code>。</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead><tbody><tr><td><code>ts_code</code></td><td>string</td><td>是</td><td>AxData 统一证券代码</td></tr><tr><td><code>trade_date</code></td><td>string</td><td>是</td><td>交易日期，<code>YYYYMMDD</code></td></tr><tr><td><code>open</code></td><td>double</td><td>否</td><td>开盘价，未复权，人民币元</td></tr><tr><td><code>high</code></td><td>double</td><td>否</td><td>最高价，未复权，人民币元</td></tr><tr><td><code>low</code></td><td>double</td><td>否</td><td>最低价，未复权，人民币元</td></tr><tr><td><code>close</code></td><td>double</td><td>否</td><td>收盘价，未复权，人民币元</td></tr><tr><td><code>pre_close</code></td><td>double</td><td>否</td><td>昨收价，未复权，人民币元</td></tr><tr><td><code>change</code></td><td>double</td><td>否</td><td>涨跌额，人民币元</td></tr><tr><td><code>pct_chg</code></td><td>double</td><td>否</td><td>涨跌幅，百分比数值，例如 <code>1.23</code> 表示 1.23%</td></tr><tr><td><code>vol</code></td><td>double</td><td>否</td><td>成交量，单位：手</td></tr><tr><td><code>amount</code></td><td>double</td><td>否</td><td>成交额，单位：千元</td></tr></tbody></table></div>
+<p>约束：</p>
+<ul>
+<li><code>trade_date</code> 必须是对应交易所开市日。</li>
+<li><code>high &gt;= low</code>。</li>
+<li>若 OHLC 均非空，则 <code>high &gt;= open</code>、<code>high &gt;= close</code>、<code>low &lt;= open</code>、<code>low &lt;= close</code>。</li>
+<li><code>vol &gt;= 0</code>，<code>amount &gt;= 0</code>。</li>
+<li>core 层 <code>daily</code> 不保存前复权或后复权价格。</li>
+</ul>
+<p>分区建议：</p>
+<pre><code class="language-text">data/core/table=daily/parquet/20260605.parquet</code></pre>
+<h3>adj_factor</h3>
+<p>复权因子表，一行代表一只股票在一个交易日的复权因子。</p>
+<p>主键：<code>ts_code + trade_date</code></p>
+<p>建议写入策略：按 <code>trade_date</code> 分区增量写入；发生分红送转修订时重建受影响区间；目标写入模式为 <code>upsert_by_key ts_code + trade_date</code>。当前 <code>stock_adj_factor_tdx</code> 保留为源端接口、schema 和兼容下载能力，不作为默认采集器进入采集页。</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>类型</th><th>必填</th><th>说明</th></tr></thead><tbody><tr><td><code>ts_code</code></td><td>string</td><td>是</td><td>AxData 统一证券代码</td></tr><tr><td><code>trade_date</code></td><td>string</td><td>是</td><td>交易日期，<code>YYYYMMDD</code></td></tr><tr><td><code>adj_factor</code></td><td>double</td><td>是</td><td>复权因子，必须大于 0</td></tr></tbody></table></div>
+<p>复权视图口径：</p>
+<ul>
+<li>未复权价格来自 <code>daily</code>。</li>
+<li>复权因子来自 <code>adj_factor</code>。</li>
+<li>前复权/后复权价格由查询层或 factor 层派生，不直接写入 <code>daily</code>。</li>
+<li>具体公式需要按选定主接口口径固定，并在 API metadata 中暴露 <code>adjust_method</code>。</li>
+</ul>
+<p>约束：</p>
+<ul>
+<li><code>adj_factor &gt; 0</code>。</li>
+<li><code>trade_date</code> 应覆盖 <code>daily</code> 中对应证券的交易日。</li>
+<li>同一主键只能有一条记录。</li>
+</ul>
+<p>分区建议：</p>
+<pre><code class="language-text">data/core/table=adj_factor/parquet/20260605.parquet</code></pre></article>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

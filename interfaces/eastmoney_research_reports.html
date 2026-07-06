@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>个股研报列表 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 东方财富</p>
+  <h1>个股研报列表</h1>
+  <p class="code-title">eastmoney_research_reports</p>
+  <p class="lead">低频获取个股研报列表元信息；不抓取 PDF 正文。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>eastmoney_research_reports</dd></div><div><dt>Provider</dt><dd>axdata.source.eastmoney</dd></div><div><dt>数据源</dt><dd>东方财富 / eastmoney</dd></div><div><dt>目录</dt><dd>东方财富 / 研报数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>这个接口只保留已确认字段；金额字段单位为元，遇到源端空结果返回空表。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>股票代码，支持 000001、000001.SZ。</td><td></td></tr><tr><td><code>start_date</code></td><td>string</td><td>否</td><td>开始发布日期，YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr><tr><td><code>end_date</code></td><td>string</td><td>否</td><td>结束发布日期，YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr><tr><td><code>page</code></td><td>integer</td><td>否</td><td>页码，默认 1。</td><td>1</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>每页条数，默认 20，最大 100。</td><td>20</td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>不传 fields 时返回上方全部字段；临时调用只查一次。</p></div>
+  <div class="note"><strong>参数示例</strong><p>client.call(&quot;eastmoney_research_reports&quot;, code=&quot;000001.SZ&quot;, start_date=&quot;20240101&quot;, end_date=&quot;20241231&quot;, limit=5)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>report_id</code></td><td>string</td><td>研报 ID。</td></tr><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>title</code></td><td>string</td><td>研报标题。</td></tr><tr><td><code>publish_date</code></td><td>date</td><td>发布日期，格式 YYYYMMDD。</td></tr><tr><td><code>org_name</code></td><td>string</td><td>研究机构。</td></tr><tr><td><code>rating</code></td><td>string</td><td>评级。</td></tr><tr><td><code>rating_change</code></td><td>string</td><td>评级变动源端值。</td></tr><tr><td><code>researcher</code></td><td>string</td><td>研究员。</td></tr><tr><td><code>eps_forecast_this_year</code></td><td>number</td><td>本年度 EPS 预测，单位：元/股。</td></tr><tr><td><code>pe_forecast_this_year</code></td><td>number</td><td>本年度 PE 预测，倍。</td></tr><tr><td><code>file_size_kb</code></td><td>number</td><td>附件大小，单位：KB。</td></tr><tr><td><code>page_count</code></td><td>integer</td><td>附件页数。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;eastmoney_research_reports&quot;,
+    code=&#x27;000001.SZ&#x27;,
+    end_date=&#x27;20241231&#x27;,
+    limit=5,
+    start_date=&#x27;20240101&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/eastmoney_research_reports
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;000001.SZ&quot;,
+    &quot;start_date&quot;: &quot;20240101&quot;,
+    &quot;end_date&quot;: &quot;20241231&quot;,
+    &quot;limit&quot;: 5
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;000001.SZ&quot;,
+  &quot;start_date&quot;: &quot;20240101&quot;,
+  &quot;end_date&quot;: &quot;20241231&quot;,
+  &quot;limit&quot;: 5
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;report_id&quot;: &quot;AP202410221640398395&quot;,
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;平安银行&quot;,
+    &quot;title&quot;: &quot;2024年三季报点评：零售业务调优结构，存款成本持续改善&quot;,
+    &quot;publish_date&quot;: &quot;20241022&quot;,
+    &quot;org_name&quot;: &quot;东兴证券股份有限公司&quot;,
+    &quot;rating&quot;: &quot;买入&quot;,
+    &quot;rating_change&quot;: &quot;3&quot;,
+    &quot;researcher&quot;: &quot;林瑾璐,田馨宇&quot;,
+    &quot;eps_forecast_this_year&quot;: 2.6,
+    &quot;pe_forecast_this_year&quot;: 4.54,
+    &quot;file_size_kb&quot;: 960.0,
+    &quot;page_count&quot;: 8
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

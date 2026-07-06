@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>互动易回答详情 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>互动易回答详情</h1>
+  <p class="code-title">stock_irm_ans_cninfo</p>
+  <p class="lead">临时获取巨潮互动易回答详情数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_irm_ans_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 互动易</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求互动易单条问答详情，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>question_id</code></td><td>string</td><td>是</td><td>互动易问题编号，可从 stock_irm_cninfo 的 question_id 获取。</td><td></td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>公司简称。</td></tr><tr><td><code>question_id</code></td><td>string</td><td>互动易问题编号。</td></tr><tr><td><code>question</code></td><td>string</td><td>提问内容。</td></tr><tr><td><code>answer</code></td><td>string</td><td>回答内容。</td></tr><tr><td><code>questioner</code></td><td>string</td><td>提问者。</td></tr><tr><td><code>question_time</code></td><td>datetime</td><td>提问时间，Asia/Shanghai，格式 YYYYMMDDHHMMSS。</td></tr><tr><td><code>answer_time</code></td><td>datetime</td><td>回答时间，Asia/Shanghai，格式 YYYYMMDDHHMMSS。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_irm_ans_cninfo&quot;,
+    question_id=&#x27;1495108801386602496&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_irm_ans_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;question_id&quot;: &quot;1495108801386602496&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;question_id&quot;: &quot;1495108801386602496&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;002594.SZ&quot;,
+    &quot;symbol&quot;: &quot;002594&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;比亚迪&quot;,
+    &quot;question_id&quot;: &quot;1495108801386602496&quot;,
+    &quot;question&quot;: &quot;建议比亚迪公司研究研究“老车主付费升级辅助驾驶系统”的可行性，一来可以提升用户使用体验，二来可以增加收入。&quot;,
+    &quot;answer&quot;: &quot;您好！比亚迪一直秉承用技术创新，满足人们对美好生活的向往，持续关注消费者的需求，并适时推出符合需求的产品。您的建议我们已经收到，感谢您对公司的关注！&quot;,
+    &quot;questioner&quot;: &quot;irm1541214&quot;,
+    &quot;question_time&quot;: &quot;20230708121253&quot;,
+    &quot;answer_time&quot;: &quot;20230712083431&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

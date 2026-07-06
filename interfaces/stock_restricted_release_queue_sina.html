@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新浪限售解禁批次 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>新浪限售解禁批次</h1>
+  <p class="code-title">stock_restricted_release_queue_sina</p>
+  <p class="lead">临时获取新浪财经新浪限售解禁批次数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_restricted_release_queue_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 发行分配</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪单证券限售解禁表，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>symbol</code></td><td>string</td><td>否</td><td>股票代码、AxData 证券代码或新浪代码，例如 sh600000；默认 sh600000。</td><td>&quot;sh600000&quot;</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多返回行数，默认 100，最大 5000。</td><td>100</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位股票代码。</td></tr><tr><td><code>sina_symbol</code></td><td>string</td><td>新浪带市场前缀代码，例如 sh600000。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>股票名称。</td></tr><tr><td><code>release_date</code></td><td>date</td><td>解禁日期，格式 YYYYMMDD。</td></tr><tr><td><code>release_shares_10k</code></td><td>number</td><td>解禁数量，单位：万股。</td></tr><tr><td><code>release_market_value_100m_yuan</code></td><td>number</td><td>解禁股流通市值，单位：亿元。</td></tr><tr><td><code>batch_no</code></td><td>integer</td><td>上市批次。</td></tr><tr><td><code>announcement_date</code></td><td>date</td><td>公告日期，格式 YYYYMMDD。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_restricted_release_queue_sina&quot;,
+    limit=1,
+    symbol=&#x27;sh600000&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_restricted_release_queue_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;symbol&quot;: &quot;sh600000&quot;,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;symbol&quot;: &quot;sh600000&quot;,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;600000.SH&quot;,
+    &quot;symbol&quot;: &quot;600000&quot;,
+    &quot;sina_symbol&quot;: &quot;sh600000&quot;,
+    &quot;exchange&quot;: &quot;SSE&quot;,
+    &quot;name&quot;: &quot;浦发银行&quot;,
+    &quot;release_date&quot;: &quot;20200904&quot;,
+    &quot;release_shares_10k&quot;: 124831.65,
+    &quot;release_market_value_100m_yuan&quot;: 127.0786,
+    &quot;batch_no&quot;: 10,
+    &quot;announcement_date&quot;: &quot;20170906&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

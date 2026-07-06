@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>路线图 - AxData 文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="" href="../interfaces/index.html">接口文档</a><a class="active" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">开发文档</a></p>
+  <h1>路线图</h1>
+</section>
+<article class="markdown-body"><h2>路线图</h2>
+<p>AxData 的演进路线从本地版开始，逐步扩展到局域网共享，再到云端发布。每一阶段都应保持上一阶段可独立使用。</p>
+<h3>阶段 0：文档与契约</h3>
+<p>目标：把架构、分层、接口目录、调用边界和初始 schema 固化为实现依据。</p>
+<p>交付：</p>
+<ul>
+<li>架构设计文档。</li>
+<li>数据分层文档。</li>
+<li>API 设计文档。</li>
+<li>初始 schema 设计。</li>
+<li>按需接口接入计划。</li>
+<li>本地到云端的路线图。</li>
+</ul>
+<p>完成标准：</p>
+<ul>
+<li>贡献者可以按文档实现，不依赖口头同步。</li>
+<li>初始核心表和按需接口的字段、参数、日期和代码格式达成一致。</li>
+</ul>
+<h3>阶段 1：接口契约与源端直取</h3>
+<p>目标：优先完善 AxData 接口手册、字段契约和源端直取链路，避免存储设计过早限制接口演进。</p>
+<p>范围：</p>
+<ul>
+<li>建立接口注册表：接口名、中文名、分类、参数、字段、示例、调用性质。</li>
+<li>固定“接口即口径”的用户契约：交易所列表保留为当前主口径，新增源端接口都用独立接口名表达口径。</li>
+<li>按项目接口需求接入源端直取：先写接口契约，再补适配器和解析。</li>
+<li>提供 SDK <code>client.call(interface, **params)</code> 和 HTTP <code>POST /v1/request/{interface}</code>。</li>
+<li>高频接口可按需补便捷方法，接口名和字段由实际业务口径决定。</li>
+<li>前端“接口”页按三级目录展示字段、参数、示例请求和示例数据。</li>
+<li>前端“调试”页可以立即请求源端并展示返回结果。</li>
+</ul>
+<p>完成标准：</p>
+<ul>
+<li>已注册接口在手册里能找到，且每个接口有 AxData 字段说明。</li>
+<li>首批主链路接口能真实请求源端并返回 AxData 字段。</li>
+<li>源端直取默认不写入 <code>raw</code>、<code>staging</code>、<code>core</code> 或 <code>factor</code>。</li>
+<li>普通查询和源端直取在 SDK/API/前端上明确分开。</li>
+<li>贡献者可以按接口逐个补字段解析，不需要重新讨论目录和命名。</li>
+</ul>
+<h3>阶段 2：本地存储版</h3>
+<p>目标：给已稳定的接口增加显式采集入库能力，形成可回放、可查询的数据底座。</p>
+<p>范围：</p>
+<ul>
+<li>建立本地 <code>axdata-home</code> 目录结构。</li>
+<li>以 Parquet 保存 raw、staging、core。</li>
+<li>使用 DuckDB 查询 core/factor Parquet。</li>
+<li>实现 <code>stock_basic_exchange</code>、<code>trade_cal</code>、<code>daily</code>、<code>adj_factor</code> 等首批 core 表，并按需扩展新的接口口径。</li>
+<li>提供 CLI 或 Python 函数完成初始化、增量采集、修复和重放。</li>
+<li>增加 schema catalog、manifest 和数据质量报告。</li>
+</ul>
+<p>完成标准：</p>
+<ul>
+<li>可以采集并查询股票列表、交易日历、日行情和复权因子。</li>
+<li>Python SDK 不依赖本地 HTTP 服务即可读取本机数据目录。</li>
+<li>删除 DuckDB 缓存后可以从 Parquet 重建查询视图。</li>
+<li>每次采集都有 task/batch/run、manifest、行数、日期范围和质量检查结果。</li>
+</ul>
+<h3>阶段 3：本地研究版</h3>
+<p>目标：让研究者在 Notebook、脚本和回测中稳定使用 AxData。</p>
+<p>范围：</p>
+<ul>
+<li>完善 Python SDK 的表查询、字段选择、日期范围和本地 DataFrame 体验。</li>
+<li>提供本地 HTTP API，作为 Web、curl、跨语言和远程调试通道。</li>
+<li>增加常用因子样例，例如收益率、波动率、换手、量价动量。</li>
+<li>增加批量导出能力，支持 JSON、CSV、Arrow、Parquet。</li>
+<li>建立本地任务日志和失败重试。</li>
+</ul>
+<p>完成标准：</p>
+<ul>
+<li>Notebook 中可以用统一 SDK 拉取行情、日历和因子。</li>
+<li>SDK 默认本地直读，传入 <code>api_base</code> 时才通过 HTTP API 读取远程服务；源端直取仍通过 <code>call/request</code> 显式触发。</li>
+<li>因子结果可以追溯到 core 表版本和计算参数。</li>
+</ul>
+<h3>阶段 4：局域网共享版</h3>
+<p>目标：把个人本地数据底座升级为团队内网数据服务。</p>
+<p>范围：</p>
+<ul>
+<li>API 服务绑定内网地址。</li>
+<li>增加 AxData token 鉴权、作用域和访问日志。</li>
+<li>数据目录可升级到共享盘、NAS 或内网对象存储。</li>
+<li>采集任务服务化，支持定时更新和手动补数。</li>
+<li>支持多用户只读查询和管理员写入。</li>
+<li>建立基础限流，防止大查询拖垮服务。</li>
+</ul>
+<p>完成标准：</p>
+<ul>
+<li>团队成员无需第三方源 token 即可查询授权数据。</li>
+<li>管理员可以查看采集任务、失败原因和数据质量报告。</li>
+<li>服务重启不影响 Parquet 数据完整性。</li>
+<li>内网客户端优先使用同一套 Python SDK，通过 <code>api_base</code> 指向内网 API；非 Python 客户端使用同一套 HTTP API 通道。</li>
+</ul>
+<h3>阶段 5：云端发布版</h3>
+<p>目标：将 AxData 作为可发布、可运维、可追溯的数据 API。</p>
+<p>范围：</p>
+<ul>
+<li>Parquet 可升级到对象存储。</li>
+<li>元数据可升级到托管数据库。</li>
+<li>采集和重算任务可升级到队列与任务工作进程。</li>
+<li>API 前置网关，支持认证、配额、限流、访问记录和日志脱敏。</li>
+<li>引入服务账号、用户账号和 token 轮换。</li>
+<li>建立监控指标：延迟、错误率、查询量、任务成功率、数据新鲜度。</li>
+</ul>
+<p>完成标准：</p>
+<ul>
+<li>云端 API 与本地/局域网 API 保持兼容。</li>
+<li>Python SDK 继续作为推荐客户端，通过 <code>api_base</code> 接入云端 API。</li>
+<li>可以按账号、token、表和接口统计用量。</li>
+<li>源凭据不出服务端 secret manager。</li>
+<li>数据修订和回滚有明确操作记录。</li>
+</ul>
+<h3>阶段 6：生态扩展</h3>
+<p>目标：在稳定底座上扩展资产、实时、回测和第三方兼容能力。</p>
+<p>候选方向：</p>
+<ul>
+<li>增加指数、基金、可转债、期货、财务报表。</li>
+<li>增加更多分钟线、实时订阅和快照行情；实时默认只作为临时流，不进入历史表。</li>
+<li>增加 Qlib 导出器，支持训练集生成。</li>
+<li>增加可插拔数据接入扩展机制。</li>
+<li>增加 Tushare/RQData 兼容调用入口。</li>
+<li>增加 Web Dashboard，展示数据状态、质量、任务和 schema。</li>
+</ul>
+<p>进入条件：</p>
+<ul>
+<li>源端直取、采集入库、普通查询和实时录制的边界已经在实现中固定。</li>
+<li>初始股票列表、交易日历、日行情和复权因子表稳定运行。</li>
+<li>数据质量和 lineage 已经可查询。</li>
+<li>API 版本策略已经落地。</li>
+<li>本地和局域网模式没有架构性差异。</li>
+<li>接口目录和字段契约已经能支撑 Web 手册、SDK 和调试页。</li>
+</ul>
+<h3>风险与里程碑控制</h3>
+<ul>
+<li>上游接口不稳定：采集层保留可替换 adapter 和质量校验，用户表契约不跟随上游形态漂移。</li>
+<li>查询链路误触源端：<code>query</code> 只读入库数据，<code>request/call</code> 才能请求源端，源端直取和实时订阅默认不写历史层。</li>
+<li>复权口径差异：core 保存未复权价格和复权因子，复权视图可重算。</li>
+<li>文件过多：按日期分区后定期 compaction，控制小文件数量。</li>
+<li>schema 演进失控：所有字段变更先改 schema 文档，再改实现。</li>
+<li>过早云化：本地版未稳定前不引入分布式复杂度。</li>
+</ul></article>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

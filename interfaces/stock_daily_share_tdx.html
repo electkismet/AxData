@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>每日股本（盘前） - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>每日股本（盘前）</h1>
+  <p class="code-title">stock_daily_share_tdx</p>
+  <p class="lead">返回盘前可用的总股本、流通股本和流通股本Z。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_daily_share_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 股票数据 / 基础数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>是，默认 stock_daily_share_tdx.snapshot</dd></div></dl>
+  <p>这个接口会临时请求财务快照，并读取 AxData 项目缓存里的盘前统计资源。total_share、float_share 来自财务快照；free_float_share_z 和 trade_date 来自盘前统计资源。finance_updated_date 是单只股票财务快照自己的更新日期，不是本次请求时间戳。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>否</td><td>证券代码：可选；不传或传 all 表示按股票范围返回全量。也支持 000001、000001.SZ、sz000001；批量可传列表或英文逗号分隔字符串。</td><td></td></tr><tr><td><code>scope</code></td><td>string</td><td>否</td><td>股票范围：只在 code 不传或传 all 时生效；all 全部、main 主板、star 科创板、chinext 创业板、bse 北交所、cdr CDR；默认 all。</td><td>&quot;all&quot;</td></tr><tr><td><code>stats_cache_root</code></td><td>string</td><td>否</td><td>可选缓存目录：自动下载的 zhb.zip 和 zhb.meta.json 会保存到这里；不传时使用项目 cache/tdx/stats。</td><td></td></tr><tr><td><code>refresh_stats</code></td><td>boolean</td><td>否</td><td>是否强制从源端刷新 AxData 项目缓存里的统计资源；默认 false，缓存缺失或当天未刷新时会自动刷新。</td><td></td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>不传 code 默认返回全量股票；需要限制范围时传 scope，需要单只或多只时再传 code。缓存缺失或当天未刷新时系统会自动更新。</p></div>
+  <div class="note"><strong>参数示例</strong><p># 全量股票
+client.call(&quot;stock_daily_share_tdx&quot;)
+
+# 主板全量
+client.call(&quot;stock_daily_share_tdx&quot;, scope=&quot;main&quot;)
+
+# 单个标的
+client.call(&quot;stock_daily_share_tdx&quot;, code=&quot;000001.SZ&quot;)
+
+# 批量请求多个标的
+client.call(&quot;stock_daily_share_tdx&quot;, code=[&quot;000001.SZ&quot;, &quot;600000.SH&quot;])
+
+# 强制刷新统计资源后再返回
+client.call(&quot;stock_daily_share_tdx&quot;, code=&quot;000001.SZ&quot;, refresh_stats=True)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>trade_date</code></td><td>date</td><td>盘前股本口径日期。</td></tr><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码，例如 000001.SZ。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始六位代码。</td></tr><tr><td><code>tdx_code</code></td><td>string</td><td>TDX 带市场前缀代码，例如 sz000001。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>AxData 交易所代码：SSE、SZSE 或 BSE。</td></tr><tr><td><code>total_share</code></td><td>number</td><td>总股本，来自财务快照，单位：股。</td></tr><tr><td><code>float_share</code></td><td>number</td><td>流通股本，来自财务快照，单位：股。</td></tr><tr><td><code>free_float_share_z</code></td><td>number</td><td>流通股本Z（自由流通股本口径），来自统计资源，单位：股。</td></tr><tr><td><code>finance_updated_date</code></td><td>date</td><td>财务快照更新日期；不是本次请求时间戳。</td></tr><tr><td><code>share_source</code></td><td>string</td><td>普通使用可忽略；用于说明这行里的总股本、流通股本、流通股本Z分别有没有取到。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_daily_share_tdx&quot;,
+    code=&#x27;000001.SZ&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_daily_share_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;000001.SZ&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;000001.SZ&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;trade_date&quot;: &quot;20260615&quot;,
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;tdx_code&quot;: &quot;sz000001&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;total_share&quot;: 19405918750.0,
+    &quot;float_share&quot;: 19405601250.0,
+    &quot;free_float_share_z&quot;: 8160481200.0,
+    &quot;finance_updated_date&quot;: &quot;20260425&quot;,
+    &quot;share_source&quot;: &quot;finance_snapshot+tdxstat&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>公告列表 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>公告列表</h1>
+  <p class="code-title">cninfo_announcements</p>
+  <p class="lead">按股票和日期范围临时获取巨潮公告元信息。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>cninfo_announcements</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 公告数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>这个接口返回公告元信息和 PDF 下载地址。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>股票代码，支持 000001、000001.SZ、sh600000 或列表。</td><td></td></tr><tr><td><code>start_date</code></td><td>string</td><td>否</td><td>开始日期，YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr><tr><td><code>end_date</code></td><td>string</td><td>否</td><td>结束日期，YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr><tr><td><code>page</code></td><td>integer</td><td>否</td><td>页码，默认 1。</td><td>1</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>每页条数，默认 30，最大 100。</td><td>30</td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>不传 fields 时返回上方全部字段；临时调用只查一次。</p></div>
+  <div class="note"><strong>参数示例</strong><p>client.call(&quot;cninfo_announcements&quot;, code=&quot;000001.SZ&quot;, start_date=&quot;20240101&quot;, end_date=&quot;20240131&quot;, limit=3)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>announcement_id</code></td><td>string</td><td>公告 ID。</td></tr><tr><td><code>title</code></td><td>string</td><td>公告标题。</td></tr><tr><td><code>publish_date</code></td><td>date</td><td>公告发布日期，格式 YYYYMMDD。</td></tr><tr><td><code>file_type</code></td><td>string</td><td>附件类型，例如 PDF。</td></tr><tr><td><code>file_size_kb</code></td><td>number</td><td>附件大小，单位：KB。</td></tr><tr><td><code>download_url</code></td><td>string</td><td>PDF 下载地址。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;cninfo_announcements&quot;,
+    code=&#x27;000001.SZ&#x27;,
+    end_date=&#x27;20240131&#x27;,
+    limit=3,
+    start_date=&#x27;20240101&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/cninfo_announcements
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;000001.SZ&quot;,
+    &quot;start_date&quot;: &quot;20240101&quot;,
+    &quot;end_date&quot;: &quot;20240131&quot;,
+    &quot;limit&quot;: 3
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;000001.SZ&quot;,
+  &quot;start_date&quot;: &quot;20240101&quot;,
+  &quot;end_date&quot;: &quot;20240131&quot;,
+  &quot;limit&quot;: 3
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;平安银行&quot;,
+    &quot;announcement_id&quot;: &quot;1218968511&quot;,
+    &quot;title&quot;: &quot;关联交易公告&quot;,
+    &quot;publish_date&quot;: &quot;20240123&quot;,
+    &quot;file_type&quot;: &quot;PDF&quot;,
+    &quot;file_size_kb&quot;: 156.0,
+    &quot;download_url&quot;: &quot;https://static.cninfo.com.cn/finalpage/2024-01-23/1218968511.PDF&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

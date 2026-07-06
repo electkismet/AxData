@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>外汇历史逐笔 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信扩展行情</p>
+  <h1>外汇历史逐笔</h1>
+  <p class="code-title">fx_trades_history_tdx</p>
+  <p class="lead">请求指定日期外汇逐笔明细。外汇样本可能没有成交量和开平类型，按源端真实值返回。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>fx_trades_history_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_ext_external</dd></div><div><dt>数据源</dt><dd>通达信扩展行情 / tdx_ext</dd></div><div><dt>目录</dt><dd>通达信扩展行情 / 外汇数据</dd></div><div><dt>资产类型</dt><dd>fx</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>请求指定日期外汇逐笔明细。外汇样本可能没有成交量和开平类型，按源端真实值返回。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>品种代码；可传单个、列表或英文逗号分隔字符串。</td><td></td></tr><tr><td><code>trade_date</code></td><td>date</td><td>是</td><td>交易日期，YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>每个品种返回多少笔，默认返回最新一页的 120 笔；all=true 时作为总数量上限。</td><td>120</td></tr><tr><td><code>all</code></td><td>boolean</td><td>否</td><td>是否自动翻页取完整逐笔，并按时间顺序返回；默认 false。</td><td>false</td></tr><tr><td><code>page_size</code></td><td>integer</td><td>否</td><td>all=true 时每页请求笔数，默认 1800。</td><td>1800</td></tr><tr><td><code>tdx_root</code></td><td>string</td><td>否</td><td>本机通达信目录（可选，高级）</td><td></td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>默认不用传 tdx_root；只有 API 服务器上的通达信安装目录不是常见位置，或想指定某个 hq_cache 目录时才需要传。</p></div>
+  <div class="note"><strong>参数示例</strong><p># 外汇历史逐笔
+client.call(&quot;fx_trades_history_tdx&quot;, code=&quot;USDCNY.FX&quot;, trade_date=&quot;20260618&quot;, limit=3)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一品种代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>源端品种代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所或资产场所。</td></tr><tr><td><code>name</code></td><td>string</td><td>可确认时返回品种名称。</td></tr><tr><td><code>trade_date</code></td><td>date</td><td>交易日期。</td></tr><tr><td><code>time_label</code></td><td>string</td><td>成交时间，精确到秒。</td></tr><tr><td><code>price</code></td><td>number</td><td>成交价。</td></tr><tr><td><code>volume</code></td><td>integer</td><td>成交量，按源端逐笔口径返回。</td></tr><tr><td><code>position_change</code></td><td>integer</td><td>仓差；源端有值时返回。</td></tr><tr><td><code>open_close_type</code></td><td>string</td><td>开平类型；可确认时返回，如双开、双平、多开、空开、多平、空平、多换、空换、换手。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;fx_trades_history_tdx&quot;,
+    code=&#x27;USDCNY.FX&#x27;,
+    limit=3,
+    trade_date=&#x27;20260618&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/fx_trades_history_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;USDCNY.FX&quot;,
+    &quot;trade_date&quot;: &quot;20260618&quot;,
+    &quot;limit&quot;: 3
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;USDCNY.FX&quot;,
+  &quot;trade_date&quot;: &quot;20260618&quot;,
+  &quot;limit&quot;: 3
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;USDCNY.FX&quot;,
+    &quot;symbol&quot;: &quot;USDCNY&quot;,
+    &quot;exchange&quot;: &quot;FX&quot;,
+    &quot;name&quot;: null,
+    &quot;trade_date&quot;: &quot;20260618&quot;,
+    &quot;time_label&quot;: &quot;00:42:02&quot;,
+    &quot;price&quot;: 6.7658,
+    &quot;volume&quot;: 0,
+    &quot;position_change&quot;: 0,
+    &quot;open_close_type&quot;: null
+  },
+  {
+    &quot;instrument_id&quot;: &quot;USDCNY.FX&quot;,
+    &quot;symbol&quot;: &quot;USDCNY&quot;,
+    &quot;exchange&quot;: &quot;FX&quot;,
+    &quot;name&quot;: null,
+    &quot;trade_date&quot;: &quot;20260618&quot;,
+    &quot;time_label&quot;: &quot;00:52:02&quot;,
+    &quot;price&quot;: 6.7671,
+    &quot;volume&quot;: 0,
+    &quot;position_change&quot;: 0,
+    &quot;open_close_type&quot;: null
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

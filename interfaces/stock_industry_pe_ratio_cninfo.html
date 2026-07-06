@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>行业市盈率 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>行业市盈率</h1>
+  <p class="code-title">stock_industry_pe_ratio_cninfo</p>
+  <p class="lead">临时获取巨潮行业市盈率数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_industry_pe_ratio_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 行业数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求巨潮行业市盈率专题统计，按日期和行业分类返回，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>classification</code></td><td>string</td><td>否</td><td>行业分类：证监会行业分类、国证行业分类；也支持 008001、008200；默认 证监会行业分类。</td><td>&quot;证监会行业分类&quot;</td></tr><tr><td><code>date</code></td><td>string</td><td>否</td><td>查询日期，YYYYMMDD 或 YYYY-MM-DD；默认 20240617。</td><td>&quot;20240617&quot;</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多返回行数，默认 100，最大 1000。</td><td>100</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>change_date</code></td><td>date</td><td>变动日期/查询日期，格式 YYYYMMDD。</td></tr><tr><td><code>classification</code></td><td>string</td><td>行业分类。</td></tr><tr><td><code>industry_level</code></td><td>integer</td><td>行业层级。</td></tr><tr><td><code>industry_code</code></td><td>string</td><td>行业编码。</td></tr><tr><td><code>industry_name</code></td><td>string</td><td>行业名称。</td></tr><tr><td><code>company_count</code></td><td>number</td><td>公司数量，单位：家。</td></tr><tr><td><code>included_company_count</code></td><td>number</td><td>纳入计算公司数量，单位：家。</td></tr><tr><td><code>total_market_value_static</code></td><td>number</td><td>总市值-静态，金额单位/口径沿用巨潮源端。</td></tr><tr><td><code>net_profit_static</code></td><td>number</td><td>净利润-静态，金额单位/口径沿用巨潮源端。</td></tr><tr><td><code>static_pe_weighted</code></td><td>number</td><td>静态市盈率-加权平均。</td></tr><tr><td><code>static_pe_median</code></td><td>number</td><td>静态市盈率-中位数。</td></tr><tr><td><code>static_pe_mean</code></td><td>number</td><td>静态市盈率-算术平均。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_industry_pe_ratio_cninfo&quot;,
+    classification=&#x27;证监会行业分类&#x27;,
+    date=&#x27;20240617&#x27;,
+    limit=1,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_industry_pe_ratio_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;classification&quot;: &quot;证监会行业分类&quot;,
+    &quot;date&quot;: &quot;20240617&quot;,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;classification&quot;: &quot;证监会行业分类&quot;,
+  &quot;date&quot;: &quot;20240617&quot;,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;change_date&quot;: &quot;20240617&quot;,
+    &quot;classification&quot;: &quot;中国上市公司协会上市公司行业分类标准&quot;,
+    &quot;industry_level&quot;: 1,
+    &quot;industry_code&quot;: &quot;A&quot;,
+    &quot;industry_name&quot;: &quot;农、林、牧、渔业&quot;,
+    &quot;company_count&quot;: 44.0,
+    &quot;included_company_count&quot;: 25.0,
+    &quot;total_market_value_static&quot;: 1763.9036,
+    &quot;net_profit_static&quot;: 162.8539,
+    &quot;static_pe_weighted&quot;: 10.83,
+    &quot;static_pe_median&quot;: 30.31,
+    &quot;static_pe_mean&quot;: 50.03
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

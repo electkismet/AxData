@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新浪中国国债收益率 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>新浪中国国债收益率</h1>
+  <p class="code-title">bond_gb_zh_sina</p>
+  <p class="lead">临时获取新浪财经新浪中国国债收益率数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>bond_gb_zh_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 债券收益率</dd></div><div><dt>资产类型</dt><dd>bond</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪中国国债收益率日线 JSON，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>symbol</code></td><td>string</td><td>否</td><td>中国国债期限名称或新浪代码，例如 中国10年期国债、CN10YT；默认 中国10年期国债。</td><td>&quot;中国10年期国债&quot;</td></tr><tr><td><code>start_date</code></td><td>string</td><td>否</td><td>开始日期，YYYYMMDD 或 YYYY-MM-DD；不传不过滤。</td><td></td></tr><tr><td><code>end_date</code></td><td>string</td><td>否</td><td>结束日期，YYYYMMDD 或 YYYY-MM-DD；不传不过滤。</td><td></td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多返回行数，默认最近 100 行，最大 10000。</td><td>100</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>source_symbol</code></td><td>string</td><td>新浪国债收益率代码，例如 US10YT。</td></tr><tr><td><code>symbol_name</code></td><td>string</td><td>中文期限名称，例如 美国10年期国债。</td></tr><tr><td><code>country</code></td><td>string</td><td>国家/地区代码：US 或 CN。</td></tr><tr><td><code>tenor</code></td><td>string</td><td>期限代码，例如 10Y、6M。</td></tr><tr><td><code>trade_date</code></td><td>date</td><td>交易日期，格式 YYYYMMDD。</td></tr><tr><td><code>open_yield</code></td><td>number</td><td>开盘收益率，单位：%。</td></tr><tr><td><code>high_yield</code></td><td>number</td><td>最高收益率，单位：%。</td></tr><tr><td><code>low_yield</code></td><td>number</td><td>最低收益率，单位：%。</td></tr><tr><td><code>close_yield</code></td><td>number</td><td>收盘收益率，单位：%。</td></tr><tr><td><code>volume</code></td><td>number</td><td>成交量，沿用新浪源端口径。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;bond_gb_zh_sina&quot;,
+    limit=1,
+    start_date=&#x27;20220802&#x27;,
+    symbol=&#x27;中国10年期国债&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/bond_gb_zh_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;symbol&quot;: &quot;中国10年期国债&quot;,
+    &quot;start_date&quot;: &quot;20220802&quot;,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;symbol&quot;: &quot;中国10年期国债&quot;,
+  &quot;start_date&quot;: &quot;20220802&quot;,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;source_symbol&quot;: &quot;CN10YT&quot;,
+    &quot;symbol_name&quot;: &quot;中国10年期国债&quot;,
+    &quot;country&quot;: &quot;CN&quot;,
+    &quot;tenor&quot;: &quot;10Y&quot;,
+    &quot;trade_date&quot;: &quot;20220802&quot;,
+    &quot;open_yield&quot;: 2.734,
+    &quot;high_yield&quot;: 2.738,
+    &quot;low_yield&quot;: 2.724,
+    &quot;close_yield&quot;: 2.73,
+    &quot;volume&quot;: 0.0
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新浪商品期权品种列表 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>新浪商品期权品种列表</h1>
+  <p class="code-title">option_commodity_contract_sina</p>
+  <p class="lead">临时获取新浪财经新浪商品期权品种列表数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>option_commodity_contract_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 期权</dd></div><div><dt>资产类型</dt><dd>option</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪商品期权品种入口列表，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多返回品种数，默认 100，最大 200。</td><td>100</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>sequence</code></td><td>integer</td><td>源端顺序，从 1 开始。</td></tr><tr><td><code>option_name</code></td><td>string</td><td>商品期权品种名称，例如豆粕期权。</td></tr><tr><td><code>product_code</code></td><td>string</td><td>新浪商品期权品种代码，例如 m_o、pg_o。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>源端交易所代码，例如 dce、czce、shfe、gfex。</td></tr><tr><td><code>source_path</code></td><td>string</td><td>新浪商品期权页面相对路径。</td></tr><tr><td><code>source_url</code></td><td>string</td><td>新浪商品期权页面完整 URL。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;option_commodity_contract_sina&quot;,
+    limit=1,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/option_commodity_contract_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;sequence&quot;: 1,
+    &quot;option_name&quot;: &quot;豆粕期权&quot;,
+    &quot;product_code&quot;: &quot;m_o&quot;,
+    &quot;exchange&quot;: &quot;dce&quot;,
+    &quot;source_path&quot;: &quot;/futures/view/optionsDP.php/m_o/dce&quot;,
+    &quot;source_url&quot;: &quot;https://stock.finance.sina.com.cn/futures/view/optionsDP.php/m_o/dce&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

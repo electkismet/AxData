@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ETF历史成交明细 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>ETF历史成交明细</h1>
+  <p class="code-title">etf_trades_history_tdx</p>
+  <p class="lead">获取 ETF 指定交易日成交明细；适合复盘某一天逐笔/聚合成交。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>etf_trades_history_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / ETF数据 / 行情数据</dd></div><div><dt>资产类型</dt><dd>etf</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>这个接口按 ETF 代码和交易日期请求历史成交明细，不是 K 线，也不写入本地数据层。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>ETF 代码：支持 510050、510050.SH、sh510050；批量可传列表或英文逗号分隔字符串。</td><td></td></tr><tr><td><code>trade_date</code></td><td>string</td><td>是</td><td>交易日期，格式 YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr></tbody>
+</table></div>
+  
+  <div class="note"><strong>参数示例</strong><p># 单个标的
+client.call(&quot;etf_trades_history_tdx&quot;, code=&quot;510050.SH&quot;, trade_date=&quot;20260511&quot;)
+
+# 批量请求多个标的
+client.call(&quot;etf_trades_history_tdx&quot;, code=[&quot;510050.SH&quot;, &quot;159915.SZ&quot;], trade_date=&quot;20260511&quot;)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码，例如 000001.SZ。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始六位代码。</td></tr><tr><td><code>tdx_code</code></td><td>string</td><td>TDX 带市场前缀代码，例如 sz000001。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>AxData 交易所代码：SSE、SZSE 或 BSE。</td></tr><tr><td><code>trade_date</code></td><td>date</td><td>交易日期，YYYYMMDD。</td></tr><tr><td><code>trade_time</code></td><td>string</td><td>成交时间，HH:MM。</td></tr><tr><td><code>trade_datetime</code></td><td>datetime</td><td>成交日期时间，由 trade_date 和 trade_time 组合得到。</td></tr><tr><td><code>trade_index</code></td><td>integer</td><td>成交明细序号，用于保持同一标的返回记录的相对顺序。</td></tr><tr><td><code>price</code></td><td>number</td><td>成交价。</td></tr><tr><td><code>volume</code></td><td>number</td><td>成交量，A 股常见口径为手。</td></tr><tr><td><code>order_count</code></td><td>integer</td><td>成交笔数 / 聚合笔数。</td></tr><tr><td><code>side</code></td><td>string</td><td>成交方向：buy、sell、neutral；少数未识别状态会保留原始状态标记，实测为盘后定价成交。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;etf_trades_history_tdx&quot;,
+    code=&#x27;510050.SH&#x27;,
+    trade_date=&#x27;20260511&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/etf_trades_history_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;510050.SH&quot;,
+    &quot;trade_date&quot;: &quot;20260511&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;510050.SH&quot;,
+  &quot;trade_date&quot;: &quot;20260511&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;510050.SH&quot;,
+    &quot;symbol&quot;: &quot;510050&quot;,
+    &quot;tdx_code&quot;: &quot;sh510050&quot;,
+    &quot;exchange&quot;: &quot;SSE&quot;,
+    &quot;trade_date&quot;: &quot;20260511&quot;,
+    &quot;trade_time&quot;: &quot;14:12&quot;,
+    &quot;trade_datetime&quot;: &quot;2026-05-11T14:12:00+08:00&quot;,
+    &quot;trade_index&quot;: 0,
+    &quot;price&quot;: 3.025,
+    &quot;volume&quot;: 156,
+    &quot;order_count&quot;: 12,
+    &quot;side&quot;: &quot;buy&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

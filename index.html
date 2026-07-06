@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AxData 文档站</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">AxData</a>
+    <nav><a class="active" href="index.html">首页</a><a class="" href="interfaces/index.html">接口文档</a><a class="" href="docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="hero">
+  <p class="eyebrow">开源量化数据库框架</p>
+  <h1>AxData</h1>
+  <p class="lead">AxData 将数据源接口、采集任务、开放文件存储、本地查询、插件管理、Python SDK、HTTP API 和 Web 控制台放在同一个可扩展的数据平台里，面向个人量化研究、本地数据管理和数据源插件开发。</p>
+  <div class="actions">
+    <a class="button primary" href="interfaces/index.html">查看接口文档</a>
+    <a class="button" href="docs/quickstart.html">快速开始</a>
+  </div>
+</section>
+<section>
+  <h2>接口目录</h2>
+  <p>文档站在构建时从 AxData Provider Registry 读取接口声明，并生成静态页面。打开 GitHub Pages 时不会请求 AxData 后端，也不会访问第三方数据源。</p>
+  <div class="stats"><div class="stat"><strong>90</strong><span>通达信</span></div><div class="stat"><strong>31</strong><span>通达信扩展行情</span></div><div class="stat"><strong>3</strong><span>交易所</span></div><div class="stat"><strong>13</strong><span>东方财富</span></div><div class="stat"><strong>32</strong><span>巨潮</span></div><div class="stat"><strong>6</strong><span>腾讯财经</span></div><div class="stat"><strong>60</strong><span>新浪财经</span></div><div class="stat"><strong>12</strong><span>财联社</span></div><div class="stat"><strong>9</strong><span>开盘红</span></div></div>
+</section>
+<section>
+  <h2>项目边界</h2>
+  <div class="grid two">
+    <div class="panel">
+      <h3>数据源接口</h3>
+      <p>Provider 插件负责一次性源端请求，返回 AxData 字段，默认不写入 data 目录。</p>
+    </div>
+    <div class="panel">
+      <h3>采集器</h3>
+      <p>Collector 插件负责显式采集任务、Parquet 写出、质量检查和元数据记录。</p>
+    </div>
+  </div>
+</section>
+<section>
+  <h2>界面预览</h2>
+  <div class="screenshots"><figure><img src="assets/axdata-start-overview.png" alt="开始页与架构边界"><figcaption>开始页与架构边界</figcaption></figure><figure><img src="assets/axdata-interface-catalog.png" alt="接口目录与字段说明"><figcaption>接口目录与字段说明</figcaption></figure><figure><img src="assets/axdata-collector-task.png" alt="采集任务"><figcaption>采集任务</figcaption></figure><figure><img src="assets/axdata-plugin-management.png" alt="插件管理"><figcaption>插件管理</figcaption></figure></div>
+</section>
+<section>
+  <h2>致谢与声明</h2>
+  <p>感谢 pytdx、AKShare、levistock 等开源项目为公开接口研究提供参考。AxData 仅用于个人学习、协议研究和非商业研究；通过本项目获取的数据禁止用于商业行为、付费服务、生产服务、转售或其他营利用途。</p>
+</section>
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

@@ -1,0 +1,3975 @@
+{
+  "project": "AxData",
+  "generated_at": "2026-07-06T13:10:01+00:00",
+  "interface_count": 256,
+  "sources": [
+    {
+      "name": "通达信",
+      "count": 90
+    },
+    {
+      "name": "通达信扩展行情",
+      "count": 31
+    },
+    {
+      "name": "交易所",
+      "count": 3
+    },
+    {
+      "name": "东方财富",
+      "count": 13
+    },
+    {
+      "name": "巨潮",
+      "count": 32
+    },
+    {
+      "name": "腾讯财经",
+      "count": 6
+    },
+    {
+      "name": "新浪财经",
+      "count": 60
+    },
+    {
+      "name": "财联社",
+      "count": 12
+    },
+    {
+      "name": "开盘红",
+      "count": 9
+    }
+  ],
+  "interfaces": [
+    {
+      "name": "etf_codes_tdx",
+      "title": "ETF列表",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "基础数据",
+      "menu_path": [
+        "通达信",
+        "ETF数据",
+        "基础数据"
+      ],
+      "asset_class": "etf",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信代码表里的 ETF 列表。",
+      "url": "interfaces/etf_codes_tdx.html"
+    },
+    {
+      "name": "etf_realtime_rank_tdx",
+      "title": "ETF实时榜单",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "实时数据",
+      "menu_path": [
+        "通达信",
+        "ETF数据",
+        "实时数据"
+      ],
+      "asset_class": "etf",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取当前 ETF 榜单，可按涨跌幅、成交额等排序。",
+      "url": "interfaces/etf_realtime_rank_tdx.html"
+    },
+    {
+      "name": "etf_realtime_snapshot_tdx",
+      "title": "ETF实时快照",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "实时数据",
+      "menu_path": [
+        "通达信",
+        "ETF数据",
+        "实时数据"
+      ],
+      "asset_class": "etf",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取 ETF 当前快照，返回价格、涨跌幅、成交量和成交额。",
+      "url": "interfaces/etf_realtime_snapshot_tdx.html"
+    },
+    {
+      "name": "etf_auction_process_tdx",
+      "title": "ETF竞价明细",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "竞价数据",
+      "menu_path": [
+        "通达信",
+        "ETF数据",
+        "竞价数据"
+      ],
+      "asset_class": "etf",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取单只 ETF 集合竞价明细里的价格、撮合量、未撮合量和方向原始值。",
+      "url": "interfaces/etf_auction_process_tdx.html"
+    },
+    {
+      "name": "etf_auction_result_tdx",
+      "title": "ETF竞价结果",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "竞价数据",
+      "menu_path": [
+        "通达信",
+        "ETF数据",
+        "竞价数据"
+      ],
+      "asset_class": "etf",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取 ETF 当日 09:25 开盘竞价结果；来自当日成交明细，不是竞价过程明细。",
+      "url": "interfaces/etf_auction_result_tdx.html"
+    },
+    {
+      "name": "etf_intraday_history_tdx",
+      "title": "ETF历史分时",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "ETF数据",
+        "行情数据"
+      ],
+      "asset_class": "etf",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取 ETF 指定交易日历史分时价格和成交量。",
+      "url": "interfaces/etf_intraday_history_tdx.html"
+    },
+    {
+      "name": "etf_intraday_today_tdx",
+      "title": "ETF当日分时",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "ETF数据",
+        "行情数据"
+      ],
+      "asset_class": "etf",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取 ETF 当前交易日分时图数据，包含价格、均价和分钟成交量。",
+      "url": "interfaces/etf_intraday_today_tdx.html"
+    },
+    {
+      "name": "etf_kline_tdx",
+      "title": "ETFK线",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "ETF数据",
+        "行情数据"
+      ],
+      "asset_class": "etf",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取 ETF K 线，包含 OHLC、成交量额。",
+      "url": "interfaces/etf_kline_tdx.html"
+    },
+    {
+      "name": "etf_trades_history_tdx",
+      "title": "ETF历史成交明细",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "ETF数据",
+        "行情数据"
+      ],
+      "asset_class": "etf",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取 ETF 指定交易日成交明细；适合复盘某一天逐笔/聚合成交。",
+      "url": "interfaces/etf_trades_history_tdx.html"
+    },
+    {
+      "name": "etf_trades_today_tdx",
+      "title": "ETF当日成交明细",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "ETF数据",
+        "行情数据"
+      ],
+      "asset_class": "etf",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取 ETF 当前交易日成交明细；请求式分页由后端处理。",
+      "url": "interfaces/etf_trades_today_tdx.html"
+    },
+    {
+      "name": "index_codes_tdx",
+      "title": "指数列表",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "基础数据",
+      "menu_path": [
+        "通达信",
+        "指数数据",
+        "基础数据"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信代码表里的指数列表，默认只返回常规指数。",
+      "url": "interfaces/index_codes_tdx.html"
+    },
+    {
+      "name": "index_quote_refresh_tdx",
+      "title": "指数实时增量行情",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "实时数据",
+      "menu_path": [
+        "通达信",
+        "指数数据",
+        "实时数据"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "请求一次指数行情刷新数据。",
+      "url": "interfaces/index_quote_refresh_tdx.html"
+    },
+    {
+      "name": "index_realtime_rank_tdx",
+      "title": "指数实时榜单",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "实时数据",
+      "menu_path": [
+        "通达信",
+        "指数数据",
+        "实时数据"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取当前指数榜单，可按涨跌幅、成交额等排序。",
+      "url": "interfaces/index_realtime_rank_tdx.html"
+    },
+    {
+      "name": "index_realtime_snapshot_tdx",
+      "title": "指数实时快照",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "实时数据",
+      "menu_path": [
+        "通达信",
+        "指数数据",
+        "实时数据"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取指数当前快照，返回点位、涨跌幅、成交量和成交额。",
+      "url": "interfaces/index_realtime_snapshot_tdx.html"
+    },
+    {
+      "name": "index_intraday_history_tdx",
+      "title": "指数历史分时",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "指数数据",
+        "行情数据"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取指数指定交易日历史分时价格和成交量。",
+      "url": "interfaces/index_intraday_history_tdx.html"
+    },
+    {
+      "name": "index_intraday_today_tdx",
+      "title": "指数当日分时",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "指数数据",
+        "行情数据"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取指数当前交易日分时图数据，包含价格、均价和分钟成交量。",
+      "url": "interfaces/index_intraday_today_tdx.html"
+    },
+    {
+      "name": "index_kline_tdx",
+      "title": "指数K线",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "指数数据",
+        "行情数据"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取指数 K 线，包含 OHLC、成交量额，以及上涨家数、下跌家数。",
+      "url": "interfaces/index_kline_tdx.html"
+    },
+    {
+      "name": "concept_constituent_comparison_tdx",
+      "title": "题材内对比",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询题材内股票涨幅、财务或市值对比。",
+      "url": "interfaces/concept_constituent_comparison_tdx.html"
+    },
+    {
+      "name": "concept_control_ranking_tdx",
+      "title": "控盘榜单",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询行业或题材按日期返回的控盘榜单；每个日期内通常是前十名。",
+      "url": "interfaces/concept_control_ranking_tdx.html"
+    },
+    {
+      "name": "concept_control_series_tdx",
+      "title": "主力控盘序列",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询每日主力控盘比例序列。",
+      "url": "interfaces/concept_control_series_tdx.html"
+    },
+    {
+      "name": "stock_analyst_rating_tdx",
+      "title": "机构评级与目标价",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询机构评级家数和目标价统计。",
+      "url": "interfaces/stock_analyst_rating_tdx.html"
+    },
+    {
+      "name": "stock_business_composition_tdx",
+      "title": "主营构成",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询各报告期主营收入、成本、毛利和毛利率。",
+      "url": "interfaces/stock_business_composition_tdx.html"
+    },
+    {
+      "name": "stock_chip_distribution_tdx",
+      "title": "筹码分布",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询源端筹码分布统计。",
+      "url": "interfaces/stock_chip_distribution_tdx.html"
+    },
+    {
+      "name": "stock_company_profile_tdx",
+      "title": "公司概况",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询公司发行上市资料和指数调入调出记录。 源端直取默认不写入本地数据。",
+      "url": "interfaces/stock_company_profile_tdx.html"
+    },
+    {
+      "name": "stock_disclosure_feed_tdx",
+      "title": "新闻公告路演",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询个股新闻、公告或路演列表；不同类型返回字段会有差异，缺失项返回 null。",
+      "url": "interfaces/stock_disclosure_feed_tdx.html"
+    },
+    {
+      "name": "stock_dividend_history_tdx",
+      "title": "分红历史",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询历史分红方案、登记日、除权日和方案进度。",
+      "url": "interfaces/stock_dividend_history_tdx.html"
+    },
+    {
+      "name": "stock_dividend_metrics_tdx",
+      "title": "分红指标",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询股息率、股利支付率、派现融资等分红指标。",
+      "url": "interfaces/stock_dividend_metrics_tdx.html"
+    },
+    {
+      "name": "stock_equity_financing_events_tdx",
+      "title": "融资事件",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询增发、配股、股权激励、可转债等融资相关事件。",
+      "url": "interfaces/stock_equity_financing_events_tdx.html"
+    },
+    {
+      "name": "stock_event_drivers_tdx",
+      "title": "历史事件关联",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询个股历史事件关联记录；不是涨停原因库，可选补充详情正文。",
+      "url": "interfaces/stock_event_drivers_tdx.html"
+    },
+    {
+      "name": "stock_financial_diagnosis_tdx",
+      "title": "财务诊断",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询源端财务能力、预警和评分；这是源端评价，不代表 AxData 自有判断。",
+      "url": "interfaces/stock_financial_diagnosis_tdx.html"
+    },
+    {
+      "name": "stock_financial_statement_tdx",
+      "title": "资产负债表",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询资产负债表。",
+      "url": "interfaces/stock_financial_statement_tdx.html"
+    },
+    {
+      "name": "stock_forecast_consensus_tdx",
+      "title": "盈利预测",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询盈利预测统计，包括未来三年预测、历史实际值和预测机构数量。",
+      "url": "interfaces/stock_forecast_consensus_tdx.html"
+    },
+    {
+      "name": "stock_governance_guarantees_tdx",
+      "title": "担保明细",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询担保方、被担保方、担保金额和担保期限。",
+      "url": "interfaces/stock_governance_guarantees_tdx.html"
+    },
+    {
+      "name": "stock_index_constituent_changes_tdx",
+      "title": "指数调入调出",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询股票被指数调入或调出的历史记录。",
+      "url": "interfaces/stock_index_constituent_changes_tdx.html"
+    },
+    {
+      "name": "stock_institution_holding_tdx",
+      "title": "机构持仓",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询机构持仓比例多期趋势。",
+      "url": "interfaces/stock_institution_holding_tdx.html"
+    },
+    {
+      "name": "stock_ipo_listing_profile_tdx",
+      "title": "发行上市资料",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询公司发行上市资料。",
+      "url": "interfaces/stock_ipo_listing_profile_tdx.html"
+    },
+    {
+      "name": "stock_margin_trading_tdx",
+      "title": "融资融券",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询源端融资融券统计。",
+      "url": "interfaces/stock_margin_trading_tdx.html"
+    },
+    {
+      "name": "stock_market_rankings_tdx",
+      "title": "排名明细",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询市场或行业排名明细。",
+      "url": "interfaces/stock_market_rankings_tdx.html"
+    },
+    {
+      "name": "stock_northbound_holding_tdx",
+      "title": "沪深股通持股",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询沪深股通持股变化序列；不传日期默认返回全部可用记录。",
+      "url": "interfaces/stock_northbound_holding_tdx.html"
+    },
+    {
+      "name": "stock_private_placement_allocations_tdx",
+      "title": "增发获配明细",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询增发获配机构、获配数量和获配金额。",
+      "url": "interfaces/stock_private_placement_allocations_tdx.html"
+    },
+    {
+      "name": "stock_regulatory_actions_tdx",
+      "title": "监管措施",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询监管措施或处罚函件。",
+      "url": "interfaces/stock_regulatory_actions_tdx.html"
+    },
+    {
+      "name": "stock_research_reports_tdx",
+      "title": "研报列表",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询公司研究报告列表。",
+      "url": "interfaces/stock_research_reports_tdx.html"
+    },
+    {
+      "name": "stock_return_calendar_tdx",
+      "title": "月度年度涨跌幅",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "按年份汇总股票 1 至 12 月涨跌幅和全年涨跌幅，用于查看历史收益日历。",
+      "url": "interfaces/stock_return_calendar_tdx.html"
+    },
+    {
+      "name": "stock_score_summary_tdx",
+      "title": "综合评分",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询源端综合评分、维度评分和排名；这是源端评价，不代表 AxData 自有判断。",
+      "url": "interfaces/stock_score_summary_tdx.html"
+    },
+    {
+      "name": "stock_shareholder_change_plans_tdx",
+      "title": "股东增减持",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询股东增持或减持计划。",
+      "url": "interfaces/stock_shareholder_change_plans_tdx.html"
+    },
+    {
+      "name": "stock_valuation_band_tdx",
+      "title": "PE/PB估值通道",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询 PE/PB Band 估值通道数据，用于绘制估值带图。",
+      "url": "interfaces/stock_valuation_band_tdx.html"
+    },
+    {
+      "name": "stock_valuation_metrics_tdx",
+      "title": "估值表",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询估值、市值和估值百分位。",
+      "url": "interfaces/stock_valuation_metrics_tdx.html"
+    },
+    {
+      "name": "stock_valuation_series_tdx",
+      "title": "单指标估值序列",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询单个估值指标的历史序列和百分位，适合画 PE/PB/PS/PCF 曲线。",
+      "url": "interfaces/stock_valuation_series_tdx.html"
+    },
+    {
+      "name": "stock_violation_cases_tdx",
+      "title": "违规处理",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "F10数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "F10数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询违规处理和处罚决定。",
+      "url": "interfaces/stock_violation_cases_tdx.html"
+    },
+    {
+      "name": "stock_capital_changes_tdx",
+      "title": "股本变迁",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "基础数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "基础数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询通达信 0x000f 股本变迁、除权除息等事件记录，是复权因子计算的追溯依据。",
+      "url": "interfaces/stock_capital_changes_tdx.html"
+    },
+    {
+      "name": "stock_codes_tdx",
+      "title": "最新股票列表",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "基础数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "基础数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "按股票范围临时获取通达信股票列表，可取全部、主板、科创板、CDR、创业板或北交所。",
+      "url": "interfaces/stock_codes_tdx.html"
+    },
+    {
+      "name": "stock_daily_price_limit_tdx",
+      "title": "涨跌停价格",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "基础数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "基础数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "返回目标交易日的涨停价、跌停价；默认用实时快照昨收快速计算最新全量。",
+      "url": "interfaces/stock_daily_price_limit_tdx.html"
+    },
+    {
+      "name": "stock_daily_share_tdx",
+      "title": "每日股本（盘前）",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "基础数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "基础数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "返回盘前可用的总股本、流通股本和流通股本Z。",
+      "url": "interfaces/stock_daily_share_tdx.html"
+    },
+    {
+      "name": "stock_st_list_tdx",
+      "title": "最新ST股票列表",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "基础数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "基础数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "默认扫描通达信全市场股票池，返回当前 ST / *ST 股票。",
+      "url": "interfaces/stock_st_list_tdx.html"
+    },
+    {
+      "name": "stock_suspensions_tdx",
+      "title": "最新停牌列表",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "基础数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "基础数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "默认扫描通达信全市场股票池，返回当前停牌股票。",
+      "url": "interfaces/stock_suspensions_tdx.html"
+    },
+    {
+      "name": "stock_intraday_buy_sell_strength_tdx",
+      "title": "买卖力道",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "实时数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "实时数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信当前个股分时页下方买卖力道副图数据。",
+      "url": "interfaces/stock_intraday_buy_sell_strength_tdx.html"
+    },
+    {
+      "name": "stock_intraday_volume_comparison_tdx",
+      "title": "成交对比",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "实时数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "实时数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信当前个股分时页下方成交对比副图数据。",
+      "url": "interfaces/stock_intraday_volume_comparison_tdx.html"
+    },
+    {
+      "name": "stock_order_book_tdx",
+      "title": "五档盘口",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "实时数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "实时数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取当前五档盘口快照，返回买一到买五、卖一到卖五的价格和量。",
+      "url": "interfaces/stock_order_book_tdx.html"
+    },
+    {
+      "name": "stock_realtime_rank_tdx",
+      "title": "实时榜单",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "实时数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "实时数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取当前实时榜单，支持按 A 股、板块或市场范围排序取数。",
+      "url": "interfaces/stock_realtime_rank_tdx.html"
+    },
+    {
+      "name": "stock_realtime_snapshot_tdx",
+      "title": "实时快照",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "实时数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "实时数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取当前行情快照，返回价格、成交量额、内外盘、买一卖一、已解析盘中指标和派生指标。",
+      "url": "interfaces/stock_realtime_snapshot_tdx.html"
+    },
+    {
+      "name": "concept_capital_flow_tdx",
+      "title": "题材资金走势",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "短线数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "按题材或行业 ID 查询主力资金走势。",
+      "url": "interfaces/concept_capital_flow_tdx.html"
+    },
+    {
+      "name": "concept_constituents_tdx",
+      "title": "板块成分股",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "短线数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "按板块代码查询当前成分股。",
+      "url": "interfaces/concept_constituents_tdx.html"
+    },
+    {
+      "name": "concept_related_boards_tdx",
+      "title": "相关板块",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "短线数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询个股当前关联板块列表。",
+      "url": "interfaces/concept_related_boards_tdx.html"
+    },
+    {
+      "name": "stock_limit_ladder_tdx",
+      "title": "连板天梯",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "短线数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取当前连板天梯，默认返回主板完整天梯，返回连板高度、连板状态、封单额、流通市值Z、主题材和辅助题材。",
+      "url": "interfaces/stock_limit_ladder_tdx.html"
+    },
+    {
+      "name": "stock_shortline_indicators_tdx",
+      "title": "短线指标",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "短线数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "按股票代码计算开盘金额、开盘量比、开盘换手Z、封成比、封流比、几天几板等短线指标。",
+      "url": "interfaces/stock_shortline_indicators_tdx.html"
+    },
+    {
+      "name": "stock_theme_strength_rank_tdx",
+      "title": "题材强度排行",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "短线数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "按当前涨停池统计题材强度，返回涨停数量、最高板、连板股数量、封单额合计和代表股票。",
+      "url": "interfaces/stock_theme_strength_rank_tdx.html"
+    },
+    {
+      "name": "stock_topic_exposure_tdx",
+      "title": "个股题材",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "短线数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "查询个股所属题材、关联度和入选原因。",
+      "url": "interfaces/stock_topic_exposure_tdx.html"
+    },
+    {
+      "name": "stock_auction_process_tdx",
+      "title": "竞价明细",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "竞价数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "竞价数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取单只股票集合竞价明细里的价格、撮合量、未撮合量和方向原始值。",
+      "url": "interfaces/stock_auction_process_tdx.html"
+    },
+    {
+      "name": "stock_auction_result_history_tdx",
+      "title": "历史竞价结果",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "竞价数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "竞价数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取指定交易日 09:25 开盘竞价结果；来自历史成交明细，不是竞价过程明细。",
+      "url": "interfaces/stock_auction_result_history_tdx.html"
+    },
+    {
+      "name": "stock_auction_result_tdx",
+      "title": "竞价结果",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "竞价数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "竞价数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取当日 09:25 开盘竞价结果；来自当日成交明细，不是竞价过程明细。",
+      "url": "interfaces/stock_auction_result_tdx.html"
+    },
+    {
+      "name": "stock_adj_factor_tdx",
+      "title": "复权因子",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "用通达信 0x000f 的 category=1 除权除息事件和未复权日 K，重算每日前复权或后复权因子。",
+      "url": "interfaces/stock_adj_factor_tdx.html"
+    },
+    {
+      "name": "stock_intraday_history_tdx",
+      "title": "历史分时",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取指定交易日的历史分时价格和分钟成交量。",
+      "url": "interfaces/stock_intraday_history_tdx.html"
+    },
+    {
+      "name": "stock_intraday_recent_history_tdx",
+      "title": "近期历史分时",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取近期交易日历史分时图数据，包含分时价格、分时均价、分钟成交量、昨收价和开盘价。",
+      "url": "interfaces/stock_intraday_recent_history_tdx.html"
+    },
+    {
+      "name": "stock_intraday_today_tdx",
+      "title": "当日分时",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取当前交易日分时图数据，包含分时价格、分时均价和分钟成交量。",
+      "url": "interfaces/stock_intraday_today_tdx.html"
+    },
+    {
+      "name": "stock_kline_daily_tdx",
+      "title": "日K线",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信日 K 线，可用于查看不复权、前复权或后复权的最新口径历史行情。",
+      "url": "interfaces/stock_kline_daily_tdx.html"
+    },
+    {
+      "name": "stock_kline_minute_tdx",
+      "title": "分钟K线",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信固定分钟 K 线，包括 1、5、15、30、60 分钟。",
+      "url": "interfaces/stock_kline_minute_tdx.html"
+    },
+    {
+      "name": "stock_kline_monthly_tdx",
+      "title": "月K线",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信月 K 线。",
+      "url": "interfaces/stock_kline_monthly_tdx.html"
+    },
+    {
+      "name": "stock_kline_nday_tdx",
+      "title": "自定义日K线",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信自定义日扩展周期 K 线，例如 2 日 K、45 日 K。",
+      "url": "interfaces/stock_kline_nday_tdx.html"
+    },
+    {
+      "name": "stock_kline_nminute_tdx",
+      "title": "自定义分钟K线",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信自定义分钟扩展周期 K 线，例如 10 分钟 K、20 分钟 K。",
+      "url": "interfaces/stock_kline_nminute_tdx.html"
+    },
+    {
+      "name": "stock_kline_quarterly_tdx",
+      "title": "季K线",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信季 K 线。",
+      "url": "interfaces/stock_kline_quarterly_tdx.html"
+    },
+    {
+      "name": "stock_kline_second_tdx",
+      "title": "秒K线",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信秒级聚合 K 线，默认建议 5 秒；适合短线用户查看极短周期价格节奏。",
+      "url": "interfaces/stock_kline_second_tdx.html"
+    },
+    {
+      "name": "stock_kline_weekly_tdx",
+      "title": "周K线",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信周 K 线。",
+      "url": "interfaces/stock_kline_weekly_tdx.html"
+    },
+    {
+      "name": "stock_kline_yearly_tdx",
+      "title": "年K线",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信年 K 线。",
+      "url": "interfaces/stock_kline_yearly_tdx.html"
+    },
+    {
+      "name": "stock_trades_history_tdx",
+      "title": "历史成交明细",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取指定交易日成交明细；适合复盘某一天逐笔/聚合成交。",
+      "url": "interfaces/stock_trades_history_tdx.html"
+    },
+    {
+      "name": "stock_trades_today_tdx",
+      "title": "当日成交明细",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "行情数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取当前交易日成交明细；请求式分页由后端处理。",
+      "url": "interfaces/stock_trades_today_tdx.html"
+    },
+    {
+      "name": "stock_balance_summary_tdx",
+      "title": "资产负债摘要",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "财务数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "财务数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信 0x0010 财务快照中的资产、负债、净资产、应收和存货等摘要字段。",
+      "url": "interfaces/stock_balance_summary_tdx.html"
+    },
+    {
+      "name": "stock_finance_profile_tdx",
+      "title": "财务资料标签",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "财务数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "财务数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信 0x0010 财务快照中的上市日期、地区和行业标签字段。",
+      "url": "interfaces/stock_finance_profile_tdx.html"
+    },
+    {
+      "name": "stock_finance_summary_tdx",
+      "title": "财务基础摘要",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "财务数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "财务数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信 0x0010 基础财务快照中的常用财务、股本和每股指标。",
+      "url": "interfaces/stock_finance_summary_tdx.html"
+    },
+    {
+      "name": "stock_profit_cashflow_summary_tdx",
+      "title": "利润现金流摘要",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "财务数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "财务数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信 0x0010 财务快照中的收入、利润、现金流和每股指标摘要。",
+      "url": "interfaces/stock_profit_cashflow_summary_tdx.html"
+    },
+    {
+      "name": "stock_share_capital_tdx",
+      "title": "股本结构",
+      "source_name_zh": "通达信",
+      "source_code": "tdx",
+      "category": "财务数据",
+      "menu_path": [
+        "通达信",
+        "股票数据",
+        "财务数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_external",
+      "summary": "获取通达信 0x0010 财务快照中的总股本、流通股本、股本类别和股东人数。",
+      "url": "interfaces/stock_share_capital_tdx.html"
+    },
+    {
+      "name": "bond_codes_tdx",
+      "title": "债券列表",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "债券数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "债券数据"
+      ],
+      "asset_class": "bond",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "返回本机扩展资产目录中可识别的债券或资金市场品种。",
+      "url": "interfaces/bond_codes_tdx.html"
+    },
+    {
+      "name": "bond_kline_tdx",
+      "title": "债券K线",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "债券数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "债券数据"
+      ],
+      "asset_class": "bond",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求债券或资金市场品种的K线。",
+      "url": "interfaces/bond_kline_tdx.html"
+    },
+    {
+      "name": "bond_realtime_snapshot_tdx",
+      "title": "债券实时快照",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "债券数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "债券数据"
+      ],
+      "asset_class": "bond",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求债券或资金市场品种的当前快照；收益率和剩余期限未确认前不展示。",
+      "url": "interfaces/bond_realtime_snapshot_tdx.html"
+    },
+    {
+      "name": "tdx_ext_instruments_tdx",
+      "title": "扩展品种列表",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "基础数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "基础数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "读取本机扩展资产品种目录，可按资产类型、代码、交易所或关键词过滤。",
+      "url": "interfaces/tdx_ext_instruments_tdx.html"
+    },
+    {
+      "name": "tdx_ext_markets_tdx",
+      "title": "扩展市场列表",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "基础数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "基础数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "读取本机扩展资产市场目录，用于查看期货、期权、基金、债券、外汇、宏观等市场分组。",
+      "url": "interfaces/tdx_ext_markets_tdx.html"
+    },
+    {
+      "name": "fund_codes_tdx",
+      "title": "基金列表",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "基金数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "基金数据"
+      ],
+      "asset_class": "fund",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "返回本机扩展资产目录中的基金代码和可确认的净值字段；ETF 交易类接口仍放在 ETF 数据里。",
+      "url": "interfaces/fund_codes_tdx.html"
+    },
+    {
+      "name": "fund_nav_series_tdx",
+      "title": "基金净值走势",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "基金数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "基金数据"
+      ],
+      "asset_class": "fund",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求基金净值走势，按净值序列理解，不和ETF交易价格混用。",
+      "url": "interfaces/fund_nav_series_tdx.html"
+    },
+    {
+      "name": "fund_nav_tdx",
+      "title": "基金净值",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "基金数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "基金数据"
+      ],
+      "asset_class": "fund",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "返回可确认的基金净值、累计净值和净值日期；ETF交易类接口仍在ETF数据里。",
+      "url": "interfaces/fund_nav_tdx.html"
+    },
+    {
+      "name": "fx_codes_tdx",
+      "title": "外汇品种列表",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "外汇数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "外汇数据"
+      ],
+      "asset_class": "fx",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "返回本机扩展资产目录中的外汇货币对列表。",
+      "url": "interfaces/fx_codes_tdx.html"
+    },
+    {
+      "name": "fx_intraday_history_tdx",
+      "title": "外汇历史分时",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "外汇数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "外汇数据"
+      ],
+      "asset_class": "fx",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求指定日期的外汇历史分时。",
+      "url": "interfaces/fx_intraday_history_tdx.html"
+    },
+    {
+      "name": "fx_intraday_today_tdx",
+      "title": "外汇当日分时",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "外汇数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "外汇数据"
+      ],
+      "asset_class": "fx",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求外汇当日分时。",
+      "url": "interfaces/fx_intraday_today_tdx.html"
+    },
+    {
+      "name": "fx_kline_tdx",
+      "title": "外汇K线",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "外汇数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "外汇数据"
+      ],
+      "asset_class": "fx",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求外汇K线。",
+      "url": "interfaces/fx_kline_tdx.html"
+    },
+    {
+      "name": "fx_realtime_snapshot_tdx",
+      "title": "外汇实时快照",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "外汇数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "外汇数据"
+      ],
+      "asset_class": "fx",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求外汇当前快照，返回最新价、五档买卖价和日内高低。",
+      "url": "interfaces/fx_realtime_snapshot_tdx.html"
+    },
+    {
+      "name": "fx_trades_history_tdx",
+      "title": "外汇历史逐笔",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "外汇数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "外汇数据"
+      ],
+      "asset_class": "fx",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求指定日期外汇逐笔明细。外汇样本可能没有成交量和开平类型，按源端真实值返回。",
+      "url": "interfaces/fx_trades_history_tdx.html"
+    },
+    {
+      "name": "fx_trades_today_tdx",
+      "title": "外汇当日逐笔",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "外汇数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "外汇数据"
+      ],
+      "asset_class": "fx",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求外汇当日逐笔明细。外汇样本可能没有成交量和开平类型，按源端真实值返回。",
+      "url": "interfaces/fx_trades_today_tdx.html"
+    },
+    {
+      "name": "macro_indicator_series_tdx",
+      "title": "宏观指标序列",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "宏观数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "宏观数据"
+      ],
+      "asset_class": "macro",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求宏观指标序列，返回日期和值；单位未确认时保持为空。",
+      "url": "interfaces/macro_indicator_series_tdx.html"
+    },
+    {
+      "name": "macro_indicator_snapshot_tdx",
+      "title": "宏观指标快照",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "宏观数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "宏观数据"
+      ],
+      "asset_class": "macro",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求宏观指标最近值；单位未确认时保持为空。",
+      "url": "interfaces/macro_indicator_snapshot_tdx.html"
+    },
+    {
+      "name": "macro_indicators_tdx",
+      "title": "宏观指标列表",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "宏观数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "宏观数据"
+      ],
+      "asset_class": "macro",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "返回本机扩展资产目录中的宏观指标代码；指标值、日期和单位未确认前不包装成正式字段。",
+      "url": "interfaces/macro_indicators_tdx.html"
+    },
+    {
+      "name": "option_chain_tdx",
+      "title": "期权T型报价",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "期权数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "期权数据"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "用期权合约列表和实时快照拼出 T 型报价，按行权价组织认购、认沽两侧行情。",
+      "url": "interfaces/option_chain_tdx.html"
+    },
+    {
+      "name": "option_contracts_tdx",
+      "title": "期权合约列表",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "期权数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "期权数据"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "返回本机扩展资产目录中可识别的期权合约列表。",
+      "url": "interfaces/option_contracts_tdx.html"
+    },
+    {
+      "name": "option_intraday_history_tdx",
+      "title": "期权历史分时",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "期权数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "期权数据"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求指定交易日的期权历史分时。",
+      "url": "interfaces/option_intraday_history_tdx.html"
+    },
+    {
+      "name": "option_intraday_today_tdx",
+      "title": "期权当日分时",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "期权数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "期权数据"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求期权当日分时，返回价格、均价和分时成交量。",
+      "url": "interfaces/option_intraday_today_tdx.html"
+    },
+    {
+      "name": "option_kline_tdx",
+      "title": "期权K线",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "期权数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "期权数据"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求期权K线，返回OHLC、成交量、持仓量和结算价。",
+      "url": "interfaces/option_kline_tdx.html"
+    },
+    {
+      "name": "option_realtime_snapshot_tdx",
+      "title": "期权实时快照",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "期权数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "期权数据"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求期权当前快照，返回价格、结算、成交量额、持仓量和五档盘口。",
+      "url": "interfaces/option_realtime_snapshot_tdx.html"
+    },
+    {
+      "name": "futures_contracts_tdx",
+      "title": "期货合约列表",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "期货数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "期货数据"
+      ],
+      "asset_class": "future",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "返回本机扩展资产目录中可识别的期货合约列表。",
+      "url": "interfaces/futures_contracts_tdx.html"
+    },
+    {
+      "name": "futures_intraday_history_tdx",
+      "title": "期货历史分时",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "期货数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "期货数据"
+      ],
+      "asset_class": "future",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求指定交易日的期货历史分时。",
+      "url": "interfaces/futures_intraday_history_tdx.html"
+    },
+    {
+      "name": "futures_intraday_today_tdx",
+      "title": "期货当日分时",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "期货数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "期货数据"
+      ],
+      "asset_class": "future",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求期货当日分时，返回价格、均价和分时成交量。",
+      "url": "interfaces/futures_intraday_today_tdx.html"
+    },
+    {
+      "name": "futures_kline_tdx",
+      "title": "期货K线",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "期货数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "期货数据"
+      ],
+      "asset_class": "future",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求期货K线，返回OHLC、成交量、持仓量和结算价。",
+      "url": "interfaces/futures_kline_tdx.html"
+    },
+    {
+      "name": "futures_realtime_snapshot_tdx",
+      "title": "期货实时快照",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "期货数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "期货数据"
+      ],
+      "asset_class": "future",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求期货当前快照，返回最新价、结算价、成交量、成交额、持仓量和五档盘口等字段。",
+      "url": "interfaces/futures_realtime_snapshot_tdx.html"
+    },
+    {
+      "name": "futures_trades_history_tdx",
+      "title": "期货历史逐笔",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "期货数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "期货数据"
+      ],
+      "asset_class": "future",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求指定交易日期货逐笔成交，返回秒级时间、成交价、成交量、仓差和可确认的开平类型。",
+      "url": "interfaces/futures_trades_history_tdx.html"
+    },
+    {
+      "name": "futures_trades_today_tdx",
+      "title": "期货当日逐笔",
+      "source_name_zh": "通达信扩展行情",
+      "source_code": "tdx_ext",
+      "category": "期货数据",
+      "menu_path": [
+        "通达信扩展行情",
+        "期货数据"
+      ],
+      "asset_class": "future",
+      "provider_id": "axdata.source.tdx_ext_external",
+      "summary": "请求期货当日逐笔成交，返回秒级时间、成交价、成交量、仓差和可确认的开平类型。",
+      "url": "interfaces/futures_trades_today_tdx.html"
+    },
+    {
+      "name": "stock_basic_info_exchange",
+      "title": "股票基础信息",
+      "source_name_zh": "交易所",
+      "source_code": "exchange",
+      "category": "基础数据",
+      "menu_path": [
+        "交易所",
+        "基础数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.exchange",
+      "summary": "返回交易所官方当前股票基础资料；不传参数默认全部支持交易所。",
+      "url": "interfaces/stock_basic_info_exchange.html"
+    },
+    {
+      "name": "stock_historical_list_exchange",
+      "title": "历史股票列表",
+      "source_name_zh": "交易所",
+      "source_code": "exchange",
+      "category": "基础数据",
+      "menu_path": [
+        "交易所",
+        "基础数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.exchange",
+      "summary": "按交易所官方上市日期和退市日期计算一个或多个日期仍处于上市生命周期内的股票列表。",
+      "url": "interfaces/stock_historical_list_exchange.html"
+    },
+    {
+      "name": "stock_trade_calendar_exchange",
+      "title": "交易日历",
+      "source_name_zh": "交易所",
+      "source_code": "exchange",
+      "category": "基础数据",
+      "menu_path": [
+        "交易所",
+        "基础数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.exchange",
+      "summary": "从深交所官方交易日历返回指定日期范围内的开闭市信息。",
+      "url": "interfaces/stock_trade_calendar_exchange.html"
+    },
+    {
+      "name": "eastmoney_stock_realtime_snapshot",
+      "title": "A股实时行情快照",
+      "source_name_zh": "东方财富",
+      "source_code": "eastmoney",
+      "category": "实时数据",
+      "menu_path": [
+        "东方财富",
+        "实时数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.eastmoney",
+      "summary": "临时获取东方财富A股实时行情快照数据，默认不入库。",
+      "url": "interfaces/eastmoney_stock_realtime_snapshot.html"
+    },
+    {
+      "name": "eastmoney_market_index_realtime",
+      "title": "大盘指数实时行情",
+      "source_name_zh": "东方财富",
+      "source_code": "eastmoney",
+      "category": "指数数据",
+      "menu_path": [
+        "东方财富",
+        "指数数据"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.eastmoney",
+      "summary": "临时获取东方财富大盘指数实时行情数据，默认不入库。",
+      "url": "interfaces/eastmoney_market_index_realtime.html"
+    },
+    {
+      "name": "eastmoney_sector_constituents",
+      "title": "板块成分股",
+      "source_name_zh": "东方财富",
+      "source_code": "eastmoney",
+      "category": "板块数据",
+      "menu_path": [
+        "东方财富",
+        "板块数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.eastmoney",
+      "summary": "临时获取东方财富板块成分股数据，默认不入库。",
+      "url": "interfaces/eastmoney_sector_constituents.html"
+    },
+    {
+      "name": "eastmoney_sector_realtime",
+      "title": "板块实时行情",
+      "source_name_zh": "东方财富",
+      "source_code": "eastmoney",
+      "category": "板块数据",
+      "menu_path": [
+        "东方财富",
+        "板块数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.eastmoney",
+      "summary": "临时获取东方财富板块实时行情数据，默认不入库。",
+      "url": "interfaces/eastmoney_sector_realtime.html"
+    },
+    {
+      "name": "eastmoney_stock_sector_belong",
+      "title": "个股所属板块",
+      "source_name_zh": "东方财富",
+      "source_code": "eastmoney",
+      "category": "板块数据",
+      "menu_path": [
+        "东方财富",
+        "板块数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.eastmoney",
+      "summary": "临时获取东方财富个股所属板块数据，默认不入库。",
+      "url": "interfaces/eastmoney_stock_sector_belong.html"
+    },
+    {
+      "name": "eastmoney_limit_down_pool",
+      "title": "跌停池",
+      "source_name_zh": "东方财富",
+      "source_code": "eastmoney",
+      "category": "短线数据",
+      "menu_path": [
+        "东方财富",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.eastmoney",
+      "summary": "临时获取东方财富跌停池数据，默认不入库。",
+      "url": "interfaces/eastmoney_limit_down_pool.html"
+    },
+    {
+      "name": "eastmoney_limit_up_pool",
+      "title": "涨停池",
+      "source_name_zh": "东方财富",
+      "source_code": "eastmoney",
+      "category": "短线数据",
+      "menu_path": [
+        "东方财富",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.eastmoney",
+      "summary": "临时获取东方财富涨停池数据，默认不入库。",
+      "url": "interfaces/eastmoney_limit_up_pool.html"
+    },
+    {
+      "name": "eastmoney_stock_change_detail",
+      "title": "个股盘口异动明细",
+      "source_name_zh": "东方财富",
+      "source_code": "eastmoney",
+      "category": "短线数据",
+      "menu_path": [
+        "东方财富",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.eastmoney",
+      "summary": "临时获取东方财富个股盘口异动明细数据，默认不入库。",
+      "url": "interfaces/eastmoney_stock_change_detail.html"
+    },
+    {
+      "name": "eastmoney_stock_changes",
+      "title": "盘口异动列表",
+      "source_name_zh": "东方财富",
+      "source_code": "eastmoney",
+      "category": "短线数据",
+      "menu_path": [
+        "东方财富",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.eastmoney",
+      "summary": "临时获取东方财富盘口异动列表数据，默认不入库。",
+      "url": "interfaces/eastmoney_stock_changes.html"
+    },
+    {
+      "name": "eastmoney_yesterday_limit_up_pool",
+      "title": "昨日涨停今日表现",
+      "source_name_zh": "东方财富",
+      "source_code": "eastmoney",
+      "category": "短线数据",
+      "menu_path": [
+        "东方财富",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.eastmoney",
+      "summary": "临时获取东方财富昨日涨停今日表现数据，默认不入库。",
+      "url": "interfaces/eastmoney_yesterday_limit_up_pool.html"
+    },
+    {
+      "name": "eastmoney_research_reports",
+      "title": "个股研报列表",
+      "source_name_zh": "东方财富",
+      "source_code": "eastmoney",
+      "category": "研报数据",
+      "menu_path": [
+        "东方财富",
+        "研报数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.eastmoney",
+      "summary": "低频获取个股研报列表元信息；不抓取 PDF 正文。",
+      "url": "interfaces/eastmoney_research_reports.html"
+    },
+    {
+      "name": "eastmoney_margin_trading",
+      "title": "融资融券明细",
+      "source_name_zh": "东方财富",
+      "source_code": "eastmoney",
+      "category": "融资融券数据",
+      "menu_path": [
+        "东方财富",
+        "融资融券数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.eastmoney",
+      "summary": "低频获取单股融资融券明细，金额单位为元，融券数量单位为股。",
+      "url": "interfaces/eastmoney_margin_trading.html"
+    },
+    {
+      "name": "eastmoney_dragon_tiger_daily",
+      "title": "龙虎榜每日汇总",
+      "source_name_zh": "东方财富",
+      "source_code": "eastmoney",
+      "category": "龙虎榜数据",
+      "menu_path": [
+        "东方财富",
+        "龙虎榜数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.eastmoney",
+      "summary": "低频获取东方财富龙虎榜每日汇总，金额单位为元。",
+      "url": "interfaces/eastmoney_dragon_tiger_daily.html"
+    },
+    {
+      "name": "stock_irm_ans_cninfo",
+      "title": "互动易回答详情",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "互动易",
+      "menu_path": [
+        "巨潮",
+        "互动易"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮互动易回答详情数据，默认不入库。",
+      "url": "interfaces/stock_irm_ans_cninfo.html"
+    },
+    {
+      "name": "stock_irm_cninfo",
+      "title": "互动易提问",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "互动易",
+      "menu_path": [
+        "巨潮",
+        "互动易"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮互动易提问数据，默认不入库。",
+      "url": "interfaces/stock_irm_cninfo.html"
+    },
+    {
+      "name": "bond_corporate_issue_cninfo",
+      "title": "企业债发行",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "债券报表",
+      "menu_path": [
+        "巨潮",
+        "债券报表"
+      ],
+      "asset_class": "bond",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮企业债发行数据，默认不入库。",
+      "url": "interfaces/bond_corporate_issue_cninfo.html"
+    },
+    {
+      "name": "bond_cov_issue_cninfo",
+      "title": "可转债发行",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "债券报表",
+      "menu_path": [
+        "巨潮",
+        "债券报表"
+      ],
+      "asset_class": "bond",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮可转债发行数据，默认不入库。",
+      "url": "interfaces/bond_cov_issue_cninfo.html"
+    },
+    {
+      "name": "bond_cov_stock_issue_cninfo",
+      "title": "可转债转股",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "债券报表",
+      "menu_path": [
+        "巨潮",
+        "债券报表"
+      ],
+      "asset_class": "bond",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮可转债转股数据，默认不入库。",
+      "url": "interfaces/bond_cov_stock_issue_cninfo.html"
+    },
+    {
+      "name": "bond_local_government_issue_cninfo",
+      "title": "地方债发行",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "债券报表",
+      "menu_path": [
+        "巨潮",
+        "债券报表"
+      ],
+      "asset_class": "bond",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮地方债发行数据，默认不入库。",
+      "url": "interfaces/bond_local_government_issue_cninfo.html"
+    },
+    {
+      "name": "bond_treasure_issue_cninfo",
+      "title": "国债发行",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "债券报表",
+      "menu_path": [
+        "巨潮",
+        "债券报表"
+      ],
+      "asset_class": "bond",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮国债发行数据，默认不入库。",
+      "url": "interfaces/bond_treasure_issue_cninfo.html"
+    },
+    {
+      "name": "stock_cg_equity_mortgage_cninfo",
+      "title": "股权质押",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "公司治理",
+      "menu_path": [
+        "巨潮",
+        "公司治理"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮股权质押数据，默认不入库。",
+      "url": "interfaces/stock_cg_equity_mortgage_cninfo.html"
+    },
+    {
+      "name": "stock_cg_guarantee_cninfo",
+      "title": "对外担保",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "公司治理",
+      "menu_path": [
+        "巨潮",
+        "公司治理"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮对外担保数据，默认不入库。",
+      "url": "interfaces/stock_cg_guarantee_cninfo.html"
+    },
+    {
+      "name": "stock_cg_lawsuit_cninfo",
+      "title": "公司诉讼",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "公司治理",
+      "menu_path": [
+        "巨潮",
+        "公司治理"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮公司诉讼数据，默认不入库。",
+      "url": "interfaces/stock_cg_lawsuit_cninfo.html"
+    },
+    {
+      "name": "stock_profile_cninfo",
+      "title": "公司概况",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "公司资料",
+      "menu_path": [
+        "巨潮",
+        "公司资料"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮公司概况数据，默认不入库。",
+      "url": "interfaces/stock_profile_cninfo.html"
+    },
+    {
+      "name": "cninfo_announcement_detail",
+      "title": "公告PDF元信息",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "公告数据",
+      "menu_path": [
+        "巨潮",
+        "公告数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "确认巨潮公告 PDF 的文件类型、大小和下载地址；不解析正文。",
+      "url": "interfaces/cninfo_announcement_detail.html"
+    },
+    {
+      "name": "cninfo_announcements",
+      "title": "公告列表",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "公告数据",
+      "menu_path": [
+        "巨潮",
+        "公告数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "按股票和日期范围临时获取巨潮公告元信息。",
+      "url": "interfaces/cninfo_announcements.html"
+    },
+    {
+      "name": "stock_zh_a_disclosure_relation_cninfo",
+      "title": "预约披露调研公告",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "公告数据",
+      "menu_path": [
+        "巨潮",
+        "公告数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮预约披露调研公告数据，默认不入库。",
+      "url": "interfaces/stock_zh_a_disclosure_relation_cninfo.html"
+    },
+    {
+      "name": "stock_zh_a_disclosure_report_cninfo",
+      "title": "信息披露公告",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "公告数据",
+      "menu_path": [
+        "巨潮",
+        "公告数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮信息披露公告数据，默认不入库。",
+      "url": "interfaces/stock_zh_a_disclosure_report_cninfo.html"
+    },
+    {
+      "name": "stock_dividend_cninfo",
+      "title": "历史分红",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "分红融资",
+      "menu_path": [
+        "巨潮",
+        "分红融资"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮历史分红数据，默认不入库。",
+      "url": "interfaces/stock_dividend_cninfo.html"
+    },
+    {
+      "name": "fund_report_asset_allocation_cninfo",
+      "title": "基金资产配置",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "基金报表",
+      "menu_path": [
+        "巨潮",
+        "基金报表"
+      ],
+      "asset_class": "fund",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮基金资产配置数据，默认不入库。",
+      "url": "interfaces/fund_report_asset_allocation_cninfo.html"
+    },
+    {
+      "name": "fund_report_industry_allocation_cninfo",
+      "title": "基金行业配置",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "基金报表",
+      "menu_path": [
+        "巨潮",
+        "基金报表"
+      ],
+      "asset_class": "fund",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮基金行业配置数据，默认不入库。",
+      "url": "interfaces/fund_report_industry_allocation_cninfo.html"
+    },
+    {
+      "name": "fund_report_stock_cninfo",
+      "title": "基金重仓股",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "基金报表",
+      "menu_path": [
+        "巨潮",
+        "基金报表"
+      ],
+      "asset_class": "fund",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮基金重仓股数据，默认不入库。",
+      "url": "interfaces/fund_report_stock_cninfo.html"
+    },
+    {
+      "name": "stock_ipo_summary_cninfo",
+      "title": "上市相关",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "新股数据",
+      "menu_path": [
+        "巨潮",
+        "新股数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮上市相关数据，默认不入库。",
+      "url": "interfaces/stock_ipo_summary_cninfo.html"
+    },
+    {
+      "name": "stock_new_gh_cninfo",
+      "title": "新股过会",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "新股数据",
+      "menu_path": [
+        "巨潮",
+        "新股数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮新股过会数据，默认不入库。",
+      "url": "interfaces/stock_new_gh_cninfo.html"
+    },
+    {
+      "name": "stock_new_ipo_cninfo",
+      "title": "新股发行",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "新股数据",
+      "menu_path": [
+        "巨潮",
+        "新股数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮新股发行数据，默认不入库。",
+      "url": "interfaces/stock_new_ipo_cninfo.html"
+    },
+    {
+      "name": "stock_allotment_cninfo",
+      "title": "配股实施方案",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "股本股东",
+      "menu_path": [
+        "巨潮",
+        "股本股东"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮配股实施方案数据，默认不入库。",
+      "url": "interfaces/stock_allotment_cninfo.html"
+    },
+    {
+      "name": "stock_hold_change_cninfo",
+      "title": "股本变动",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "股本股东",
+      "menu_path": [
+        "巨潮",
+        "股本股东"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮股本变动数据，默认不入库。",
+      "url": "interfaces/stock_hold_change_cninfo.html"
+    },
+    {
+      "name": "stock_hold_control_cninfo",
+      "title": "实际控制人持股变动",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "股本股东",
+      "menu_path": [
+        "巨潮",
+        "股本股东"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮实际控制人持股变动数据，默认不入库。",
+      "url": "interfaces/stock_hold_control_cninfo.html"
+    },
+    {
+      "name": "stock_hold_management_detail_cninfo",
+      "title": "高管持股变动明细",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "股本股东",
+      "menu_path": [
+        "巨潮",
+        "股本股东"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮高管持股变动明细数据，默认不入库。",
+      "url": "interfaces/stock_hold_management_detail_cninfo.html"
+    },
+    {
+      "name": "stock_hold_num_cninfo",
+      "title": "股东人数及持股集中度",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "股本股东",
+      "menu_path": [
+        "巨潮",
+        "股本股东"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮股东人数及持股集中度数据，默认不入库。",
+      "url": "interfaces/stock_hold_num_cninfo.html"
+    },
+    {
+      "name": "stock_share_change_cninfo",
+      "title": "公司股本变动",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "股本股东",
+      "menu_path": [
+        "巨潮",
+        "股本股东"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮公司股本变动数据，默认不入库。",
+      "url": "interfaces/stock_share_change_cninfo.html"
+    },
+    {
+      "name": "stock_industry_category_cninfo",
+      "title": "行业分类数据",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "行业数据",
+      "menu_path": [
+        "巨潮",
+        "行业数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮行业分类数据数据，默认不入库。",
+      "url": "interfaces/stock_industry_category_cninfo.html"
+    },
+    {
+      "name": "stock_industry_change_cninfo",
+      "title": "行业归属变动",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "行业数据",
+      "menu_path": [
+        "巨潮",
+        "行业数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮行业归属变动数据，默认不入库。",
+      "url": "interfaces/stock_industry_change_cninfo.html"
+    },
+    {
+      "name": "stock_industry_pe_ratio_cninfo",
+      "title": "行业市盈率",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "行业数据",
+      "menu_path": [
+        "巨潮",
+        "行业数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮行业市盈率数据，默认不入库。",
+      "url": "interfaces/stock_industry_pe_ratio_cninfo.html"
+    },
+    {
+      "name": "stock_rank_forecast_cninfo",
+      "title": "投资评级",
+      "source_name_zh": "巨潮",
+      "source_code": "cninfo",
+      "category": "评级预测",
+      "menu_path": [
+        "巨潮",
+        "评级预测"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cninfo",
+      "summary": "临时获取巨潮投资评级数据，默认不入库。",
+      "url": "interfaces/stock_rank_forecast_cninfo.html"
+    },
+    {
+      "name": "get_tx_start_year",
+      "title": "腾讯历史起始日期",
+      "source_name_zh": "腾讯财经",
+      "source_code": "tencent",
+      "category": "历史行情",
+      "menu_path": [
+        "腾讯财经",
+        "历史行情"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tencent",
+      "summary": "临时获取腾讯财经腾讯历史起始日期数据，默认不入库。",
+      "url": "interfaces/get_tx_start_year.html"
+    },
+    {
+      "name": "stock_zh_a_hist_tx",
+      "title": "A股历史日线",
+      "source_name_zh": "腾讯财经",
+      "source_code": "tencent",
+      "category": "历史行情",
+      "menu_path": [
+        "腾讯财经",
+        "历史行情"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tencent",
+      "summary": "临时获取腾讯财经A股历史日线数据，默认不入库。",
+      "url": "interfaces/stock_zh_a_hist_tx.html"
+    },
+    {
+      "name": "stock_zh_index_daily_tx",
+      "title": "指数历史日线",
+      "source_name_zh": "腾讯财经",
+      "source_code": "tencent",
+      "category": "指数数据",
+      "menu_path": [
+        "腾讯财经",
+        "指数数据"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.tencent",
+      "summary": "临时获取腾讯财经指数历史日线数据，默认不入库。",
+      "url": "interfaces/stock_zh_index_daily_tx.html"
+    },
+    {
+      "name": "stock_zh_a_spot_tx",
+      "title": "A股实时行情列表",
+      "source_name_zh": "腾讯财经",
+      "source_code": "tencent",
+      "category": "行情数据",
+      "menu_path": [
+        "腾讯财经",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tencent",
+      "summary": "临时获取腾讯财经A股实时行情列表数据，默认不入库。",
+      "url": "interfaces/stock_zh_a_spot_tx.html"
+    },
+    {
+      "name": "tencent_realtime_snapshot",
+      "title": "实时快照",
+      "source_name_zh": "腾讯财经",
+      "source_code": "tencent",
+      "category": "行情数据",
+      "menu_path": [
+        "腾讯财经",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tencent",
+      "summary": "临时获取腾讯财经快照，覆盖 A 股、指数和 ETF 的确认字段。",
+      "url": "interfaces/tencent_realtime_snapshot.html"
+    },
+    {
+      "name": "stock_zh_a_tick_tx_js",
+      "title": "A股逐笔成交",
+      "source_name_zh": "腾讯财经",
+      "source_code": "tencent",
+      "category": "逐笔数据",
+      "menu_path": [
+        "腾讯财经",
+        "逐笔数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.tencent",
+      "summary": "临时获取腾讯财经A股逐笔成交数据，默认不入库。",
+      "url": "interfaces/stock_zh_a_tick_tx_js.html"
+    },
+    {
+      "name": "stock_esg_hz_sina",
+      "title": "新浪华证 ESG 评分",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "ESG",
+      "menu_path": [
+        "新浪财经",
+        "ESG"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪华证 ESG 评分数据，默认不入库。",
+      "url": "interfaces/stock_esg_hz_sina.html"
+    },
+    {
+      "name": "stock_esg_msci_sina",
+      "title": "新浪 MSCI ESG 评分",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "ESG",
+      "menu_path": [
+        "新浪财经",
+        "ESG"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪 MSCI ESG 评分数据，默认不入库。",
+      "url": "interfaces/stock_esg_msci_sina.html"
+    },
+    {
+      "name": "stock_esg_rate_sina",
+      "title": "新浪 ESG 评级数据",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "ESG",
+      "menu_path": [
+        "新浪财经",
+        "ESG"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪 ESG 评级数据数据，默认不入库。",
+      "url": "interfaces/stock_esg_rate_sina.html"
+    },
+    {
+      "name": "stock_esg_rft_sina",
+      "title": "新浪路孚特 ESG 评分",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "ESG",
+      "menu_path": [
+        "新浪财经",
+        "ESG"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪路孚特 ESG 评分数据，默认不入库。",
+      "url": "interfaces/stock_esg_rft_sina.html"
+    },
+    {
+      "name": "stock_esg_zd_sina",
+      "title": "新浪秩鼎 ESG 评分",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "ESG",
+      "menu_path": [
+        "新浪财经",
+        "ESG"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪秩鼎 ESG 评分数据，默认不入库。",
+      "url": "interfaces/stock_esg_zd_sina.html"
+    },
+    {
+      "name": "tool_trade_date_hist_sina",
+      "title": "新浪交易日历",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "交易日历",
+      "menu_path": [
+        "新浪财经",
+        "交易日历"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪交易日历数据，默认不入库。",
+      "url": "interfaces/tool_trade_date_hist_sina.html"
+    },
+    {
+      "name": "bond_gb_us_sina",
+      "title": "新浪美国国债收益率",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "债券收益率",
+      "menu_path": [
+        "新浪财经",
+        "债券收益率"
+      ],
+      "asset_class": "bond",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪美国国债收益率数据，默认不入库。",
+      "url": "interfaces/bond_gb_us_sina.html"
+    },
+    {
+      "name": "bond_gb_zh_sina",
+      "title": "新浪中国国债收益率",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "债券收益率",
+      "menu_path": [
+        "新浪财经",
+        "债券收益率"
+      ],
+      "asset_class": "bond",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中国国债收益率数据，默认不入库。",
+      "url": "interfaces/bond_gb_zh_sina.html"
+    },
+    {
+      "name": "stock_restricted_release_queue_sina",
+      "title": "新浪限售解禁批次",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "发行分配",
+      "menu_path": [
+        "新浪财经",
+        "发行分配"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪限售解禁批次数据，默认不入库。",
+      "url": "interfaces/stock_restricted_release_queue_sina.html"
+    },
+    {
+      "name": "bond_cb_profile_sina",
+      "title": "新浪可转债详情资料",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "可转债",
+      "menu_path": [
+        "新浪财经",
+        "可转债"
+      ],
+      "asset_class": "bond",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪可转债详情资料数据，默认不入库。",
+      "url": "interfaces/bond_cb_profile_sina.html"
+    },
+    {
+      "name": "bond_cb_summary_sina",
+      "title": "新浪可转债债券概况",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "可转债",
+      "menu_path": [
+        "新浪财经",
+        "可转债"
+      ],
+      "asset_class": "bond",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪可转债债券概况数据，默认不入库。",
+      "url": "interfaces/bond_cb_summary_sina.html"
+    },
+    {
+      "name": "fund_etf_category_sina",
+      "title": "基金分类行情",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "基金行情",
+      "menu_path": [
+        "新浪财经",
+        "基金行情"
+      ],
+      "asset_class": "fund",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经基金分类行情数据，默认不入库。",
+      "url": "interfaces/fund_etf_category_sina.html"
+    },
+    {
+      "name": "fund_etf_dividend_sina",
+      "title": "ETF 累计分红",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "基金行情",
+      "menu_path": [
+        "新浪财经",
+        "基金行情"
+      ],
+      "asset_class": "fund",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经ETF 累计分红数据，默认不入库。",
+      "url": "interfaces/fund_etf_dividend_sina.html"
+    },
+    {
+      "name": "fund_etf_hist_sina",
+      "title": "新浪 ETF 日行情",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "基金行情",
+      "menu_path": [
+        "新浪财经",
+        "基金行情"
+      ],
+      "asset_class": "fund",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪 ETF 日行情数据，默认不入库。",
+      "url": "interfaces/fund_etf_hist_sina.html"
+    },
+    {
+      "name": "fund_scale_close_sina",
+      "title": "新浪封闭式基金规模",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "基金规模",
+      "menu_path": [
+        "新浪财经",
+        "基金规模"
+      ],
+      "asset_class": "fund",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪封闭式基金规模数据，默认不入库。",
+      "url": "interfaces/fund_scale_close_sina.html"
+    },
+    {
+      "name": "fund_scale_open_sina",
+      "title": "新浪开放式基金规模",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "基金规模",
+      "menu_path": [
+        "新浪财经",
+        "基金规模"
+      ],
+      "asset_class": "fund",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪开放式基金规模数据，默认不入库。",
+      "url": "interfaces/fund_scale_open_sina.html"
+    },
+    {
+      "name": "fund_scale_structured_sina",
+      "title": "新浪分级子基金规模",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "基金规模",
+      "menu_path": [
+        "新浪财经",
+        "基金规模"
+      ],
+      "asset_class": "fund",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪分级子基金规模数据，默认不入库。",
+      "url": "interfaces/fund_scale_structured_sina.html"
+    },
+    {
+      "name": "currency_boc_sina",
+      "title": "新浪中行外汇牌价",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "外汇",
+      "menu_path": [
+        "新浪财经",
+        "外汇"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中行外汇牌价数据，默认不入库。",
+      "url": "interfaces/currency_boc_sina.html"
+    },
+    {
+      "name": "stock_hk_index_daily_sina",
+      "title": "新浪港股指数日行情",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "指数数据",
+      "menu_path": [
+        "新浪财经",
+        "指数数据"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪港股指数日行情数据，默认不入库。",
+      "url": "interfaces/stock_hk_index_daily_sina.html"
+    },
+    {
+      "name": "stock_hk_index_spot_sina",
+      "title": "新浪港股指数实时行情",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "指数数据",
+      "menu_path": [
+        "新浪财经",
+        "指数数据"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪港股指数实时行情数据，默认不入库。",
+      "url": "interfaces/stock_hk_index_spot_sina.html"
+    },
+    {
+      "name": "stock_zh_index_spot_sina",
+      "title": "A 股指数实时行情",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "指数数据",
+      "menu_path": [
+        "新浪财经",
+        "指数数据"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经A 股指数实时行情数据，默认不入库。",
+      "url": "interfaces/stock_zh_index_spot_sina.html"
+    },
+    {
+      "name": "index_global_hist_sina",
+      "title": "全球指数历史行情",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "指数行情",
+      "menu_path": [
+        "新浪财经",
+        "指数行情"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经全球指数历史行情数据，默认不入库。",
+      "url": "interfaces/index_global_hist_sina.html"
+    },
+    {
+      "name": "index_stock_cons_sina",
+      "title": "指数成份股",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "指数行情",
+      "menu_path": [
+        "新浪财经",
+        "指数行情"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经指数成份股数据，默认不入库。",
+      "url": "interfaces/index_stock_cons_sina.html"
+    },
+    {
+      "name": "index_us_stock_sina",
+      "title": "新浪美股指数日行情",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "指数行情",
+      "menu_path": [
+        "新浪财经",
+        "指数行情"
+      ],
+      "asset_class": "index",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪美股指数日行情数据，默认不入库。",
+      "url": "interfaces/index_us_stock_sina.html"
+    },
+    {
+      "name": "option_cffex_hs300_daily_sina",
+      "title": "新浪中金所沪深300期权日线",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权",
+      "menu_path": [
+        "新浪财经",
+        "期权"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中金所沪深300期权日线数据，默认不入库。",
+      "url": "interfaces/option_cffex_hs300_daily_sina.html"
+    },
+    {
+      "name": "option_cffex_hs300_list_sina",
+      "title": "新浪中金所沪深300期权合约列表",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权",
+      "menu_path": [
+        "新浪财经",
+        "期权"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中金所沪深300期权合约列表数据，默认不入库。",
+      "url": "interfaces/option_cffex_hs300_list_sina.html"
+    },
+    {
+      "name": "option_cffex_hs300_spot_sina",
+      "title": "新浪中金所沪深300期权实时",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权",
+      "menu_path": [
+        "新浪财经",
+        "期权"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中金所沪深300期权实时数据，默认不入库。",
+      "url": "interfaces/option_cffex_hs300_spot_sina.html"
+    },
+    {
+      "name": "option_cffex_sz50_daily_sina",
+      "title": "新浪中金所上证50期权日线",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权",
+      "menu_path": [
+        "新浪财经",
+        "期权"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中金所上证50期权日线数据，默认不入库。",
+      "url": "interfaces/option_cffex_sz50_daily_sina.html"
+    },
+    {
+      "name": "option_cffex_sz50_list_sina",
+      "title": "新浪中金所上证50期权合约列表",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权",
+      "menu_path": [
+        "新浪财经",
+        "期权"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中金所上证50期权合约列表数据，默认不入库。",
+      "url": "interfaces/option_cffex_sz50_list_sina.html"
+    },
+    {
+      "name": "option_cffex_sz50_spot_sina",
+      "title": "新浪中金所上证50期权实时",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权",
+      "menu_path": [
+        "新浪财经",
+        "期权"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中金所上证50期权实时数据，默认不入库。",
+      "url": "interfaces/option_cffex_sz50_spot_sina.html"
+    },
+    {
+      "name": "option_cffex_zz1000_daily_sina",
+      "title": "新浪中金所中证1000期权日线",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权",
+      "menu_path": [
+        "新浪财经",
+        "期权"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中金所中证1000期权日线数据，默认不入库。",
+      "url": "interfaces/option_cffex_zz1000_daily_sina.html"
+    },
+    {
+      "name": "option_cffex_zz1000_list_sina",
+      "title": "新浪中金所中证1000期权合约列表",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权",
+      "menu_path": [
+        "新浪财经",
+        "期权"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中金所中证1000期权合约列表数据，默认不入库。",
+      "url": "interfaces/option_cffex_zz1000_list_sina.html"
+    },
+    {
+      "name": "option_cffex_zz1000_spot_sina",
+      "title": "新浪中金所中证1000期权实时",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权",
+      "menu_path": [
+        "新浪财经",
+        "期权"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中金所中证1000期权实时数据，默认不入库。",
+      "url": "interfaces/option_cffex_zz1000_spot_sina.html"
+    },
+    {
+      "name": "option_commodity_contract_sina",
+      "title": "新浪商品期权品种列表",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权",
+      "menu_path": [
+        "新浪财经",
+        "期权"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪商品期权品种列表数据，默认不入库。",
+      "url": "interfaces/option_commodity_contract_sina.html"
+    },
+    {
+      "name": "option_commodity_contract_table_sina",
+      "title": "新浪商品期权合约月份列表",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权",
+      "menu_path": [
+        "新浪财经",
+        "期权"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪商品期权合约月份列表数据，默认不入库。",
+      "url": "interfaces/option_commodity_contract_table_sina.html"
+    },
+    {
+      "name": "option_commodity_hist_sina",
+      "title": "新浪商品期权历史日线",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权",
+      "menu_path": [
+        "新浪财经",
+        "期权"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪商品期权历史日线数据，默认不入库。",
+      "url": "interfaces/option_commodity_hist_sina.html"
+    },
+    {
+      "name": "option_finance_minute_sina",
+      "title": "新浪金融期权分钟行情",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权行情",
+      "menu_path": [
+        "新浪财经",
+        "期权行情"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪金融期权分钟行情数据，默认不入库。",
+      "url": "interfaces/option_finance_minute_sina.html"
+    },
+    {
+      "name": "option_sse_codes_sina",
+      "title": "上交所期权代码发现",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权行情",
+      "menu_path": [
+        "新浪财经",
+        "期权行情"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经上交所期权代码发现数据，默认不入库。",
+      "url": "interfaces/option_sse_codes_sina.html"
+    },
+    {
+      "name": "option_sse_daily_sina",
+      "title": "上交所期权日线",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权行情",
+      "menu_path": [
+        "新浪财经",
+        "期权行情"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经上交所期权日线数据，默认不入库。",
+      "url": "interfaces/option_sse_daily_sina.html"
+    },
+    {
+      "name": "option_sse_expire_day_sina",
+      "title": "上交所期权到期日",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权行情",
+      "menu_path": [
+        "新浪财经",
+        "期权行情"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经上交所期权到期日数据，默认不入库。",
+      "url": "interfaces/option_sse_expire_day_sina.html"
+    },
+    {
+      "name": "option_sse_greeks_sina",
+      "title": "上交所期权 Greeks",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权行情",
+      "menu_path": [
+        "新浪财经",
+        "期权行情"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经上交所期权 Greeks数据，默认不入库。",
+      "url": "interfaces/option_sse_greeks_sina.html"
+    },
+    {
+      "name": "option_sse_list_sina",
+      "title": "上交所期权到期月份列表",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权行情",
+      "menu_path": [
+        "新浪财经",
+        "期权行情"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经上交所期权到期月份列表数据，默认不入库。",
+      "url": "interfaces/option_sse_list_sina.html"
+    },
+    {
+      "name": "option_sse_minute_sina",
+      "title": "上交所期权分钟行情",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权行情",
+      "menu_path": [
+        "新浪财经",
+        "期权行情"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经上交所期权分钟行情数据，默认不入库。",
+      "url": "interfaces/option_sse_minute_sina.html"
+    },
+    {
+      "name": "option_sse_spot_price_sina",
+      "title": "上交所期权实时行情",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权行情",
+      "menu_path": [
+        "新浪财经",
+        "期权行情"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经上交所期权实时行情数据，默认不入库。",
+      "url": "interfaces/option_sse_spot_price_sina.html"
+    },
+    {
+      "name": "option_sse_underlying_spot_price_sina",
+      "title": "上交所期权标的实时行情",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期权行情",
+      "menu_path": [
+        "新浪财经",
+        "期权行情"
+      ],
+      "asset_class": "option",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经上交所期权标的实时行情数据，默认不入库。",
+      "url": "interfaces/option_sse_underlying_spot_price_sina.html"
+    },
+    {
+      "name": "futures_display_main_sina",
+      "title": "新浪期货主力连续展示",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期货行情",
+      "menu_path": [
+        "新浪财经",
+        "期货行情"
+      ],
+      "asset_class": "future",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪期货主力连续展示数据，默认不入库。",
+      "url": "interfaces/futures_display_main_sina.html"
+    },
+    {
+      "name": "futures_hold_pos_sina",
+      "title": "新浪期货成交持仓排名",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期货行情",
+      "menu_path": [
+        "新浪财经",
+        "期货行情"
+      ],
+      "asset_class": "future",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪期货成交持仓排名数据，默认不入库。",
+      "url": "interfaces/futures_hold_pos_sina.html"
+    },
+    {
+      "name": "futures_main_sina",
+      "title": "新浪期货主力连续日线",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期货行情",
+      "menu_path": [
+        "新浪财经",
+        "期货行情"
+      ],
+      "asset_class": "future",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪期货主力连续日线数据，默认不入库。",
+      "url": "interfaces/futures_main_sina.html"
+    },
+    {
+      "name": "futures_zh_daily_sina",
+      "title": "新浪中国期货日线",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期货行情",
+      "menu_path": [
+        "新浪财经",
+        "期货行情"
+      ],
+      "asset_class": "future",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中国期货日线数据，默认不入库。",
+      "url": "interfaces/futures_zh_daily_sina.html"
+    },
+    {
+      "name": "futures_zh_minute_sina",
+      "title": "新浪中国期货分钟线",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期货行情",
+      "menu_path": [
+        "新浪财经",
+        "期货行情"
+      ],
+      "asset_class": "future",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中国期货分钟线数据，默认不入库。",
+      "url": "interfaces/futures_zh_minute_sina.html"
+    },
+    {
+      "name": "rv_from_futures_zh_minute_sina",
+      "title": "新浪中国期货分钟实现波动",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "期货行情",
+      "menu_path": [
+        "新浪财经",
+        "期货行情"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪中国期货分钟实现波动数据，默认不入库。",
+      "url": "interfaces/rv_from_futures_zh_minute_sina.html"
+    },
+    {
+      "name": "stock_classify_sina",
+      "title": "新浪股票分类成份",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "股票分类",
+      "menu_path": [
+        "新浪财经",
+        "股票分类"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪股票分类成份数据，默认不入库。",
+      "url": "interfaces/stock_classify_sina.html"
+    },
+    {
+      "name": "stock_intraday_sina",
+      "title": "新浪 A 股逐笔分时成交",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "股票行情",
+      "menu_path": [
+        "新浪财经",
+        "股票行情"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪 A 股逐笔分时成交数据，默认不入库。",
+      "url": "interfaces/stock_intraday_sina.html"
+    },
+    {
+      "name": "stock_financial_report_sina",
+      "title": "新浪 JSON 财务报表",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "财务报表",
+      "menu_path": [
+        "新浪财经",
+        "财务报表"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪 JSON 财务报表数据，默认不入库。",
+      "url": "interfaces/stock_financial_report_sina.html"
+    },
+    {
+      "name": "stock_info_global_sina",
+      "title": "新浪全球财经快讯",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "资讯快讯",
+      "menu_path": [
+        "新浪财经",
+        "资讯快讯"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经新浪全球财经快讯数据，默认不入库。",
+      "url": "interfaces/stock_info_global_sina.html"
+    },
+    {
+      "name": "stock_lhb_detail_daily_sina",
+      "title": "龙虎榜每日详情",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "龙虎榜",
+      "menu_path": [
+        "新浪财经",
+        "龙虎榜"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经龙虎榜每日详情数据，默认不入库。",
+      "url": "interfaces/stock_lhb_detail_daily_sina.html"
+    },
+    {
+      "name": "stock_lhb_ggtj_sina",
+      "title": "龙虎榜个股上榜统计",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "龙虎榜",
+      "menu_path": [
+        "新浪财经",
+        "龙虎榜"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经龙虎榜个股上榜统计数据，默认不入库。",
+      "url": "interfaces/stock_lhb_ggtj_sina.html"
+    },
+    {
+      "name": "stock_lhb_jgmx_sina",
+      "title": "龙虎榜机构席位明细",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "龙虎榜",
+      "menu_path": [
+        "新浪财经",
+        "龙虎榜"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经龙虎榜机构席位明细数据，默认不入库。",
+      "url": "interfaces/stock_lhb_jgmx_sina.html"
+    },
+    {
+      "name": "stock_lhb_jgzz_sina",
+      "title": "龙虎榜机构席位追踪",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "龙虎榜",
+      "menu_path": [
+        "新浪财经",
+        "龙虎榜"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经龙虎榜机构席位追踪数据，默认不入库。",
+      "url": "interfaces/stock_lhb_jgzz_sina.html"
+    },
+    {
+      "name": "stock_lhb_yytj_sina",
+      "title": "龙虎榜营业部上榜统计",
+      "source_name_zh": "新浪财经",
+      "source_code": "sina",
+      "category": "龙虎榜",
+      "menu_path": [
+        "新浪财经",
+        "龙虎榜"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.sina",
+      "summary": "临时获取新浪财经龙虎榜营业部上榜统计数据，默认不入库。",
+      "url": "interfaces/stock_lhb_yytj_sina.html"
+    },
+    {
+      "name": "cls_stock_timeline",
+      "title": "个股分时",
+      "source_name_zh": "财联社",
+      "source_code": "cls",
+      "category": "实时数据",
+      "menu_path": [
+        "财联社",
+        "实时数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cls",
+      "summary": "临时获取财联社个股分时数据，默认不入库。",
+      "url": "interfaces/cls_stock_timeline.html"
+    },
+    {
+      "name": "cls_market_emotion",
+      "title": "市场情绪",
+      "source_name_zh": "财联社",
+      "source_code": "cls",
+      "category": "情绪数据",
+      "menu_path": [
+        "财联社",
+        "情绪数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cls",
+      "summary": "临时获取财联社市场情绪数据，默认不入库。",
+      "url": "interfaces/cls_market_emotion.html"
+    },
+    {
+      "name": "cls_sector_heat",
+      "title": "板块热度排行",
+      "source_name_zh": "财联社",
+      "source_code": "cls",
+      "category": "板块数据",
+      "menu_path": [
+        "财联社",
+        "板块数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cls",
+      "summary": "临时获取财联社板块热度排行数据，默认不入库。",
+      "url": "interfaces/cls_sector_heat.html"
+    },
+    {
+      "name": "cls_sector_industry",
+      "title": "行业板块实时行情",
+      "source_name_zh": "财联社",
+      "source_code": "cls",
+      "category": "板块数据",
+      "menu_path": [
+        "财联社",
+        "板块数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cls",
+      "summary": "临时获取财联社行业板块实时行情数据，默认不入库。",
+      "url": "interfaces/cls_sector_industry.html"
+    },
+    {
+      "name": "cls_sector_popular_stocks",
+      "title": "板块热门股",
+      "source_name_zh": "财联社",
+      "source_code": "cls",
+      "category": "板块数据",
+      "menu_path": [
+        "财联社",
+        "板块数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cls",
+      "summary": "临时获取财联社板块热门股数据，默认不入库。",
+      "url": "interfaces/cls_sector_popular_stocks.html"
+    },
+    {
+      "name": "cls_sector_rotation",
+      "title": "板块轮动",
+      "source_name_zh": "财联社",
+      "source_code": "cls",
+      "category": "板块数据",
+      "menu_path": [
+        "财联社",
+        "板块数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cls",
+      "summary": "临时获取财联社板块轮动数据，默认不入库。",
+      "url": "interfaces/cls_sector_rotation.html"
+    },
+    {
+      "name": "cls_limit_up_pool",
+      "title": "涨停池含原因",
+      "source_name_zh": "财联社",
+      "source_code": "cls",
+      "category": "短线数据",
+      "menu_path": [
+        "财联社",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cls",
+      "summary": "临时获取财联社涨停池含原因数据，默认不入库。",
+      "url": "interfaces/cls_limit_up_pool.html"
+    },
+    {
+      "name": "cls_stock_kline",
+      "title": "个股K线",
+      "source_name_zh": "财联社",
+      "source_code": "cls",
+      "category": "行情数据",
+      "menu_path": [
+        "财联社",
+        "行情数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cls",
+      "summary": "临时获取财联社个股K线数据，默认不入库。",
+      "url": "interfaces/cls_stock_kline.html"
+    },
+    {
+      "name": "cls_news_telegraph",
+      "title": "电报快讯",
+      "source_name_zh": "财联社",
+      "source_code": "cls",
+      "category": "资讯数据",
+      "menu_path": [
+        "财联社",
+        "资讯数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cls",
+      "summary": "临时获取财联社电报快讯数据，默认不入库。",
+      "url": "interfaces/cls_news_telegraph.html"
+    },
+    {
+      "name": "cls_market_mainline",
+      "title": "今日主线机会",
+      "source_name_zh": "财联社",
+      "source_code": "cls",
+      "category": "题材数据",
+      "menu_path": [
+        "财联社",
+        "题材数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cls",
+      "summary": "临时获取财联社今日主线机会数据，默认不入库。",
+      "url": "interfaces/cls_market_mainline.html"
+    },
+    {
+      "name": "cls_market_wind",
+      "title": "今日风口板块",
+      "source_name_zh": "财联社",
+      "source_code": "cls",
+      "category": "题材数据",
+      "menu_path": [
+        "财联社",
+        "题材数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cls",
+      "summary": "临时获取财联社今日风口板块数据，默认不入库。",
+      "url": "interfaces/cls_market_wind.html"
+    },
+    {
+      "name": "cls_market_wind_stocks",
+      "title": "风口板块龙头股",
+      "source_name_zh": "财联社",
+      "source_code": "cls",
+      "category": "题材数据",
+      "menu_path": [
+        "财联社",
+        "题材数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.cls",
+      "summary": "临时获取财联社风口板块龙头股数据，默认不入库。",
+      "url": "interfaces/cls_market_wind_stocks.html"
+    },
+    {
+      "name": "kph_limit_ladder",
+      "title": "涨停天梯",
+      "source_name_zh": "开盘红",
+      "source_code": "kph",
+      "category": "复盘数据",
+      "menu_path": [
+        "开盘红",
+        "复盘数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.kph",
+      "summary": "临时获取开盘红涨停天梯数据，默认不入库。",
+      "url": "interfaces/kph_limit_ladder.html"
+    },
+    {
+      "name": "kph_limit_resumption_history",
+      "title": "历史涨停复盘",
+      "source_name_zh": "开盘红",
+      "source_code": "kph",
+      "category": "复盘数据",
+      "menu_path": [
+        "开盘红",
+        "复盘数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.kph",
+      "summary": "临时获取开盘红历史涨停复盘数据，默认不入库。",
+      "url": "interfaces/kph_limit_resumption_history.html"
+    },
+    {
+      "name": "kph_market_review_events",
+      "title": "盘面梳理事件",
+      "source_name_zh": "开盘红",
+      "source_code": "kph",
+      "category": "复盘数据",
+      "menu_path": [
+        "开盘红",
+        "复盘数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.kph",
+      "summary": "临时获取开盘红盘面梳理事件数据，默认不入库。",
+      "url": "interfaces/kph_market_review_events.html"
+    },
+    {
+      "name": "kph_market_emotion",
+      "title": "市场情绪",
+      "source_name_zh": "开盘红",
+      "source_code": "kph",
+      "category": "情绪数据",
+      "menu_path": [
+        "开盘红",
+        "情绪数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.kph",
+      "summary": "临时获取开盘红市场情绪数据，默认不入库。",
+      "url": "interfaces/kph_market_emotion.html"
+    },
+    {
+      "name": "kph_sector_constituents_history",
+      "title": "历史板块成分股",
+      "source_name_zh": "开盘红",
+      "source_code": "kph",
+      "category": "板块数据",
+      "menu_path": [
+        "开盘红",
+        "板块数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.kph",
+      "summary": "临时获取开盘红历史板块成分股数据，默认不入库。",
+      "url": "interfaces/kph_sector_constituents_history.html"
+    },
+    {
+      "name": "kph_sector_ranking",
+      "title": "板块排行",
+      "source_name_zh": "开盘红",
+      "source_code": "kph",
+      "category": "板块数据",
+      "menu_path": [
+        "开盘红",
+        "板块数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.kph",
+      "summary": "临时获取开盘红板块排行数据，默认不入库。",
+      "url": "interfaces/kph_sector_ranking.html"
+    },
+    {
+      "name": "kph_limit_down_history",
+      "title": "历史跌停股",
+      "source_name_zh": "开盘红",
+      "source_code": "kph",
+      "category": "短线数据",
+      "menu_path": [
+        "开盘红",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.kph",
+      "summary": "临时获取开盘红历史跌停股数据，默认不入库。",
+      "url": "interfaces/kph_limit_down_history.html"
+    },
+    {
+      "name": "kph_limit_up_history",
+      "title": "历史涨停股",
+      "source_name_zh": "开盘红",
+      "source_code": "kph",
+      "category": "短线数据",
+      "menu_path": [
+        "开盘红",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.kph",
+      "summary": "临时获取开盘红历史涨停股数据，默认不入库。",
+      "url": "interfaces/kph_limit_up_history.html"
+    },
+    {
+      "name": "kph_wind_vane_history",
+      "title": "历史风向标",
+      "source_name_zh": "开盘红",
+      "source_code": "kph",
+      "category": "短线数据",
+      "menu_path": [
+        "开盘红",
+        "短线数据"
+      ],
+      "asset_class": "stock",
+      "provider_id": "axdata.source.kph",
+      "summary": "临时获取开盘红历史风向标数据，默认不入库。",
+      "url": "interfaces/kph_wind_vane_history.html"
+    }
+  ]
+}

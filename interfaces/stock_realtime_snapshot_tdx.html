@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>实时快照 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>实时快照</h1>
+  <p class="code-title">stock_realtime_snapshot_tdx</p>
+  <p class="lead">获取当前行情快照，返回价格、成交量额、内外盘、买一卖一、已解析盘中指标和派生指标。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_realtime_snapshot_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 股票数据 / 实时数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>这个接口按股票代码请求当前行情快照，每个标的一般返回 1 行，适合做实时列表和个股详情页的行情总览。涨速、短换手、2分钟金额、开盘抢筹、量涨速、委比来自实时快照解析；开盘涨幅、最高涨幅、最低涨幅、均价、均涨幅、回头波、攻击波、内外比、开盘占比、封单额、买卖一量差由当前快照字段计算。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>证券代码：支持 000001、000001.SZ、sz000001；批量可传列表或英文逗号分隔字符串。</td><td></td></tr></tbody>
+</table></div>
+  
+  <div class="note"><strong>参数示例</strong><p># 单个标的
+client.call(&quot;stock_realtime_snapshot_tdx&quot;, code=&quot;000001.SZ&quot;)
+
+# 批量请求多个标的
+client.call(&quot;stock_realtime_snapshot_tdx&quot;, code=[&quot;000001.SZ&quot;, &quot;600000.SH&quot;])</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码，例如 000001.SZ。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始六位代码。</td></tr><tr><td><code>tdx_code</code></td><td>string</td><td>TDX 带市场前缀代码，例如 sz000001。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>AxData 交易所代码：SSE、SZSE 或 BSE。</td></tr><tr><td><code>last_price</code></td><td>number</td><td>最新价，单位：元。</td></tr><tr><td><code>pre_close</code></td><td>number</td><td>昨收价，单位：元。</td></tr><tr><td><code>open</code></td><td>number</td><td>开盘价，单位：元。</td></tr><tr><td><code>high</code></td><td>number</td><td>最高价，单位：元。</td></tr><tr><td><code>low</code></td><td>number</td><td>最低价，单位：元。</td></tr><tr><td><code>change</code></td><td>number</td><td>涨跌额，单位：元。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>百分比数值；例如 1.23 表示上涨 1.23%，-0.85 表示下跌 0.85%。</td></tr><tr><td><code>open_change_pct</code></td><td>number</td><td>开盘涨幅，派生计算：(开盘价 - 昨收价) / 昨收价 * 100。</td></tr><tr><td><code>high_change_pct</code></td><td>number</td><td>最高涨幅，派生计算：(最高价 - 昨收价) / 昨收价 * 100。</td></tr><tr><td><code>low_change_pct</code></td><td>number</td><td>最低涨幅，派生计算：(最低价 - 昨收价) / 昨收价 * 100。</td></tr><tr><td><code>amplitude_pct</code></td><td>number</td><td>百分比数值；按 (最高价 - 最低价) / 昨收价 * 100 计算。</td></tr><tr><td><code>average_price</code></td><td>number</td><td>均价，派生计算：成交额 / (成交量 * 100)，单位：元。</td></tr><tr><td><code>average_change_pct</code></td><td>number</td><td>均涨幅，派生计算：(均价 - 昨收价) / 昨收价 * 100。</td></tr><tr><td><code>drawdown_pct</code></td><td>number</td><td>回头波，派生计算：(最高价 - 最新价) / 昨收价 * 100。</td></tr><tr><td><code>attack_pct</code></td><td>number</td><td>攻击波，派生计算：(最新价 - 最低价) / 昨收价 * 100。</td></tr><tr><td><code>volume</code></td><td>integer</td><td>总成交量，单位：手。</td></tr><tr><td><code>current_volume</code></td><td>integer</td><td>最近一笔成交量，单位：手；不是累计成交量。</td></tr><tr><td><code>amount</code></td><td>number</td><td>成交额，单位：元。</td></tr><tr><td><code>inside_volume</code></td><td>integer</td><td>内盘成交量，单位：手。</td></tr><tr><td><code>outside_volume</code></td><td>integer</td><td>外盘成交量，单位：手。</td></tr><tr><td><code>inside_outside_ratio</code></td><td>number</td><td>内外比，派生计算：内盘 / 外盘。</td></tr><tr><td><code>open_amount</code></td><td>number</td><td>开盘金额，单位：元。</td></tr><tr><td><code>open_amount_ratio_pct</code></td><td>number</td><td>开盘占比，派生计算：开盘金额 / 成交额 * 100。</td></tr><tr><td><code>bid1_price</code></td><td>number</td><td>买一价，单位：元。</td></tr><tr><td><code>bid1_volume</code></td><td>integer</td><td>买一量，单位：手。</td></tr><tr><td><code>ask1_price</code></td><td>number</td><td>卖一价，单位：元。</td></tr><tr><td><code>ask1_volume</code></td><td>integer</td><td>卖一量，单位：手。</td></tr><tr><td><code>locked_amount</code></td><td>number</td><td>封单额，按买一价 * 买一量 * 100 计算，单位：元。</td></tr><tr><td><code>bid1_ask1_volume_diff</code></td><td>integer</td><td>买一量减卖一量，单位：手。</td></tr><tr><td><code>bid1_ask1_balance_pct</code></td><td>number</td><td>买一卖一量差占比，按 (买一量 - 卖一量) / (买一量 + 卖一量) * 100 计算。</td></tr><tr><td><code>rise_speed</code></td><td>number</td><td>涨速，百分比数值。</td></tr><tr><td><code>short_turnover</code></td><td>number</td><td>短换手，百分比数值。</td></tr><tr><td><code>min2_amount</code></td><td>number</td><td>近 2 分钟成交金额，单位：元。</td></tr><tr><td><code>opening_rush</code></td><td>number</td><td>开盘抢筹，百分比数值。</td></tr><tr><td><code>vol_rise_speed</code></td><td>number</td><td>量涨速，百分比数值。</td></tr><tr><td><code>entrust_ratio</code></td><td>number</td><td>委比，百分比数值。</td></tr><tr><td><code>activity</code></td><td>integer</td><td>活跃度，通达信实时快照携带的活跃度数值。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_realtime_snapshot_tdx&quot;,
+    code=&#x27;000001.SZ&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_realtime_snapshot_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;000001.SZ&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;000001.SZ&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;tdx_code&quot;: &quot;sz000001&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;last_price&quot;: 10.14,
+    &quot;pre_close&quot;: 10.28,
+    &quot;open&quot;: 10.13,
+    &quot;high&quot;: 10.2,
+    &quot;low&quot;: 10.08,
+    &quot;change&quot;: -0.14,
+    &quot;change_pct&quot;: -1.361868,
+    &quot;open_change_pct&quot;: -1.459144,
+    &quot;high_change_pct&quot;: -0.77821,
+    &quot;low_change_pct&quot;: -1.945525,
+    &quot;amplitude_pct&quot;: 1.167315,
+    &quot;average_price&quot;: 10.14,
+    &quot;average_change_pct&quot;: -1.361868,
+    &quot;drawdown_pct&quot;: 0.583658,
+    &quot;attack_pct&quot;: 0.583658,
+    &quot;volume&quot;: 1000,
+    &quot;current_volume&quot;: 15,
+    &quot;amount&quot;: 1014000.0,
+    &quot;inside_volume&quot;: 400,
+    &quot;outside_volume&quot;: 600,
+    &quot;inside_outside_ratio&quot;: 0.666667,
+    &quot;open_amount&quot;: 10000.0,
+    &quot;open_amount_ratio_pct&quot;: 0.986193,
+    &quot;bid1_price&quot;: 10.13,
+    &quot;bid1_volume&quot;: 320,
+    &quot;ask1_price&quot;: 10.14,
+    &quot;ask1_volume&quot;: 428,
+    &quot;locked_amount&quot;: 324160.0,
+    &quot;bid1_ask1_volume_diff&quot;: -108,
+    &quot;bid1_ask1_balance_pct&quot;: -14.438503,
+    &quot;rise_speed&quot;: 0.21,
+    &quot;short_turnover&quot;: 0.08,
+    &quot;min2_amount&quot;: 320000.0,
+    &quot;opening_rush&quot;: 0.12,
+    &quot;vol_rise_speed&quot;: 1.25,
+    &quot;entrust_ratio&quot;: 18.5,
+    &quot;activity&quot;: 11
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

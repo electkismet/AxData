@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新浪期货成交持仓排名 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>新浪期货成交持仓排名</h1>
+  <p class="code-title">futures_hold_pos_sina</p>
+  <p class="lead">临时获取新浪财经新浪期货成交持仓排名数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>futures_hold_pos_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 期货行情</dd></div><div><dt>资产类型</dt><dd>future</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪期货单合约成交/持仓排名，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>symbol</code></td><td>string</td><td>否</td><td>指标名称，可选：成交量、多单持仓、空单持仓；默认 多单持仓。</td><td>&quot;多单持仓&quot;</td></tr><tr><td><code>contract</code></td><td>string</td><td>否</td><td>期货合约代码，例如 OI2501；默认 OI2501。</td><td>&quot;OI2501&quot;</td></tr><tr><td><code>date</code></td><td>string</td><td>否</td><td>查询日期，YYYYMMDD 或 YYYY-MM-DD；默认 20241016。</td><td>&quot;20241016&quot;</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多返回行数，默认 20，最大 100。</td><td>20</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>trade_date</code></td><td>date</td><td>查询交易日期，格式 YYYYMMDD。</td></tr><tr><td><code>contract</code></td><td>string</td><td>期货合约代码，例如 OI2501。</td></tr><tr><td><code>metric</code></td><td>string</td><td>持仓成交指标：成交量、多单持仓或空单持仓。</td></tr><tr><td><code>rank</code></td><td>integer</td><td>源端排名，从 1 开始。</td></tr><tr><td><code>member_name</code></td><td>string</td><td>期货公司或会员简称。</td></tr><tr><td><code>value</code></td><td>number</td><td>对应指标数值，成交量或持仓量，单位：手。</td></tr><tr><td><code>change</code></td><td>number</td><td>比上一交易日增减，单位：手。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;futures_hold_pos_sina&quot;,
+    contract=&#x27;OI2501&#x27;,
+    date=&#x27;20241016&#x27;,
+    limit=1,
+    symbol=&#x27;多单持仓&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/futures_hold_pos_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;symbol&quot;: &quot;多单持仓&quot;,
+    &quot;contract&quot;: &quot;OI2501&quot;,
+    &quot;date&quot;: &quot;20241016&quot;,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;symbol&quot;: &quot;多单持仓&quot;,
+  &quot;contract&quot;: &quot;OI2501&quot;,
+  &quot;date&quot;: &quot;20241016&quot;,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;trade_date&quot;: &quot;20241016&quot;,
+    &quot;contract&quot;: &quot;OI2501&quot;,
+    &quot;metric&quot;: &quot;多单持仓&quot;,
+    &quot;rank&quot;: 1,
+    &quot;member_name&quot;: &quot;中信期货（代客）&quot;,
+    &quot;value&quot;: 31024.0,
+    &quot;change&quot;: -1288.0
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

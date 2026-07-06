@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>实时榜单 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>实时榜单</h1>
+  <p class="code-title">stock_realtime_rank_tdx</p>
+  <p class="lead">获取当前实时榜单，支持按 A 股、板块或市场范围排序取数。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_realtime_rank_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 股票数据 / 实时数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>这个接口不是按代码查询，而是按榜单范围、排序字段和返回数量请求行情。默认返回前 80 条；count=&quot;all&quot; 时后端会自动取完整当前榜单。返回字段与实时快照保持一致，并额外返回名次；盘口只包含买一卖一，完整五档继续使用五档盘口接口。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>category</code></td><td>string</td><td>否</td><td>股票榜单范围，默认全部 A 股。常用范围包括沪市、深市、科创板、创业板、北交所；也可传 TDX 原始整数类别。</td><td>&quot;a_share&quot;</td></tr><tr><td><code>sort</code></td><td>string</td><td>否</td><td>排序字段，默认涨跌幅。常用排序包括成交额、成交量、涨速、开盘金额、封单额、开盘抢筹、2 分钟金额、短换手、量涨速、委比和活跃度；也可传 TDX 原始排序值。</td><td>&quot;change_pct&quot;</td></tr><tr><td><code>start</code></td><td>integer</td><td>否</td><td>高级分页起点，从 0 开始；一般不用传。</td><td>0</td></tr><tr><td><code>count</code></td><td>string</td><td>否</td><td>返回数量，默认 80；传 &quot;all&quot; 表示取完整当前榜单。</td><td>80</td></tr><tr><td><code>ascending</code></td><td>boolean</td><td>否</td><td>是否升序；默认 false，表示按排序字段降序；升序为 true。</td><td>false</td></tr><tr><td><code>filters</code></td><td>string</td><td>否</td><td>可选排除条件。可排除次新、科创板、ST、创业板或北交所；也可传原始过滤位图。</td><td></td></tr></tbody>
+</table></div>
+  
+  <div class="note"><strong>参数示例</strong><p># A 股涨幅榜前 80 条
+client.call(&quot;stock_realtime_rank_tdx&quot;, category=&quot;a_share&quot;, sort=&quot;change_pct&quot;, count=80)
+
+# 成交额榜，排除 ST
+client.call(&quot;stock_realtime_rank_tdx&quot;, sort=&quot;amount&quot;, filters=[&quot;exclude_st&quot;], count=50)
+
+# 取完整当前榜单
+client.call(&quot;stock_realtime_rank_tdx&quot;, category=&quot;a_share&quot;, sort=&quot;change_pct&quot;, count=&quot;all&quot;)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>rank</code></td><td>integer</td><td>榜单名次，从 1 开始，按当前返回结果顺序连续编号。</td></tr><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码，例如 000001.SZ。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始六位代码。</td></tr><tr><td><code>tdx_code</code></td><td>string</td><td>TDX 带市场前缀代码，例如 sz000001。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>AxData 交易所代码：SSE、SZSE 或 BSE。</td></tr><tr><td><code>last_price</code></td><td>number</td><td>最新价，单位：元。</td></tr><tr><td><code>pre_close</code></td><td>number</td><td>昨收价，单位：元。</td></tr><tr><td><code>open</code></td><td>number</td><td>开盘价，单位：元。</td></tr><tr><td><code>high</code></td><td>number</td><td>最高价，单位：元。</td></tr><tr><td><code>low</code></td><td>number</td><td>最低价，单位：元。</td></tr><tr><td><code>change</code></td><td>number</td><td>涨跌额，单位：元。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>百分比数值；例如 1.23 表示上涨 1.23%，-0.85 表示下跌 0.85%。</td></tr><tr><td><code>open_change_pct</code></td><td>number</td><td>开盘涨幅，派生计算：(开盘价 - 昨收价) / 昨收价 * 100。</td></tr><tr><td><code>high_change_pct</code></td><td>number</td><td>最高涨幅，派生计算：(最高价 - 昨收价) / 昨收价 * 100。</td></tr><tr><td><code>low_change_pct</code></td><td>number</td><td>最低涨幅，派生计算：(最低价 - 昨收价) / 昨收价 * 100。</td></tr><tr><td><code>amplitude_pct</code></td><td>number</td><td>百分比数值；按 (最高价 - 最低价) / 昨收价 * 100 计算。</td></tr><tr><td><code>average_price</code></td><td>number</td><td>均价，派生计算：成交额 / (成交量 * 100)，单位：元。</td></tr><tr><td><code>average_change_pct</code></td><td>number</td><td>均涨幅，派生计算：(均价 - 昨收价) / 昨收价 * 100。</td></tr><tr><td><code>drawdown_pct</code></td><td>number</td><td>回头波，派生计算：(最高价 - 最新价) / 昨收价 * 100。</td></tr><tr><td><code>attack_pct</code></td><td>number</td><td>攻击波，派生计算：(最新价 - 最低价) / 昨收价 * 100。</td></tr><tr><td><code>volume</code></td><td>integer</td><td>总成交量，单位：手。</td></tr><tr><td><code>current_volume</code></td><td>integer</td><td>最近一笔成交量，单位：手；不是累计成交量。</td></tr><tr><td><code>amount</code></td><td>number</td><td>成交额，单位：元。</td></tr><tr><td><code>inside_volume</code></td><td>integer</td><td>内盘成交量，单位：手。</td></tr><tr><td><code>outside_volume</code></td><td>integer</td><td>外盘成交量，单位：手。</td></tr><tr><td><code>inside_outside_ratio</code></td><td>number</td><td>内外比，派生计算：内盘 / 外盘。</td></tr><tr><td><code>open_amount</code></td><td>number</td><td>开盘金额，单位：元。</td></tr><tr><td><code>open_amount_ratio_pct</code></td><td>number</td><td>开盘占比，派生计算：开盘金额 / 成交额 * 100。</td></tr><tr><td><code>bid1_price</code></td><td>number</td><td>买一价，单位：元。</td></tr><tr><td><code>bid1_volume</code></td><td>integer</td><td>买一量，单位：手。</td></tr><tr><td><code>ask1_price</code></td><td>number</td><td>卖一价，单位：元。</td></tr><tr><td><code>ask1_volume</code></td><td>integer</td><td>卖一量，单位：手。</td></tr><tr><td><code>locked_amount</code></td><td>number</td><td>封单额，按买一价 * 买一量 * 100 计算，单位：元。</td></tr><tr><td><code>bid1_ask1_volume_diff</code></td><td>integer</td><td>买一量减卖一量，单位：手。</td></tr><tr><td><code>bid1_ask1_balance_pct</code></td><td>number</td><td>买一卖一量差占比，按 (买一量 - 卖一量) / (买一量 + 卖一量) * 100 计算。</td></tr><tr><td><code>rise_speed</code></td><td>number</td><td>涨速，百分比数值。</td></tr><tr><td><code>short_turnover</code></td><td>number</td><td>短换手，百分比数值。</td></tr><tr><td><code>min2_amount</code></td><td>number</td><td>近 2 分钟成交金额，单位：元。</td></tr><tr><td><code>opening_rush</code></td><td>number</td><td>开盘抢筹，百分比数值。</td></tr><tr><td><code>vol_rise_speed</code></td><td>number</td><td>量涨速，百分比数值。</td></tr><tr><td><code>entrust_ratio</code></td><td>number</td><td>委比，百分比数值。</td></tr><tr><td><code>activity</code></td><td>integer</td><td>活跃度，通达信实时快照携带的活跃度数值。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_realtime_rank_tdx&quot;,
+    category=&#x27;a_share&#x27;,
+    count=2,
+    sort=&#x27;change_pct&#x27;,
+    start=0,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_realtime_rank_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;category&quot;: &quot;a_share&quot;,
+    &quot;sort&quot;: &quot;change_pct&quot;,
+    &quot;start&quot;: 0,
+    &quot;count&quot;: 2
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;category&quot;: &quot;a_share&quot;,
+  &quot;sort&quot;: &quot;change_pct&quot;,
+  &quot;start&quot;: 0,
+  &quot;count&quot;: 2
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;rank&quot;: 1,
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;tdx_code&quot;: &quot;sz000001&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;last_price&quot;: 10.14,
+    &quot;pre_close&quot;: 10.28,
+    &quot;open&quot;: 10.13,
+    &quot;high&quot;: 10.2,
+    &quot;low&quot;: 10.08,
+    &quot;change&quot;: -0.14,
+    &quot;change_pct&quot;: -1.361868,
+    &quot;open_change_pct&quot;: -1.459144,
+    &quot;high_change_pct&quot;: -0.77821,
+    &quot;low_change_pct&quot;: -1.945525,
+    &quot;amplitude_pct&quot;: 1.167315,
+    &quot;average_price&quot;: 10.14,
+    &quot;average_change_pct&quot;: -1.361868,
+    &quot;drawdown_pct&quot;: 0.583658,
+    &quot;attack_pct&quot;: 0.583658,
+    &quot;volume&quot;: 1000,
+    &quot;current_volume&quot;: 15,
+    &quot;amount&quot;: 1014000.0,
+    &quot;inside_volume&quot;: 400,
+    &quot;outside_volume&quot;: 600,
+    &quot;inside_outside_ratio&quot;: 0.666667,
+    &quot;open_amount&quot;: 10000.0,
+    &quot;open_amount_ratio_pct&quot;: 0.986193,
+    &quot;bid1_price&quot;: 10.13,
+    &quot;bid1_volume&quot;: 320,
+    &quot;ask1_price&quot;: 10.14,
+    &quot;ask1_volume&quot;: 428,
+    &quot;locked_amount&quot;: 324160.0,
+    &quot;bid1_ask1_volume_diff&quot;: -108,
+    &quot;bid1_ask1_balance_pct&quot;: -14.438503,
+    &quot;rise_speed&quot;: 0.21,
+    &quot;short_turnover&quot;: 0.08,
+    &quot;min2_amount&quot;: 320000.0,
+    &quot;opening_rush&quot;: 0.12,
+    &quot;vol_rise_speed&quot;: 1.25,
+    &quot;entrust_ratio&quot;: 18.5,
+    &quot;activity&quot;: 11
+  }
+]</code></pre>
+</section>
+<section><h2>参考表</h2>
+<h3>榜单范围对照</h3>
+<p>category 决定从哪个股票票池里取数据；这里是股票数据接口，只展示股票相关范围。</p>
+<div class="table-wrap"><table><thead><tr><th>中文名称</th><th>参数值</th><th>说明</th></tr></thead><tbody><tr><td>全部 A 股</td><td>a_share</td><td>默认票池，包含沪深北 A 股范围</td></tr><tr><td>沪市 A 股</td><td>sse</td><td>上交所 A 股</td></tr><tr><td>深市 A 股</td><td>szse</td><td>深交所 A 股</td></tr><tr><td>科创板</td><td>star</td><td>科创板股票</td></tr><tr><td>创业板</td><td>chinext</td><td>创业板股票</td></tr><tr><td>北交所</td><td>bse</td><td>北交所股票</td></tr></tbody></table></div>
+<h3>排序字段对照</h3>
+<p>sort 决定榜单按哪个指标排序；默认按涨跌幅降序。</p>
+<div class="table-wrap"><table><thead><tr><th>中文名称</th><th>参数值</th><th>说明</th></tr></thead><tbody><tr><td>涨跌幅</td><td>change_pct</td><td>默认排序，常见涨幅榜</td></tr><tr><td>最新价</td><td>last_price</td><td>按最新成交价排序</td></tr><tr><td>成交量</td><td>volume</td><td>按总成交量排序</td></tr><tr><td>成交额</td><td>amount</td><td>按成交额排序</td></tr><tr><td>振幅</td><td>amplitude_pct</td><td>按当日振幅排序</td></tr><tr><td>委比</td><td>entrust_ratio</td><td>按委买委卖比例排序</td></tr><tr><td>内外比</td><td>inside_outside_ratio</td><td>按内盘/外盘比例排序</td></tr><tr><td>封成比</td><td>seal_fill_ratio</td><td>封单额相对成交额的比例</td></tr><tr><td>封单额</td><td>locked_amount</td><td>按当前封单金额排序</td></tr><tr><td>开盘金额</td><td>open_amount</td><td>按开盘成交金额排序</td></tr><tr><td>开盘换手</td><td>open_turnover</td><td>按开盘换手相关口径排序</td></tr><tr><td>量比</td><td>volume_ratio</td><td>按量比排序</td></tr><tr><td>换手率</td><td>turnover_rate</td><td>按换手率排序</td></tr><tr><td>流通市值</td><td>float_market_cap</td><td>按流通市值排序</td></tr><tr><td>总市值</td><td>total_market_cap</td><td>按总市值排序</td></tr><tr><td>强弱度</td><td>strength</td><td>按强弱度排序</td></tr><tr><td>涨速</td><td>rise_speed</td><td>按涨速排序</td></tr><tr><td>活跃度</td><td>activity</td><td>按活跃度排序</td></tr><tr><td>短换手</td><td>short_turnover</td><td>按短线换手口径排序</td></tr><tr><td>量涨速</td><td>vol_rise_speed</td><td>按成交量变化速度排序</td></tr><tr><td>主力净额</td><td>main_net_amount</td><td>按主力净额排序；部分标的可能为空</td></tr><tr><td>开盘抢筹</td><td>opening_rush</td><td>按开盘抢筹排序</td></tr><tr><td>2 分钟金额</td><td>min2_amount</td><td>按近 2 分钟成交金额排序</td></tr><tr><td>开盘涨幅</td><td>open_change_pct</td><td>按开盘相对昨收涨幅排序</td></tr><tr><td>最高涨幅</td><td>high_change_pct</td><td>按当日最高价相对昨收涨幅排序</td></tr><tr><td>最低涨幅</td><td>low_change_pct</td><td>按当日最低价相对昨收涨幅排序</td></tr><tr><td>回头波</td><td>drawdown_pct</td><td>按最高价回落幅度排序</td></tr><tr><td>攻击波</td><td>attack_pct</td><td>按最低价上攻幅度排序</td></tr></tbody></table></div>
+<h3>过滤条件对照</h3>
+<p>filters 用来排除某些股票范围；多个条件可以用列表传入。</p>
+<div class="table-wrap"><table><thead><tr><th>中文名称</th><th>参数值</th><th>说明</th></tr></thead><tbody><tr><td>排除次新</td><td>exclude_new</td><td>排除未开板次新等新股范围</td></tr><tr><td>排除科创板</td><td>exclude_kcb</td><td>从结果中排除科创板</td></tr><tr><td>排除 ST</td><td>exclude_st</td><td>从结果中排除 ST 股票</td></tr><tr><td>排除创业板</td><td>exclude_cyb</td><td>从结果中排除创业板</td></tr><tr><td>排除北交所</td><td>exclude_bj</td><td>从结果中排除北交所</td></tr></tbody></table></div>
+</section>
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

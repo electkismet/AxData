@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>交易日历 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 交易所</p>
+  <h1>交易日历</h1>
+  <p class="code-title">stock_trade_calendar_exchange</p>
+  <p class="lead">从深交所官方交易日历返回指定日期范围内的开闭市信息。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_trade_calendar_exchange</dd></div><div><dt>Provider</dt><dd>axdata.source.exchange</dd></div><div><dt>数据源</dt><dd>交易所 / exchange</dd></div><div><dt>目录</dt><dd>交易所 / 基础数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>是，默认 stock_trade_calendar_exchange.snapshot</dd></div></dl>
+  <p>不传日期时默认返回当前自然年；传 year 返回全年；传 start_date/end_date 返回指定范围。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>year</code></td><td>string</td><td>否</td><td>年份，例如 2026；传 start_date/end_date 时优先按日期范围查询。</td><td></td></tr><tr><td><code>start_date</code></td><td>string</td><td>否</td><td>开始日期，格式 YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr><tr><td><code>end_date</code></td><td>string</td><td>否</td><td>结束日期，格式 YYYYMMDD 或 YYYY-MM-DD。</td><td></td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>日期优先级：start_date/end_date &gt; year &gt; 当前自然年。</p></div>
+  <div class="note"><strong>参数示例</strong><p># 指定日期范围
+client.call(
+    &quot;stock_trade_calendar_exchange&quot;,
+    start_date=&quot;20260617&quot;,
+    end_date=&quot;20260622&quot;,
+)
+
+# 指定年份
+client.call(&quot;stock_trade_calendar_exchange&quot;, year=2026)
+
+# 不传日期，默认当前自然年
+client.call(&quot;stock_trade_calendar_exchange&quot;)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>cal_date</code></td><td>date</td><td>自然日期，格式 YYYYMMDD。</td></tr><tr><td><code>is_open</code></td><td>boolean</td><td>是否交易日。</td></tr><tr><td><code>pretrade_date</code></td><td>date</td><td>上一个交易日；非交易日也返回最近上一交易日。</td></tr><tr><td><code>next_trade_date</code></td><td>date</td><td>下一个交易日；非交易日也返回最近下一交易日。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_trade_calendar_exchange&quot;,
+    end_date=&#x27;20260622&#x27;,
+    start_date=&#x27;20260617&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_trade_calendar_exchange
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;start_date&quot;: &quot;20260617&quot;,
+    &quot;end_date&quot;: &quot;20260622&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;start_date&quot;: &quot;20260617&quot;,
+  &quot;end_date&quot;: &quot;20260622&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;cal_date&quot;: &quot;20260617&quot;,
+    &quot;is_open&quot;: true,
+    &quot;pretrade_date&quot;: &quot;20260616&quot;,
+    &quot;next_trade_date&quot;: &quot;20260618&quot;
+  },
+  {
+    &quot;cal_date&quot;: &quot;20260618&quot;,
+    &quot;is_open&quot;: true,
+    &quot;pretrade_date&quot;: &quot;20260617&quot;,
+    &quot;next_trade_date&quot;: &quot;20260622&quot;
+  },
+  {
+    &quot;cal_date&quot;: &quot;20260619&quot;,
+    &quot;is_open&quot;: false,
+    &quot;pretrade_date&quot;: &quot;20260618&quot;,
+    &quot;next_trade_date&quot;: &quot;20260622&quot;
+  },
+  {
+    &quot;cal_date&quot;: &quot;20260622&quot;,
+    &quot;is_open&quot;: true,
+    &quot;pretrade_date&quot;: &quot;20260618&quot;,
+    &quot;next_trade_date&quot;: &quot;20260623&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

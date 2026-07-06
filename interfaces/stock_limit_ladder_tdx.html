@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>连板天梯 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>连板天梯</h1>
+  <p class="code-title">stock_limit_ladder_tdx</p>
+  <p class="lead">获取当前连板天梯，默认返回主板完整天梯，返回连板高度、连板状态、封单额、流通市值Z、主题材和辅助题材。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_limit_ladder_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 股票数据 / 短线数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>是，默认 stock_limit_ladder_tdx.snapshot</dd></div></dl>
+  <p>这个接口用于短线看盘：后端实时扫描当前 A 股涨幅榜，按涨跌停规则判断封板状态，再结合盘前统计资源计算连板高度、几天几板和年涨停天数。默认只统计主板，ST / *ST 不纳入连板天梯和题材涨停数量统计；需要创业板、科创板、北交所等范围时传 scope。默认返回完整天梯；只想取前 N 条时再传 count。题材会先过滤持股、指数、定增、宽泛标签等噪音项，再优先按题材内涨停数排序，其次看最高板、连板数和个股关联度，主题材取一个，辅助题材最多取三个。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>count</code></td><td>string</td><td>否</td><td>返回数量；默认 all 返回完整天梯，也可传数字只返回前 N 条，最大 500。</td><td>&quot;all&quot;</td></tr><tr><td><code>scope</code></td><td>string</td><td>否</td><td>股票范围；默认 main 主板。可传 all、star 科创板、chinext 创业板、bse 北交所、cdr CDR，也可传数组或英文逗号分隔。</td><td>&quot;main&quot;</td></tr><tr><td><code>include_touched</code></td><td>boolean</td><td>否</td><td>是否包含盘中触及涨停但当前未封住的股票；默认 false，只返回当前封住涨停的股票。</td><td>false</td></tr><tr><td><code>topic_type</code></td><td>string</td><td>否</td><td>题材类型：theme 主题题材，sector 板块题材；默认 theme。</td><td>&quot;theme&quot;</td></tr></tbody>
+</table></div>
+  
+  <div class="note"><strong>参数示例</strong><p># 主板完整连板天梯
+client.call(&quot;stock_limit_ladder_tdx&quot;)
+
+# 全市场完整连板天梯
+client.call(&quot;stock_limit_ladder_tdx&quot;, scope=&quot;all&quot;)
+
+# 同时包含触及涨停但当前未封住的股票
+client.call(&quot;stock_limit_ladder_tdx&quot;, include_touched=True)
+
+# 只取前 20 条
+client.call(&quot;stock_limit_ladder_tdx&quot;, count=20)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>trade_date</code></td><td>date</td><td>天梯日期，也就是这张连板天梯对应的交易日。</td></tr><tr><td><code>ladder_level</code></td><td>integer</td><td>当前连板高度；封住涨停时按历史连板数加今天计算。</td></tr><tr><td><code>limit_board_text</code></td><td>string</td><td>连板状态，也就是几天几板，例如 7天5板。</td></tr><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码，例如 000001.SZ。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>last_price</code></td><td>number</td><td>最新价，单位：元。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>当前涨跌幅，百分比数值。</td></tr><tr><td><code>limit_status</code></td><td>string</td><td>涨停状态：sealed 当前封住涨停；touched 盘中触及涨停但当前未封住。</td></tr><tr><td><code>amount</code></td><td>number</td><td>当前成交额，单位：元。</td></tr><tr><td><code>seal_amount</code></td><td>number</td><td>当前封单额，单位：元。</td></tr><tr><td><code>seal_to_amount_ratio</code></td><td>number</td><td>封成比，按封单额 / 当前成交额计算。</td></tr><tr><td><code>free_float_market_value</code></td><td>number</td><td>流通市值Z，按流通股本Z * 当前价计算，单位：元。</td></tr><tr><td><code>primary_theme</code></td><td>string</td><td>主题材；过滤噪音题材后，优先按题材内涨停数排序，其次看最高板、连板数和个股关联度，取排序第一的一个题材。</td></tr><tr><td><code>secondary_themes</code></td><td>string</td><td>辅助题材；从主题材之后的有效题材中最多取三个，用 + 连接。</td></tr><tr><td><code>year_limit_up_days</code></td><td>integer</td><td>年内涨停天数。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始六位代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>AxData 交易所代码：SSE、SZSE 或 BSE。</td></tr><tr><td><code>pre_close</code></td><td>number</td><td>昨收价，单位：元。</td></tr><tr><td><code>limit_up_price</code></td><td>number</td><td>按昨收价和涨跌停规则计算的涨停价，单位：元。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_limit_ladder_tdx&quot;,
+    count=&#x27;all&#x27;,
+    include_touched=False,
+    scope=&#x27;main&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_limit_ladder_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;count&quot;: &quot;all&quot;,
+    &quot;scope&quot;: &quot;main&quot;,
+    &quot;include_touched&quot;: false
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;count&quot;: &quot;all&quot;,
+  &quot;scope&quot;: &quot;main&quot;,
+  &quot;include_touched&quot;: false
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;ladder_level&quot;: 4,
+    &quot;limit_board_text&quot;: &quot;8天6板&quot;,
+    &quot;trade_date&quot;: &quot;20260617&quot;,
+    &quot;limit_status&quot;: &quot;sealed&quot;,
+    &quot;instrument_id&quot;: &quot;002971.SZ&quot;,
+    &quot;symbol&quot;: &quot;002971&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;和远气体&quot;,
+    &quot;last_price&quot;: 55.76,
+    &quot;pre_close&quot;: 50.69,
+    &quot;limit_up_price&quot;: 55.76,
+    &quot;change_pct&quot;: 10.001973,
+    &quot;amount&quot;: 2521050000.0,
+    &quot;seal_amount&quot;: 453790000.0,
+    &quot;free_float_market_value&quot;: 6520440000.0,
+    &quot;seal_to_amount_ratio&quot;: 0.18,
+    &quot;year_limit_up_days&quot;: 9,
+    &quot;primary_theme&quot;: &quot;氢能源&quot;,
+    &quot;secondary_themes&quot;: &quot;机器人+储能&quot;
+  }
+]</code></pre>
+</section>
+<section><h2>参考表</h2>
+<h3>涨停状态</h3>
+<div class="table-wrap"><table><thead><tr><th>状态</th><th>含义</th><th>说明</th></tr></thead><tbody><tr><td>sealed</td><td>当前封住涨停</td><td>最新价在涨停价，且买一/封单能确认仍封住</td></tr><tr><td>touched</td><td>触及涨停但未封住</td><td>盘中最高价到过涨停价，但当前没有按封住涨停处理</td></tr></tbody></table></div>
+<h3>题材排序</h3>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>含义</th><th>说明</th></tr></thead><tbody><tr><td>primary_theme</td><td>主题材</td><td>过滤噪音题材后，优先按题材内涨停数排序，其次看最高板、连板数和个股关联度，取排序第一的题材</td></tr><tr><td>secondary_themes</td><td>辅助题材</td><td>主题材之后最多三个题材，用 + 连接</td></tr><tr><td>过滤项</td><td>不适合作为短线题材的标签</td><td>例如持股、指数成分、定增、融资融券、财报等宽泛或属性类标签</td></tr><tr><td>题材强度</td><td>题材统计指标</td><td>涨停数量、最高板、连板股数量等详细指标请看题材强度排行接口</td></tr></tbody></table></div>
+</section>
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

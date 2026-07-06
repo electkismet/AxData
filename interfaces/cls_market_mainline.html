@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>今日主线机会 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 财联社</p>
+  <h1>今日主线机会</h1>
+  <p class="code-title">cls_market_mainline</p>
+  <p class="lead">临时获取财联社今日主线机会数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>cls_market_mainline</dd></div><div><dt>Provider</dt><dd>axdata.source.cls</dd></div><div><dt>数据源</dt><dd>财联社 / cls</dd></div><div><dt>目录</dt><dd>财联社 / 题材数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>请求财联社今日主线机会，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  <p>无参数。</p>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>block_key</code></td><td>string</td><td>主线块键名。</td></tr><tr><td><code>title</code></td><td>string</td><td>标题。</td></tr><tr><td><code>summary</code></td><td>string</td><td>摘要。</td></tr><tr><td><code>raw_item</code></td><td>string</td><td>原始块摘要。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(&quot;cls_market_mainline&quot;)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/cls_market_mainline
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {}
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;block_key&quot;: &quot;faucet_1&quot;,
+    &quot;title&quot;: &quot;AI主线&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

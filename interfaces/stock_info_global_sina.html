@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新浪全球财经快讯 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>新浪全球财经快讯</h1>
+  <p class="code-title">stock_info_global_sina</p>
+  <p class="lead">临时获取新浪财经新浪全球财经快讯数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_info_global_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 资讯快讯</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪 7x24 全球财经快讯单页，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>page</code></td><td>integer</td><td>否</td><td>页码，默认 1。</td><td>1</td></tr><tr><td><code>page_size</code></td><td>integer</td><td>否</td><td>源端每页条数，默认 20，最大 100。</td><td>20</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多返回行数，默认等于 page_size，最大不超过 page_size。</td><td>20</td></tr><tr><td><code>zhibo_id</code></td><td>string</td><td>否</td><td>新浪直播频道 ID；默认 152，对应全球财经快讯。</td><td>&quot;152&quot;</td></tr><tr><td><code>tag_id</code></td><td>string</td><td>否</td><td>新浪直播标签 ID；默认 0，表示全部标签。</td><td>&quot;0&quot;</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>feed_id</code></td><td>string</td><td>新浪快讯源端 ID，可能为空。</td></tr><tr><td><code>create_time</code></td><td>datetime</td><td>快讯发布时间，源端时间字符串。</td></tr><tr><td><code>content</code></td><td>string</td><td>快讯正文，已去除简单 HTML 标签。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_info_global_sina&quot;,
+    limit=1,
+    page=1,
+    page_size=2,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_info_global_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;page&quot;: 1,
+    &quot;page_size&quot;: 2,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;page&quot;: 1,
+  &quot;page_size&quot;: 2,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;feed_id&quot;: &quot;4970674&quot;,
+    &quot;create_time&quot;: &quot;2026-07-05 06:47:01&quot;,
+    &quot;content&quot;: &quot;【加速走向全球 今年前5个月我国机器人出口近200亿元】今年以来，我国机器人出口规模持续扩大，品类结构不断优化，为高端制造出海注入新动能。据海关统计，今年前5个月，国产机器人加速走向全球。各类单独列名的机器人合计出口1037.7万台，出口总值达199.9亿元，产品远销全球150多个国家和地区。其中，欧盟和东盟为主要出口目的地。&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

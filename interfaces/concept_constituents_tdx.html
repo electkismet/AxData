@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>板块成分股 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>板块成分股</h1>
+  <p class="code-title">concept_constituents_tdx</p>
+  <p class="lead">按板块代码查询当前成分股。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>concept_constituents_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 股票数据 / 短线数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>按板块代码查询当前成分股。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>concept_code</code></td><td>string</td><td>是</td><td>板块代码；先用相关板块接口按股票代码查询，取返回的 board_code 填入。</td><td></td></tr><tr><td><code>count</code></td><td>integer</td><td>否</td><td>返回前多少只，默认 20，最大 500。</td><td>20</td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>需先用相关板块接口按股票代码查询，取返回的 board_code 填到 concept_code；不传时间，返回当前成分股列表。</p></div>
+  <div class="note"><strong>参数示例</strong><p># 第一步：按股票查它关联的板块，拿 board_code
+boards = client.call(&quot;concept_related_boards_tdx&quot;, code=&quot;000001.SZ&quot;)
+concept_code = boards.iloc[0][&quot;board_code&quot;]
+
+# 第二步：按板块代码查当前成分股
+client.call(&quot;concept_constituents_tdx&quot;, concept_code=concept_code, count=5)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码，例如 000001.SZ。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始六位代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>AxData 交易所代码：SSE、SZSE 或 BSE。</td></tr><tr><td><code>market_code</code></td><td>string</td><td>市场代码。</td></tr><tr><td><code>name</code></td><td>string</td><td>股票名称。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>涨幅，单位：%。</td></tr><tr><td><code>last_price</code></td><td>number</td><td>现价，单位：元。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;concept_constituents_tdx&quot;,
+    concept_code=&#x27;881386&#x27;,
+    count=20,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/concept_constituents_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;concept_code&quot;: &quot;881386&quot;,
+    &quot;count&quot;: 20
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;concept_code&quot;: &quot;881386&quot;,
+  &quot;count&quot;: 20
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;market_code&quot;: &quot;0&quot;,
+    &quot;name&quot;: &quot;平安银行&quot;,
+    &quot;change_pct&quot;: -0.45,
+    &quot;last_price&quot;: 11.01
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

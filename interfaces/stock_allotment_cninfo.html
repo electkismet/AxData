@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>配股实施方案 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>配股实施方案</h1>
+  <p class="code-title">stock_allotment_cninfo</p>
+  <p class="lead">临时获取巨潮配股实施方案数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_allotment_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 股本股东</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求巨潮配股实施方案 webapi，返回单只股票配股明细，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>股票代码，支持 600030、600030.SH。</td><td></td></tr><tr><td><code>start_date</code></td><td>string</td><td>否</td><td>开始日期，YYYYMMDD 或 YYYY-MM-DD；默认 19900101。</td><td>&quot;19900101&quot;</td></tr><tr><td><code>end_date</code></td><td>string</td><td>否</td><td>结束日期，YYYYMMDD 或 YYYY-MM-DD；默认 20991231。</td><td>&quot;20991231&quot;</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>record_id</code></td><td>string</td><td>源端记录标识。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>suspend_start_date</code></td><td>date</td><td>停牌起始日，格式 YYYYMMDD。</td></tr><tr><td><code>listing_announcement_date</code></td><td>date</td><td>上市公告日期，格式 YYYYMMDD。</td></tr><tr><td><code>payment_start_date</code></td><td>date</td><td>配股缴款起始日，格式 YYYYMMDD。</td></tr><tr><td><code>convertible_allotment_shares</code></td><td>number</td><td>可转配股数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>suspend_end_date</code></td><td>date</td><td>停牌截止日，格式 YYYYMMDD。</td></tr><tr><td><code>actual_allotment_shares</code></td><td>number</td><td>实际配股数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>allotment_price</code></td><td>number</td><td>配股价格，单位：元。</td></tr><tr><td><code>allotment_ratio</code></td><td>number</td><td>配股比例，源端数值口径。</td></tr><tr><td><code>pre_total_share</code></td><td>number</td><td>配股前总股本，单位/口径沿用巨潮源端。</td></tr><tr><td><code>transfer_fee_per_share</code></td><td>number</td><td>每股配权转让费，单位：元。</td></tr><tr><td><code>legal_person_actual_shares</code></td><td>number</td><td>法人股实配数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>raised_funds_net</code></td><td>number</td><td>实际募资净额，金额单位/口径沿用巨潮源端。</td></tr><tr><td><code>major_shareholder_subscribe_method</code></td><td>string</td><td>大股东认购方式。</td></tr><tr><td><code>other_allotment_name</code></td><td>string</td><td>其他配售简称。</td></tr><tr><td><code>issue_method</code></td><td>string</td><td>发行方式。</td></tr><tr><td><code>failed_refund_date</code></td><td>date</td><td>配股失败退还申购款日期，格式 YYYYMMDD。</td></tr><tr><td><code>ex_right_date</code></td><td>date</td><td>除权基准日，格式 YYYYMMDD。</td></tr><tr><td><code>expected_issue_expense</code></td><td>number</td><td>预计发行费用，金额单位/口径沿用巨潮源端。</td></tr><tr><td><code>issue_result_announcement_date</code></td><td>date</td><td>配股发行结果公告日，格式 YYYYMMDD。</td></tr><tr><td><code>warrant_trade_end_date</code></td><td>date</td><td>配股权证交易截止日，格式 YYYYMMDD。</td></tr><tr><td><code>other_actual_shares</code></td><td>number</td><td>其他股份实配数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>state_actual_shares</code></td><td>number</td><td>国家股实配数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>entrusted_unit</code></td><td>string</td><td>委托单位。</td></tr><tr><td><code>public_transfer_shares</code></td><td>number</td><td>公众获转配数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>other_allotment_code</code></td><td>string</td><td>其他配售代码。</td></tr><tr><td><code>allotment_target</code></td><td>string</td><td>配售对象。</td></tr><tr><td><code>warrant_trade_start_date</code></td><td>date</td><td>配股权证交易起始日，格式 YYYYMMDD。</td></tr><tr><td><code>fund_arrival_date</code></td><td>date</td><td>资金到账日，格式 YYYYMMDD。</td></tr><tr><td><code>organization_name</code></td><td>string</td><td>机构名称。</td></tr><tr><td><code>record_date</code></td><td>date</td><td>股权登记日，格式 YYYYMMDD。</td></tr><tr><td><code>raised_funds_gross</code></td><td>number</td><td>实际募资总额，金额单位/口径沿用巨潮源端。</td></tr><tr><td><code>expected_raised_funds</code></td><td>number</td><td>预计募集资金，金额单位/口径沿用巨潮源端。</td></tr><tr><td><code>major_shareholder_subscribe_shares</code></td><td>number</td><td>大股东认购数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>public_actual_shares</code></td><td>number</td><td>公众股实配数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>transfer_actual_shares</code></td><td>number</td><td>转配股实配数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>underwriting_fee</code></td><td>number</td><td>承销费用，金额单位/口径沿用巨潮源端。</td></tr><tr><td><code>legal_person_transfer_shares</code></td><td>number</td><td>法人获转配数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>post_float_share</code></td><td>number</td><td>配股后流通股本，单位/口径沿用巨潮源端。</td></tr><tr><td><code>stock_class</code></td><td>string</td><td>股票类别。</td></tr><tr><td><code>public_allotment_name</code></td><td>string</td><td>公众配售简称。</td></tr><tr><td><code>issue_method_code</code></td><td>string</td><td>发行方式编码。</td></tr><tr><td><code>underwriting_method</code></td><td>string</td><td>承销方式。</td></tr><tr><td><code>announcement_date</code></td><td>date</td><td>公告日期，格式 YYYYMMDD。</td></tr><tr><td><code>allotment_listing_date</code></td><td>date</td><td>配股上市日，格式 YYYYMMDD。</td></tr><tr><td><code>payment_end_date</code></td><td>date</td><td>配股缴款截止日，格式 YYYYMMDD。</td></tr><tr><td><code>underwriting_balance</code></td><td>number</td><td>承销余额，单位/口径沿用巨潮源端。</td></tr><tr><td><code>expected_allotment_shares</code></td><td>number</td><td>预计配股数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>post_total_share</code></td><td>number</td><td>配股后总股本，单位/口径沿用巨潮源端。</td></tr><tr><td><code>employee_actual_shares</code></td><td>number</td><td>职工股实配数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>underwriting_method_code</code></td><td>string</td><td>承销方式编码。</td></tr><tr><td><code>issue_expenses_total</code></td><td>number</td><td>发行费用总额，金额单位/口径沿用巨潮源端。</td></tr><tr><td><code>pre_float_share</code></td><td>number</td><td>配股前流通股本，单位/口径沿用巨潮源端。</td></tr><tr><td><code>stock_class_code</code></td><td>string</td><td>股票类别编码。</td></tr><tr><td><code>public_allotment_code</code></td><td>string</td><td>公众配售代码。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_allotment_cninfo&quot;,
+    code=&#x27;600030.SH&#x27;,
+    end_date=&#x27;20241022&#x27;,
+    start_date=&#x27;19900101&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_allotment_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;600030.SH&quot;,
+    &quot;start_date&quot;: &quot;19900101&quot;,
+    &quot;end_date&quot;: &quot;20241022&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;600030.SH&quot;,
+  &quot;start_date&quot;: &quot;19900101&quot;,
+  &quot;end_date&quot;: &quot;20241022&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;600030.SH&quot;,
+    &quot;symbol&quot;: &quot;600030&quot;,
+    &quot;exchange&quot;: &quot;SSE&quot;,
+    &quot;record_id&quot;: &quot;4475575959&quot;,
+    &quot;name&quot;: &quot;中信证券&quot;,
+    &quot;suspend_start_date&quot;: &quot;20220119&quot;,
+    &quot;listing_announcement_date&quot;: &quot;20220210&quot;,
+    &quot;payment_start_date&quot;: &quot;20220119&quot;,
+    &quot;convertible_allotment_shares&quot;: null,
+    &quot;suspend_end_date&quot;: &quot;20220126&quot;,
+    &quot;actual_allotment_shares&quot;: 155202.1645,
+    &quot;allotment_price&quot;: 14.43,
+    &quot;allotment_ratio&quot;: 1.5,
+    &quot;pre_total_share&quot;: 1292677.6029,
+    &quot;transfer_fee_per_share&quot;: null,
+    &quot;legal_person_actual_shares&quot;: null,
+    &quot;raised_funds_net&quot;: 2231819.5732,
+    &quot;major_shareholder_subscribe_method&quot;: &quot;公司第一大股东中国中信有限公司已承诺，将根据公司本次配股股权登记日收市后的持股数量，以现金方式全额认购根据公司配股方案确定的可获配股份。&quot;,
+    &quot;other_allotment_name&quot;: null,
+    &quot;issue_method&quot;: &quot;上网定价发行&quot;,
+    &quot;failed_refund_date&quot;: &quot;20220127&quot;,
+    &quot;ex_right_date&quot;: &quot;20220127&quot;,
+    &quot;expected_issue_expense&quot;: null,
+    &quot;issue_result_announcement_date&quot;: &quot;20220127&quot;,
+    &quot;warrant_trade_end_date&quot;: null,
+    &quot;other_actual_shares&quot;: null,
+    &quot;state_actual_shares&quot;: null,
+    &quot;entrusted_unit&quot;: null,
+    &quot;public_transfer_shares&quot;: null,
+    &quot;other_allotment_code&quot;: null,
+    &quot;allotment_target&quot;: &quot;截至股权登记日2022年1月18日(T日）上交所收市后，在中国证券登记结算有限责任公司上海分公司登记在册的公司全体A股股东配售。&quot;,
+    &quot;warrant_trade_start_date&quot;: null,
+    &quot;fund_arrival_date&quot;: null,
+    &quot;organization_name&quot;: &quot;中信证券股份有限公司&quot;,
+    &quot;record_date&quot;: &quot;20220118&quot;,
+    &quot;raised_funds_gross&quot;: 2239567.2337,
+    &quot;expected_raised_funds&quot;: 2304856.6403,
+    &quot;major_shareholder_subscribe_shares&quot;: 29995.4362,
+    &quot;public_actual_shares&quot;: 155202.1645,
+    &quot;transfer_actual_shares&quot;: null,
+    &quot;underwriting_fee&quot;: null,
+    &quot;legal_person_transfer_shares&quot;: null,
+    &quot;post_float_share&quot;: 1364501.1045,
+    &quot;stock_class&quot;: &quot;A股&quot;,
+    &quot;public_allotment_name&quot;: &quot;中信配股&quot;,
+    &quot;issue_method_code&quot;: &quot;049012&quot;,
+    &quot;underwriting_method&quot;: &quot;代销&quot;,
+    &quot;announcement_date&quot;: &quot;20220114&quot;,
+    &quot;allotment_listing_date&quot;: &quot;20220215&quot;,
+    &quot;payment_end_date&quot;: &quot;20220125&quot;,
+    &quot;underwriting_balance&quot;: null,
+    &quot;expected_allotment_shares&quot;: 159726.7249,
+    &quot;post_total_share&quot;: 1447879.7674,
+    &quot;employee_actual_shares&quot;: null,
+    &quot;underwriting_method_code&quot;: &quot;051002&quot;,
+    &quot;issue_expenses_total&quot;: 7747.6606,
+    &quot;pre_float_share&quot;: 1209298.94,
+    &quot;stock_class_code&quot;: &quot;001001&quot;,
+    &quot;public_allotment_code&quot;: &quot;700030&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

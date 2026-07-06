@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>短线指标 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>短线指标</h1>
+  <p class="code-title">stock_shortline_indicators_tdx</p>
+  <p class="lead">按股票代码计算开盘金额、开盘量比、开盘换手Z、封成比、封流比、几天几板等短线指标。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_shortline_indicators_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 股票数据 / 短线数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>这个接口会临时请求实时快照、日 K、财务快照，并使用 AxData 项目缓存里的统计资源作为历史分母，返回一行短线指标。它是源端直取和本地计算结果，不写入本地数据层。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>证券代码：支持 000001、000001.SZ、sz000001；批量可传列表或英文逗号分隔字符串。</td><td></td></tr><tr><td><code>stats_root</code></td><td>string</td><td>否</td><td>可选覆盖路径：可传包含 tdxstat.cfg/tdxstat2.cfg 的目录，或直接传 zhb.zip 文件路径。</td><td></td></tr><tr><td><code>stats_cache_root</code></td><td>string</td><td>否</td><td>可选缓存目录：自动下载的 zhb.zip 和 zhb.meta.json 会保存到这里；不传时使用项目 cache/tdx/stats。</td><td></td></tr><tr><td><code>refresh_stats</code></td><td>boolean</td><td>否</td><td>是否强制从源端刷新 AxData 项目缓存里的统计资源；默认 false，缓存缺失或当天未刷新时会自动刷新。</td><td></td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>默认不用管这些缓存参数；系统会使用 AxData 项目缓存，缓存缺失或当天未刷新时自动从源端刷新。只有想强制刷新或改缓存目录时才需要传下面的可选参数。</p></div>
+  <div class="note"><strong>参数示例</strong><p># 单个标的
+client.call(&quot;stock_shortline_indicators_tdx&quot;, code=&quot;002971.SZ&quot;)
+
+# 批量请求多个标的
+client.call(&quot;stock_shortline_indicators_tdx&quot;, code=[&quot;002971.SZ&quot;, &quot;000001.SZ&quot;])
+
+# 强制刷新统计资源后再计算
+client.call(&quot;stock_shortline_indicators_tdx&quot;, code=&quot;002971.SZ&quot;, refresh_stats=True)
+
+# 指定自动下载统计资源的缓存目录
+client.call(&quot;stock_shortline_indicators_tdx&quot;, code=&quot;002971.SZ&quot;, stats_cache_root=r&quot;D:\axdata-cache\tdx\stats&quot;)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码，例如 000001.SZ。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始六位代码。</td></tr><tr><td><code>tdx_code</code></td><td>string</td><td>TDX 带市场前缀代码，例如 sz000001。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>AxData 交易所代码：SSE、SZSE 或 BSE。</td></tr><tr><td><code>stats_date</code></td><td>date</td><td>历史统计分母日期，来自 tdxstat/tdxstat2。</td></tr><tr><td><code>open_price</code></td><td>number</td><td>开盘价，单位：元。</td></tr><tr><td><code>pre_close</code></td><td>number</td><td>昨收价，单位：元。</td></tr><tr><td><code>open_change_pct</code></td><td>number</td><td>开盘涨幅，百分比数值。</td></tr><tr><td><code>open_amount</code></td><td>number</td><td>开盘金额，单位：元。</td></tr><tr><td><code>open_volume_hand</code></td><td>number</td><td>开盘成交量，按 开盘金额 / 开盘价 / 100 估算，单位：手。</td></tr><tr><td><code>open_volume_ratio</code></td><td>number</td><td>开盘量比，按开盘成交量 / 近 5 个完整交易日平均每分钟成交量计算。</td></tr><tr><td><code>open_turnover_z</code></td><td>number</td><td>开盘换手Z，按开盘成交量 / 流通股本Z 计算，百分比数值。</td></tr><tr><td><code>open_prev_amount_ratio</code></td><td>number</td><td>开盘昨比，按开盘金额 / 昨成交额 * 100 计算。</td></tr><tr><td><code>auction_prev_volume_ratio</code></td><td>number</td><td>竞价昨比，按今日开盘成交量 / 昨开盘成交量计算。</td></tr><tr><td><code>opening_rush</code></td><td>number</td><td>开盘抢筹，通达信实时快照携带的百分比数值。</td></tr><tr><td><code>open_prev_seal_ratio</code></td><td>number</td><td>开盘昨封比，按开盘金额 / 昨封单额 * 100 计算。</td></tr><tr><td><code>prev_amount</code></td><td>number</td><td>昨成交额，单位：元。</td></tr><tr><td><code>prev_seal_amount</code></td><td>number</td><td>昨封单额，单位：元；负值通常表示昨日收盘跌停封单。</td></tr><tr><td><code>prev2_seal_amount</code></td><td>number</td><td>前封单额，单位：元。</td></tr><tr><td><code>prev_open_volume_hand</code></td><td>number</td><td>昨开盘成交量，单位：手。</td></tr><tr><td><code>prev_open_amount</code></td><td>number</td><td>昨开盘金额，单位：元。</td></tr><tr><td><code>float_shares</code></td><td>number</td><td>流通股，普通财务口径，单位：股。</td></tr><tr><td><code>float_market_value</code></td><td>number</td><td>流通市值，按流通股 * 当前价计算，单位：元。</td></tr><tr><td><code>free_float_shares</code></td><td>number</td><td>流通股本Z（自由流通股本口径），单位：股。</td></tr><tr><td><code>free_float_market_value</code></td><td>number</td><td>流通市值Z，按流通股本Z * 当前价计算，单位：元。</td></tr><tr><td><code>seal_amount</code></td><td>number</td><td>封单额，单位：元。</td></tr><tr><td><code>seal_to_amount_ratio</code></td><td>number</td><td>封成比，按封单额 / 当前成交额计算。</td></tr><tr><td><code>seal_to_float_ratio</code></td><td>number</td><td>封流比，按封单额 / 流通市值Z * 100 计算。</td></tr><tr><td><code>seal_prev_ratio</code></td><td>number</td><td>封昨比，按当前封单额 / 昨封单额计算。</td></tr><tr><td><code>limit_stat_days</code></td><td>integer</td><td>几天几板统计天数。</td></tr><tr><td><code>limit_up_count_in_stat_days</code></td><td>integer</td><td>几天几板中的涨停数。</td></tr><tr><td><code>limit_board_text</code></td><td>string</td><td>几天几板文本，例如 7天5板。</td></tr><tr><td><code>limit_up_streak_days</code></td><td>integer</td><td>连板天数。</td></tr><tr><td><code>year_limit_up_days</code></td><td>integer</td><td>年涨停天数。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_shortline_indicators_tdx&quot;,
+    code=&#x27;002971.SZ&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_shortline_indicators_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;002971.SZ&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;002971.SZ&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;002971.SZ&quot;,
+    &quot;symbol&quot;: &quot;002971&quot;,
+    &quot;tdx_code&quot;: &quot;sz002971&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;stats_date&quot;: &quot;20260612&quot;,
+    &quot;open_price&quot;: 55.76,
+    &quot;pre_close&quot;: 50.69,
+    &quot;open_change_pct&quot;: 10.001973,
+    &quot;open_amount&quot;: 121491000.0,
+    &quot;open_volume_hand&quot;: 21788.199426,
+    &quot;open_volume_ratio&quot;: 17.55,
+    &quot;open_turnover_z&quot;: 1.895,
+    &quot;open_prev_amount_ratio&quot;: 3.653,
+    &quot;auction_prev_volume_ratio&quot;: 0.6548,
+    &quot;opening_rush&quot;: 6.01,
+    &quot;open_prev_seal_ratio&quot;: 2677.25,
+    &quot;prev_amount&quot;: 3325475300.0,
+    &quot;prev_seal_amount&quot;: 4537900.0,
+    &quot;prev2_seal_amount&quot;: 186197000.0,
+    &quot;prev_open_volume_hand&quot;: 33272.0,
+    &quot;prev_open_amount&quot;: 182996000.0,
+    &quot;float_shares&quot;: 114984000.0,
+    &quot;float_market_value&quot;: 6520440000.0,
+    &quot;free_float_shares&quot;: 114984000.0,
+    &quot;free_float_market_value&quot;: 6520440000.0,
+    &quot;seal_amount&quot;: 453790000.0,
+    &quot;seal_to_amount_ratio&quot;: 0.18,
+    &quot;seal_to_float_ratio&quot;: 6.96,
+    &quot;seal_prev_ratio&quot;: 100.0,
+    &quot;limit_stat_days&quot;: 7,
+    &quot;limit_up_count_in_stat_days&quot;: 5,
+    &quot;limit_board_text&quot;: &quot;7天5板&quot;,
+    &quot;limit_up_streak_days&quot;: 4,
+    &quot;year_limit_up_days&quot;: 13
+  }
+]</code></pre>
+</section>
+<section><h2>参考表</h2>
+<h3>核心计算口径</h3>
+<p>这些指标是源端字段和本地统计分母组合计算出来的，不是单个原始字段直接照搬。</p>
+<div class="table-wrap"><table><thead><tr><th>指标</th><th>计算公式</th><th>说明</th></tr></thead><tbody><tr><td>开盘量比</td><td>今日开盘成交量 / 近 5 个完整交易日平均每分钟成交量</td><td>近 5 日成交量来自日 K</td></tr><tr><td>开盘换手Z</td><td>今日开盘成交量 / 流通股本Z * 100</td><td>流通股本Z使用本地统计资源口径</td></tr><tr><td>开盘昨比</td><td>今日开盘金额 / 昨成交额 * 100</td><td>昨成交额来自本地统计资源</td></tr><tr><td>竞价昨比</td><td>今日开盘成交量 / 昨开盘成交量</td><td>昨开盘成交量来自本地统计资源</td></tr><tr><td>开盘昨封比</td><td>今日开盘金额 / 昨封单额 * 100</td><td>昨封单额来自本地统计资源</td></tr><tr><td>封成比</td><td>当前封单额 / 当前成交额</td><td>当前成交额来自实时快照</td></tr><tr><td>封流比</td><td>当前封单额 / 流通市值Z * 100</td><td>流通市值Z按流通股本Z和当前价计算</td></tr><tr><td>封昨比</td><td>当前封单额 / 昨封单额</td><td>昨封单额来自本地统计资源</td></tr></tbody></table></div>
+<h3>数据来源</h3>
+<div class="table-wrap"><table><thead><tr><th>来源</th><th>提供字段</th><th>说明</th></tr></thead><tbody><tr><td>实时快照</td><td>开盘价、昨收价、当前价、当前成交额、开盘金额、封单额、开盘抢筹</td><td>用于当前竞价状态和封单相关指标</td></tr><tr><td>日 K</td><td>近 5 个完整交易日成交量</td><td>用于开盘量比分母</td></tr><tr><td>财务快照</td><td>普通流通股</td><td>用于普通流通股和流通市值展示</td></tr><tr><td>本地统计资源</td><td>昨成交额、昨封单额、前封单额、昨开盘量、昨开盘金额、流通股本Z、连板统计</td><td>用于竞价历史分母和涨停统计</td></tr></tbody></table></div>
+</section>
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

@@ -1,0 +1,2116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>接口文档 - AxData</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="eyebrow">Interface Catalog</p>
+  <h1>接口文档</h1>
+  <p class="lead">共 256 个 source_request 接口。所有详情页来自插件接口目录和固定 example 快照。</p>
+</section>
+<section class="toolbar">
+  <label>
+    搜索
+    <input id="interface-search" type="search" placeholder="输入接口名、中文名、字段或数据源">
+  </label>
+  <label>
+    数据源
+    <select id="source-filter">
+      <option value="">全部数据源 (256)</option>
+      <option value="通达信">通达信 (90)</option><option value="通达信扩展行情">通达信扩展行情 (31)</option><option value="交易所">交易所 (3)</option><option value="东方财富">东方财富 (13)</option><option value="巨潮">巨潮 (32)</option><option value="腾讯财经">腾讯财经 (6)</option><option value="新浪财经">新浪财经 (60)</option><option value="财联社">财联社 (12)</option><option value="开盘红">开盘红 (9)</option>
+    </select>
+  </label>
+</section>
+<section>
+  <div class="table-wrap">
+    <table id="interface-table">
+      <thead>
+        <tr>
+          <th>接口</th>
+          <th>数据源</th>
+          <th>目录</th>
+          <th>参数</th>
+          <th>字段</th>
+        </tr>
+      </thead>
+      <tbody>
+<tr data-source="通达信" data-text="etf_codes_tdx etf列表 通达信 通达信 etf数据 基础数据 name code exchange instrument_id symbol tdx_code exchange name previous_close">
+  <td><a href="etf_codes_tdx.html">ETF列表</a><code>etf_codes_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / ETF数据 / 基础数据</td>
+  <td>3</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="通达信" data-text="etf_realtime_rank_tdx etf实时榜单 通达信 通达信 etf数据 实时数据 sort start count ascending rank instrument_id symbol tdx_code exchange last_price pre_close open high low change change_pct open_change_pct high_change_pct low_change_pct amplitude_pct volume current_volume amount open_amount rise_speed activity">
+  <td><a href="etf_realtime_rank_tdx.html">ETF实时榜单</a><code>etf_realtime_rank_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / ETF数据 / 实时数据</td>
+  <td>4</td>
+  <td>22</td>
+</tr>
+
+<tr data-source="通达信" data-text="etf_realtime_snapshot_tdx etf实时快照 通达信 通达信 etf数据 实时数据 code instrument_id symbol tdx_code exchange last_price pre_close open high low change change_pct open_change_pct high_change_pct low_change_pct amplitude_pct volume current_volume amount open_amount rise_speed activity">
+  <td><a href="etf_realtime_snapshot_tdx.html">ETF实时快照</a><code>etf_realtime_snapshot_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / ETF数据 / 实时数据</td>
+  <td>1</td>
+  <td>21</td>
+</tr>
+
+<tr data-source="通达信" data-text="etf_auction_process_tdx etf竞价明细 通达信 通达信 etf数据 竞价数据 code instrument_id symbol tdx_code exchange auction_time auction_index price matched_volume matched_amount_estimated unmatched_volume unmatched_amount_estimated unmatched_direction">
+  <td><a href="etf_auction_process_tdx.html">ETF竞价明细</a><code>etf_auction_process_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / ETF数据 / 竞价数据</td>
+  <td>1</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="etf_auction_result_tdx etf竞价结果 通达信 通达信 etf数据 竞价数据 code instrument_id symbol tdx_code exchange auction_time trade_index price volume amount order_count">
+  <td><a href="etf_auction_result_tdx.html">ETF竞价结果</a><code>etf_auction_result_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / ETF数据 / 竞价数据</td>
+  <td>1</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信" data-text="etf_intraday_history_tdx etf历史分时 通达信 通达信 etf数据 行情数据 code trade_date instrument_id symbol tdx_code exchange trade_date trade_time minute_index price volume prev_close">
+  <td><a href="etf_intraday_history_tdx.html">ETF历史分时</a><code>etf_intraday_history_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / ETF数据 / 行情数据</td>
+  <td>2</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信" data-text="etf_intraday_today_tdx etf当日分时 通达信 通达信 etf数据 行情数据 code instrument_id symbol tdx_code exchange time_label minute_index price avg_price volume">
+  <td><a href="etf_intraday_today_tdx.html">ETF当日分时</a><code>etf_intraday_today_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / ETF数据 / 行情数据</td>
+  <td>1</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信" data-text="etf_kline_tdx etfk线 通达信 通达信 etf数据 行情数据 code period count instrument_id symbol tdx_code exchange trade_time period open high low close volume amount up_count down_count">
+  <td><a href="etf_kline_tdx.html">ETFK线</a><code>etf_kline_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / ETF数据 / 行情数据</td>
+  <td>3</td>
+  <td>14</td>
+</tr>
+
+<tr data-source="通达信" data-text="etf_trades_history_tdx etf历史成交明细 通达信 通达信 etf数据 行情数据 code trade_date instrument_id symbol tdx_code exchange trade_date trade_time trade_datetime trade_index price volume order_count side">
+  <td><a href="etf_trades_history_tdx.html">ETF历史成交明细</a><code>etf_trades_history_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / ETF数据 / 行情数据</td>
+  <td>2</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="etf_trades_today_tdx etf当日成交明细 通达信 通达信 etf数据 行情数据 code instrument_id symbol tdx_code exchange trade_time trade_index price volume order_count side">
+  <td><a href="etf_trades_today_tdx.html">ETF当日成交明细</a><code>etf_trades_today_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / ETF数据 / 行情数据</td>
+  <td>1</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信" data-text="index_codes_tdx 指数列表 通达信 通达信 指数数据 基础数据 name code exchange include_tdx_block_index instrument_id symbol tdx_code exchange name index_type previous_close">
+  <td><a href="index_codes_tdx.html">指数列表</a><code>index_codes_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 指数数据 / 基础数据</td>
+  <td>4</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="通达信" data-text="index_quote_refresh_tdx 指数实时增量行情 通达信 通达信 指数数据 实时数据 code instrument_id symbol tdx_code exchange last_price pre_close open high low change change_pct open_change_pct high_change_pct low_change_pct amplitude_pct volume current_volume amount open_amount rise_speed activity">
+  <td><a href="index_quote_refresh_tdx.html">指数实时增量行情</a><code>index_quote_refresh_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 指数数据 / 实时数据</td>
+  <td>1</td>
+  <td>21</td>
+</tr>
+
+<tr data-source="通达信" data-text="index_realtime_rank_tdx 指数实时榜单 通达信 通达信 指数数据 实时数据 sort start count ascending rank instrument_id symbol tdx_code exchange last_price pre_close open high low change change_pct open_change_pct high_change_pct low_change_pct amplitude_pct volume current_volume amount open_amount rise_speed activity">
+  <td><a href="index_realtime_rank_tdx.html">指数实时榜单</a><code>index_realtime_rank_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 指数数据 / 实时数据</td>
+  <td>4</td>
+  <td>22</td>
+</tr>
+
+<tr data-source="通达信" data-text="index_realtime_snapshot_tdx 指数实时快照 通达信 通达信 指数数据 实时数据 code instrument_id symbol tdx_code exchange last_price pre_close open high low change change_pct open_change_pct high_change_pct low_change_pct amplitude_pct volume current_volume amount open_amount rise_speed activity">
+  <td><a href="index_realtime_snapshot_tdx.html">指数实时快照</a><code>index_realtime_snapshot_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 指数数据 / 实时数据</td>
+  <td>1</td>
+  <td>21</td>
+</tr>
+
+<tr data-source="通达信" data-text="index_intraday_history_tdx 指数历史分时 通达信 通达信 指数数据 行情数据 code trade_date instrument_id symbol tdx_code exchange trade_date trade_time minute_index price volume prev_close">
+  <td><a href="index_intraday_history_tdx.html">指数历史分时</a><code>index_intraday_history_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 指数数据 / 行情数据</td>
+  <td>2</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信" data-text="index_intraday_today_tdx 指数当日分时 通达信 通达信 指数数据 行情数据 code instrument_id symbol tdx_code exchange time_label minute_index price avg_price volume">
+  <td><a href="index_intraday_today_tdx.html">指数当日分时</a><code>index_intraday_today_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 指数数据 / 行情数据</td>
+  <td>1</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信" data-text="index_kline_tdx 指数k线 通达信 通达信 指数数据 行情数据 code period count instrument_id symbol tdx_code exchange trade_time period open high low close volume amount up_count down_count">
+  <td><a href="index_kline_tdx.html">指数K线</a><code>index_kline_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 指数数据 / 行情数据</td>
+  <td>3</td>
+  <td>14</td>
+</tr>
+
+<tr data-source="通达信" data-text="concept_constituent_comparison_tdx 题材内对比 通达信 通达信 股票数据 f10数据 code concept_code compare_type sort_by rank market_code symbol name report_period change_pct change_pct_3d change_pct_5d change_pct_20d change_pct_60d total_market_cap float_market_cap revenue net_profit revenue_yoy_pct net_profit_yoy_pct">
+  <td><a href="concept_constituent_comparison_tdx.html">题材内对比</a><code>concept_constituent_comparison_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>4</td>
+  <td>16</td>
+</tr>
+
+<tr data-source="通达信" data-text="concept_control_ranking_tdx 控盘榜单 通达信 通达信 股票数据 f10数据 concept_code count date instrument_id exchange rank market_code symbol name control_ratio_pct">
+  <td><a href="concept_control_ranking_tdx.html">控盘榜单</a><code>concept_control_ranking_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>2</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="通达信" data-text="concept_control_series_tdx 主力控盘序列 通达信 通达信 股票数据 f10数据 code start_date end_date count date control_ratio_pct board_code board_name rank">
+  <td><a href="concept_control_series_tdx.html">主力控盘序列</a><code>concept_control_series_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>4</td>
+  <td>5</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_analyst_rating_tdx 机构评级与目标价 通达信 通达信 股票数据 f10数据 code start_date end_date instrument_id symbol date buy_count overweight_count neutral_count underweight_count sell_count target_price target_price_low target_price_high current_price upside_pct">
+  <td><a href="stock_analyst_rating_tdx.html">机构评级与目标价</a><code>stock_analyst_rating_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>3</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_business_composition_tdx 主营构成 通达信 通达信 股票数据 f10数据 code period instrument_id symbol report_period dimension item_order item_name revenue revenue_ratio_pct cost cost_ratio_pct gross_profit profit_ratio_pct gross_margin_pct">
+  <td><a href="stock_business_composition_tdx.html">主营构成</a><code>stock_business_composition_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>2</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_chip_distribution_tdx 筹码分布 通达信 通达信 股票数据 f10数据 code start_date end_date instrument_id symbol date profit_ratio_pct cost90_concentration cost90_range cost70_concentration cost70_range">
+  <td><a href="stock_chip_distribution_tdx.html">筹码分布</a><code>stock_chip_distribution_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>3</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_company_profile_tdx 公司概况 通达信 通达信 股票数据 f10数据 code type instrument_id symbol stock_type list_date issue_method issue_system par_value issue_price issue_volume raised_amount net_raised_amount first_open first_close lead_underwriter sponsor publish_date change_direction index_name publish_date_change_pct effective_date effective_date_change_pct">
+  <td><a href="stock_company_profile_tdx.html">公司概况</a><code>stock_company_profile_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>2</td>
+  <td>21</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_disclosure_feed_tdx 新闻公告路演 通达信 通达信 股票数据 f10数据 code category count instrument_id symbol category issue_date title source detail_table detail_id type_code type_name url summary start_date start_time end_time">
+  <td><a href="stock_disclosure_feed_tdx.html">新闻公告路演</a><code>stock_disclosure_feed_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>3</td>
+  <td>15</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_dividend_history_tdx 分红历史 通达信 通达信 股票数据 f10数据 code start_year end_year instrument_id symbol report_period board_date plan eps roe_weighted_pct record_date ex_dividend_date progress progress_code payout_ratio_pct target_holder">
+  <td><a href="stock_dividend_history_tdx.html">分红历史</a><code>stock_dividend_history_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>3</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_dividend_metrics_tdx 分红指标 通达信 通达信 股票数据 f10数据 code metric view instrument_id symbol date metric_value benchmark_value rank stock_name stock_code summary_total cash_dividend_total">
+  <td><a href="stock_dividend_metrics_tdx.html">分红指标</a><code>stock_dividend_metrics_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>3</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_equity_financing_events_tdx 融资事件 通达信 通达信 股票数据 f10数据 code event_type instrument_id symbol event_date event_type plan amount price volume progress">
+  <td><a href="stock_equity_financing_events_tdx.html">融资事件</a><code>stock_equity_financing_events_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>2</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_event_drivers_tdx 历史事件关联 通达信 通达信 股票数据 f10数据 code start_date end_date include_detail instrument_id symbol event_date event_name detail_id event_nature creation_change_pct has_detail detail_title detail_text">
+  <td><a href="stock_event_drivers_tdx.html">历史事件关联</a><code>stock_event_drivers_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>4</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_financial_diagnosis_tdx 财务诊断 通达信 通达信 股票数据 f10数据 code dimension instrument_id symbol stock_name compare_group report_period rank rank_change rating_code score percentile warning_value">
+  <td><a href="stock_financial_diagnosis_tdx.html">财务诊断</a><code>stock_financial_diagnosis_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>2</td>
+  <td>11</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_financial_statement_tdx 资产负债表 通达信 通达信 股票数据 f10数据 code instrument_id symbol report_period cash trading_financial_assets notes_receivable accounts_receivable current_assets total_assets short_term_borrowing notes_payable accounts_payable current_liabilities total_liabilities share_capital capital_reserve undistributed_profit parent_equity total_equity liabilities_and_equity">
+  <td><a href="stock_financial_statement_tdx.html">资产负债表</a><code>stock_financial_statement_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>1</td>
+  <td>20</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_forecast_consensus_tdx 盈利预测 通达信 通达信 股票数据 f10数据 code instrument_id symbol forecast_start_year align_flag eps_year1 eps_year2 eps_year3 net_profit_year1 net_profit_year2 net_profit_year3 revenue_year1 revenue_year2 revenue_year3 forecast_institution_count">
+  <td><a href="stock_forecast_consensus_tdx.html">盈利预测</a><code>stock_forecast_consensus_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>1</td>
+  <td>14</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_governance_guarantees_tdx 担保明细 通达信 通达信 股票数据 f10数据 code period count instrument_id symbol report_period guarantor guaranteed_party amount currency guarantee_type is_completed is_related_party actual_date term">
+  <td><a href="stock_governance_guarantees_tdx.html">担保明细</a><code>stock_governance_guarantees_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>3</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_index_constituent_changes_tdx 指数调入调出 通达信 通达信 股票数据 f10数据 code start_date end_date instrument_id symbol publish_date change_direction index_name publish_date_change_pct effective_date effective_date_change_pct">
+  <td><a href="stock_index_constituent_changes_tdx.html">指数调入调出</a><code>stock_index_constituent_changes_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>3</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_institution_holding_tdx 机构持仓 通达信 通达信 股票数据 f10数据 code start_date end_date instrument_id symbol date report_period institution_holding_ratio_pct close">
+  <td><a href="stock_institution_holding_tdx.html">机构持仓</a><code>stock_institution_holding_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>3</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_ipo_listing_profile_tdx 发行上市资料 通达信 通达信 股票数据 f10数据 code instrument_id symbol stock_type list_date issue_method issue_system par_value issue_price issue_volume raised_amount net_raised_amount first_open first_close lead_underwriter sponsor">
+  <td><a href="stock_ipo_listing_profile_tdx.html">发行上市资料</a><code>stock_ipo_listing_profile_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>1</td>
+  <td>15</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_margin_trading_tdx 融资融券 通达信 通达信 股票数据 f10数据 code start_date end_date instrument_id symbol date margin_net_buy margin_balance short_balance">
+  <td><a href="stock_margin_trading_tdx.html">融资融券</a><code>stock_margin_trading_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>3</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_market_rankings_tdx 排名明细 通达信 通达信 股票数据 f10数据 code scope count instrument_id rank rank_change symbol name exchange market_code updated_time">
+  <td><a href="stock_market_rankings_tdx.html">排名明细</a><code>stock_market_rankings_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>3</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_northbound_holding_tdx 沪深股通持股 通达信 通达信 股票数据 f10数据 code start_date end_date instrument_id symbol channel_type date holding_ratio_pct holding_volume change_volume change_pct close">
+  <td><a href="stock_northbound_holding_tdx.html">沪深股通持股</a><code>stock_northbound_holding_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>3</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_private_placement_allocations_tdx 增发获配明细 通达信 通达信 股票数据 f10数据 code event_date instrument_id symbol event_date allocator allocated_volume subscribed_volume allocated_amount lock_months institution_type unlock_date shareholder_id">
+  <td><a href="stock_private_placement_allocations_tdx.html">增发获配明细</a><code>stock_private_placement_allocations_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>2</td>
+  <td>11</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_regulatory_actions_tdx 监管措施 通达信 通达信 股票数据 f10数据 code start_date end_date count instrument_id symbol publish_date target action content link">
+  <td><a href="stock_regulatory_actions_tdx.html">监管措施</a><code>stock_regulatory_actions_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>4</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_research_reports_tdx 研报列表 通达信 通达信 股票数据 f10数据 code rating keyword count cursor instrument_id symbol rating analyst publish_date detail_id title attachment">
+  <td><a href="stock_research_reports_tdx.html">研报列表</a><code>stock_research_reports_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>5</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_return_calendar_tdx 月度年度涨跌幅 通达信 通达信 股票数据 f10数据 code year instrument_id symbol year month_1_pct month_2_pct month_3_pct month_4_pct month_5_pct month_6_pct month_7_pct month_8_pct month_9_pct month_10_pct month_11_pct month_12_pct year_pct">
+  <td><a href="stock_return_calendar_tdx.html">月度年度涨跌幅</a><code>stock_return_calendar_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>2</td>
+  <td>16</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_score_summary_tdx 综合评分 通达信 通达信 股票数据 f10数据 code instrument_id symbol score industry_rank industry_rank_total market_rank market_rank_total market_win_pct date capital_score fundamental_score news_score theme_score industry_name stock_name">
+  <td><a href="stock_score_summary_tdx.html">综合评分</a><code>stock_score_summary_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>1</td>
+  <td>15</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_shareholder_change_plans_tdx 股东增减持 通达信 通达信 股票数据 f10数据 code direction instrument_id symbol announcement_date direction shareholder_name shareholder_role planned_volume_upper planned_ratio_upper_pct planned_amount_upper start_date end_date progress detail_id">
+  <td><a href="stock_shareholder_change_plans_tdx.html">股东增减持</a><code>stock_shareholder_change_plans_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>2</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_valuation_band_tdx pe/pb估值通道 通达信 通达信 股票数据 f10数据 code metric start_date end_date count instrument_id symbol date band_value_1 band_value_2 band_value_3 total_count min_value mid_value">
+  <td><a href="stock_valuation_band_tdx.html">PE/PB估值通道</a><code>stock_valuation_band_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>5</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_valuation_metrics_tdx 估值表 通达信 通达信 股票数据 f10数据 code start_date end_date count instrument_id symbol date pe_ttm pe_percentile pb_mrq pb_percentile pcf_ttm pcf_percentile ps_ttm ps_percentile peg float_market_cap total_market_cap">
+  <td><a href="stock_valuation_metrics_tdx.html">估值表</a><code>stock_valuation_metrics_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>4</td>
+  <td>14</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_valuation_series_tdx 单指标估值序列 通达信 通达信 股票数据 f10数据 code metric start_date end_date count instrument_id symbol date metric value percentile">
+  <td><a href="stock_valuation_series_tdx.html">单指标估值序列</a><code>stock_valuation_series_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>5</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_violation_cases_tdx 违规处理 通达信 通达信 股票数据 f10数据 code start_date end_date instrument_id symbol case_date case_type publish_date progress detail_id decision">
+  <td><a href="stock_violation_cases_tdx.html">违规处理</a><code>stock_violation_cases_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / F10数据</td>
+  <td>3</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_capital_changes_tdx 股本变迁 通达信 通达信 股票数据 基础数据 scope code category instrument_id ts_code symbol tdx_code exchange event_date category_raw category_name c1 c2 c3 c4 c1_raw_hex c2_raw_hex c3_raw_hex c4_raw_hex record_hex">
+  <td><a href="stock_capital_changes_tdx.html">股本变迁</a><code>stock_capital_changes_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 基础数据</td>
+  <td>3</td>
+  <td>17</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_codes_tdx 最新股票列表 通达信 通达信 股票数据 基础数据 name code scope instrument_id symbol tdx_code exchange name market">
+  <td><a href="stock_codes_tdx.html">最新股票列表</a><code>stock_codes_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 基础数据</td>
+  <td>3</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_daily_price_limit_tdx 涨跌停价格 通达信 通达信 股票数据 基础数据 code scope trade_date trade_date instrument_id symbol tdx_code exchange name name_flag pre_close_trade_date pre_close pre_close_source limit_up_price limit_down_price limit_ratio_pct limit_rule limit_status">
+  <td><a href="stock_daily_price_limit_tdx.html">涨跌停价格</a><code>stock_daily_price_limit_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 基础数据</td>
+  <td>3</td>
+  <td>15</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_daily_share_tdx 每日股本（盘前） 通达信 通达信 股票数据 基础数据 code scope stats_cache_root refresh_stats trade_date instrument_id symbol tdx_code exchange total_share float_share free_float_share_z finance_updated_date share_source">
+  <td><a href="stock_daily_share_tdx.html">每日股本（盘前）</a><code>stock_daily_share_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 基础数据</td>
+  <td>4</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_st_list_tdx 最新st股票列表 通达信 通达信 股票数据 基础数据 name code scope instrument_id symbol tdx_code exchange name market st_type">
+  <td><a href="stock_st_list_tdx.html">最新ST股票列表</a><code>stock_st_list_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 基础数据</td>
+  <td>3</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_suspensions_tdx 最新停牌列表 通达信 通达信 股票数据 基础数据 scope code name instrument_id symbol tdx_code exchange name market">
+  <td><a href="stock_suspensions_tdx.html">最新停牌列表</a><code>stock_suspensions_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 基础数据</td>
+  <td>3</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_intraday_buy_sell_strength_tdx 买卖力道 通达信 通达信 股票数据 实时数据 code instrument_id symbol tdx_code exchange minute_time minute_index bid_order ask_order">
+  <td><a href="stock_intraday_buy_sell_strength_tdx.html">买卖力道</a><code>stock_intraday_buy_sell_strength_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 实时数据</td>
+  <td>1</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_intraday_volume_comparison_tdx 成交对比 通达信 通达信 股票数据 实时数据 code instrument_id symbol tdx_code exchange minute_time minute_index today_volume yesterday_volume volume_change volume_change_pct">
+  <td><a href="stock_intraday_volume_comparison_tdx.html">成交对比</a><code>stock_intraday_volume_comparison_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 实时数据</td>
+  <td>1</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_order_book_tdx 五档盘口 通达信 通达信 股票数据 实时数据 code instrument_id symbol tdx_code exchange level bid_price bid_volume ask_price ask_volume">
+  <td><a href="stock_order_book_tdx.html">五档盘口</a><code>stock_order_book_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 实时数据</td>
+  <td>1</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_realtime_rank_tdx 实时榜单 通达信 通达信 股票数据 实时数据 category sort start count ascending filters rank instrument_id symbol tdx_code exchange last_price pre_close open high low change change_pct open_change_pct high_change_pct low_change_pct amplitude_pct average_price average_change_pct drawdown_pct attack_pct volume current_volume amount inside_volume outside_volume inside_outside_ratio open_amount open_amount_ratio_pct bid1_price bid1_volume ask1_price ask1_volume locked_amount bid1_ask1_volume_diff bid1_ask1_balance_pct rise_speed short_turnover min2_amount opening_rush vol_rise_speed entrust_ratio activity">
+  <td><a href="stock_realtime_rank_tdx.html">实时榜单</a><code>stock_realtime_rank_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 实时数据</td>
+  <td>6</td>
+  <td>42</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_realtime_snapshot_tdx 实时快照 通达信 通达信 股票数据 实时数据 code instrument_id symbol tdx_code exchange last_price pre_close open high low change change_pct open_change_pct high_change_pct low_change_pct amplitude_pct average_price average_change_pct drawdown_pct attack_pct volume current_volume amount inside_volume outside_volume inside_outside_ratio open_amount open_amount_ratio_pct bid1_price bid1_volume ask1_price ask1_volume locked_amount bid1_ask1_volume_diff bid1_ask1_balance_pct rise_speed short_turnover min2_amount opening_rush vol_rise_speed entrust_ratio activity">
+  <td><a href="stock_realtime_snapshot_tdx.html">实时快照</a><code>stock_realtime_snapshot_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 实时数据</td>
+  <td>1</td>
+  <td>41</td>
+</tr>
+
+<tr data-source="通达信" data-text="concept_capital_flow_tdx 题材资金走势 通达信 通达信 股票数据 短线数据 concept_code start_date end_date count board_name date main_amount main_buy_amount avg_main_amount avg_main_buy_amount">
+  <td><a href="concept_capital_flow_tdx.html">题材资金走势</a><code>concept_capital_flow_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 短线数据</td>
+  <td>4</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="通达信" data-text="concept_constituents_tdx 板块成分股 通达信 通达信 股票数据 短线数据 concept_code count instrument_id symbol exchange market_code name change_pct last_price">
+  <td><a href="concept_constituents_tdx.html">板块成分股</a><code>concept_constituents_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 短线数据</td>
+  <td>2</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="通达信" data-text="concept_related_boards_tdx 相关板块 通达信 通达信 股票数据 短线数据 code instrument_id symbol board_market board_code board_name change_pct limit_up_count">
+  <td><a href="concept_related_boards_tdx.html">相关板块</a><code>concept_related_boards_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 短线数据</td>
+  <td>1</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_limit_ladder_tdx 连板天梯 通达信 通达信 股票数据 短线数据 count scope include_touched topic_type trade_date ladder_level limit_board_text instrument_id name last_price change_pct limit_status amount seal_amount seal_to_amount_ratio free_float_market_value primary_theme secondary_themes year_limit_up_days symbol exchange pre_close limit_up_price">
+  <td><a href="stock_limit_ladder_tdx.html">连板天梯</a><code>stock_limit_ladder_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 短线数据</td>
+  <td>4</td>
+  <td>19</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_shortline_indicators_tdx 短线指标 通达信 通达信 股票数据 短线数据 code stats_root stats_cache_root refresh_stats instrument_id symbol tdx_code exchange stats_date open_price pre_close open_change_pct open_amount open_volume_hand open_volume_ratio open_turnover_z open_prev_amount_ratio auction_prev_volume_ratio opening_rush open_prev_seal_ratio prev_amount prev_seal_amount prev2_seal_amount prev_open_volume_hand prev_open_amount float_shares float_market_value free_float_shares free_float_market_value seal_amount seal_to_amount_ratio seal_to_float_ratio seal_prev_ratio limit_stat_days limit_up_count_in_stat_days limit_board_text limit_up_streak_days year_limit_up_days">
+  <td><a href="stock_shortline_indicators_tdx.html">短线指标</a><code>stock_shortline_indicators_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 短线数据</td>
+  <td>4</td>
+  <td>34</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_theme_strength_rank_tdx 题材强度排行 通达信 通达信 股票数据 短线数据 count scope topic_type rank trade_date topic_type topic_name topic_id theme_strength_score limit_up_count highest_ladder_level lianban_stock_count first_board_count leader_instrument_id leader_name leader_ladder_level leader_limit_board_text leader_seal_amount seal_amount_sum amount_sum top_stock_summary">
+  <td><a href="stock_theme_strength_rank_tdx.html">题材强度排行</a><code>stock_theme_strength_rank_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 短线数据</td>
+  <td>3</td>
+  <td>18</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_topic_exposure_tdx 个股题材 通达信 通达信 股票数据 短线数据 code topic_type instrument_id symbol topic_type created_date topic_name relevance selected_date reason topic_id group_code">
+  <td><a href="stock_topic_exposure_tdx.html">个股题材</a><code>stock_topic_exposure_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 短线数据</td>
+  <td>2</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_auction_process_tdx 竞价明细 通达信 通达信 股票数据 竞价数据 code instrument_id symbol tdx_code exchange auction_time auction_index price matched_volume matched_amount_estimated unmatched_volume unmatched_amount_estimated unmatched_direction">
+  <td><a href="stock_auction_process_tdx.html">竞价明细</a><code>stock_auction_process_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 竞价数据</td>
+  <td>1</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_auction_result_history_tdx 历史竞价结果 通达信 通达信 股票数据 竞价数据 code trade_date instrument_id symbol tdx_code exchange trade_date auction_time auction_datetime trade_index price volume amount order_count">
+  <td><a href="stock_auction_result_history_tdx.html">历史竞价结果</a><code>stock_auction_result_history_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 竞价数据</td>
+  <td>2</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_auction_result_tdx 竞价结果 通达信 通达信 股票数据 竞价数据 code instrument_id symbol tdx_code exchange auction_time trade_index price volume amount order_count">
+  <td><a href="stock_auction_result_tdx.html">竞价结果</a><code>stock_auction_result_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 竞价数据</td>
+  <td>1</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_adj_factor_tdx 复权因子 通达信 通达信 股票数据 行情数据 code adjust anchor_date instrument_id ts_code symbol tdx_code exchange trade_date adj_factor">
+  <td><a href="stock_adj_factor_tdx.html">复权因子</a><code>stock_adj_factor_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>3</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_intraday_history_tdx 历史分时 通达信 通达信 股票数据 行情数据 code trade_date instrument_id symbol tdx_code exchange trade_date trade_time minute_index price volume prev_close">
+  <td><a href="stock_intraday_history_tdx.html">历史分时</a><code>stock_intraday_history_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>2</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_intraday_recent_history_tdx 近期历史分时 通达信 通达信 股票数据 行情数据 code trade_date instrument_id symbol tdx_code exchange trade_date trade_time time_label minute_index price avg_price volume prev_close open_price">
+  <td><a href="stock_intraday_recent_history_tdx.html">近期历史分时</a><code>stock_intraday_recent_history_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>2</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_intraday_today_tdx 当日分时 通达信 通达信 股票数据 行情数据 code instrument_id symbol tdx_code exchange time_label minute_index price avg_price volume">
+  <td><a href="stock_intraday_today_tdx.html">当日分时</a><code>stock_intraday_today_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>1</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_kline_daily_tdx 日k线 通达信 通达信 股票数据 行情数据 code adjust anchor_date instrument_id symbol tdx_code exchange trade_time period open high low close volume amount">
+  <td><a href="stock_kline_daily_tdx.html">日K线</a><code>stock_kline_daily_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>3</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_kline_minute_tdx 分钟k线 通达信 通达信 股票数据 行情数据 code period adjust anchor_date instrument_id symbol tdx_code exchange trade_time period open high low close volume amount">
+  <td><a href="stock_kline_minute_tdx.html">分钟K线</a><code>stock_kline_minute_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>4</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_kline_monthly_tdx 月k线 通达信 通达信 股票数据 行情数据 code adjust anchor_date instrument_id symbol tdx_code exchange trade_time period open high low close volume amount">
+  <td><a href="stock_kline_monthly_tdx.html">月K线</a><code>stock_kline_monthly_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>3</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_kline_nday_tdx 自定义日k线 通达信 通达信 股票数据 行情数据 code days adjust anchor_date instrument_id symbol tdx_code exchange trade_time period open high low close volume amount">
+  <td><a href="stock_kline_nday_tdx.html">自定义日K线</a><code>stock_kline_nday_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>4</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_kline_nminute_tdx 自定义分钟k线 通达信 通达信 股票数据 行情数据 code minutes adjust anchor_date instrument_id symbol tdx_code exchange trade_time period open high low close volume amount">
+  <td><a href="stock_kline_nminute_tdx.html">自定义分钟K线</a><code>stock_kline_nminute_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>4</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_kline_quarterly_tdx 季k线 通达信 通达信 股票数据 行情数据 code adjust anchor_date instrument_id symbol tdx_code exchange trade_time period open high low close volume amount">
+  <td><a href="stock_kline_quarterly_tdx.html">季K线</a><code>stock_kline_quarterly_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>3</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_kline_second_tdx 秒k线 通达信 通达信 股票数据 行情数据 code seconds adjust anchor_date instrument_id symbol tdx_code exchange trade_time period open high low close volume amount">
+  <td><a href="stock_kline_second_tdx.html">秒K线</a><code>stock_kline_second_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>4</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_kline_weekly_tdx 周k线 通达信 通达信 股票数据 行情数据 code adjust anchor_date instrument_id symbol tdx_code exchange trade_time period open high low close volume amount">
+  <td><a href="stock_kline_weekly_tdx.html">周K线</a><code>stock_kline_weekly_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>3</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_kline_yearly_tdx 年k线 通达信 通达信 股票数据 行情数据 code adjust anchor_date instrument_id symbol tdx_code exchange trade_time period open high low close volume amount">
+  <td><a href="stock_kline_yearly_tdx.html">年K线</a><code>stock_kline_yearly_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>3</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_trades_history_tdx 历史成交明细 通达信 通达信 股票数据 行情数据 code trade_date instrument_id symbol tdx_code exchange trade_date trade_time trade_datetime trade_index price volume order_count side">
+  <td><a href="stock_trades_history_tdx.html">历史成交明细</a><code>stock_trades_history_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>2</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_trades_today_tdx 当日成交明细 通达信 通达信 股票数据 行情数据 code instrument_id symbol tdx_code exchange trade_time trade_index price volume order_count side">
+  <td><a href="stock_trades_today_tdx.html">当日成交明细</a><code>stock_trades_today_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 行情数据</td>
+  <td>1</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_balance_summary_tdx 资产负债摘要 通达信 通达信 股票数据 财务数据 code instrument_id symbol tdx_code exchange updated_date total_assets current_assets fixed_assets intangible_assets current_liabilities long_term_liabilities capital_reserve net_assets accounts_receivable inventory">
+  <td><a href="stock_balance_summary_tdx.html">资产负债摘要</a><code>stock_balance_summary_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 财务数据</td>
+  <td>1</td>
+  <td>15</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_finance_profile_tdx 财务资料标签 通达信 通达信 股票数据 财务数据 code map_root instrument_id symbol tdx_code exchange updated_date ipo_date province_raw province_name province_board_name province_board_code industry_raw tdx_industry_code tdx_industry_name tdx_industry_path tdx_research_industry_code tdx_research_industry_name tdx_research_industry_path">
+  <td><a href="stock_finance_profile_tdx.html">财务资料标签</a><code>stock_finance_profile_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 财务数据</td>
+  <td>2</td>
+  <td>17</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_finance_summary_tdx 财务基础摘要 通达信 通达信 股票数据 财务数据 code instrument_id symbol tdx_code exchange updated_date ipo_date total_share float_share eps bps total_assets net_assets revenue net_profit operating_cashflow shareholder_count">
+  <td><a href="stock_finance_summary_tdx.html">财务基础摘要</a><code>stock_finance_summary_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 财务数据</td>
+  <td>1</td>
+  <td>16</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_profit_cashflow_summary_tdx 利润现金流摘要 通达信 通达信 股票数据 财务数据 code instrument_id symbol tdx_code exchange updated_date revenue main_business_profit operating_profit investment_income operating_cashflow total_cashflow total_profit after_tax_profit net_profit undistributed_profit eps bps">
+  <td><a href="stock_profit_cashflow_summary_tdx.html">利润现金流摘要</a><code>stock_profit_cashflow_summary_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 财务数据</td>
+  <td>1</td>
+  <td>17</td>
+</tr>
+
+<tr data-source="通达信" data-text="stock_share_capital_tdx 股本结构 通达信 通达信 股票数据 财务数据 code instrument_id symbol tdx_code exchange updated_date total_share float_share state_share founder_legal_person_share legal_person_share b_share h_share shareholder_count">
+  <td><a href="stock_share_capital_tdx.html">股本结构</a><code>stock_share_capital_tdx</code></td>
+  <td>通达信</td>
+  <td>通达信 / 股票数据 / 财务数据</td>
+  <td>1</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="bond_codes_tdx 债券列表 通达信扩展行情 通达信扩展行情 债券数据 code exchange name limit tdx_root instrument_id symbol asset_type exchange market_name market_group bond_type">
+  <td><a href="bond_codes_tdx.html">债券列表</a><code>bond_codes_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 债券数据</td>
+  <td>5</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="bond_kline_tdx 债券k线 通达信扩展行情 通达信扩展行情 债券数据 code period limit tdx_root instrument_id symbol exchange name trade_time period open high low close volume open_interest settlement">
+  <td><a href="bond_kline_tdx.html">债券K线</a><code>bond_kline_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 债券数据</td>
+  <td>4</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="bond_realtime_snapshot_tdx 债券实时快照 通达信扩展行情 通达信扩展行情 债券数据 code tdx_root instrument_id symbol exchange name trade_date last_price pre_close pre_settlement open high low settlement average_price volume amount open_interest open_interest_change inside_volume outside_volume bid1_price bid1_volume ask1_price ask1_volume bid2_price bid2_volume ask2_price ask2_volume bid3_price bid3_volume ask3_price ask3_volume bid4_price bid4_volume ask4_price ask4_volume bid5_price bid5_volume ask5_price ask5_volume">
+  <td><a href="bond_realtime_snapshot_tdx.html">债券实时快照</a><code>bond_realtime_snapshot_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 债券数据</td>
+  <td>2</td>
+  <td>39</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="tdx_ext_instruments_tdx 扩展品种列表 通达信扩展行情 通达信扩展行情 基础数据 asset_type code exchange name limit tdx_root instrument_id symbol asset_type exchange market_name market_group product_code product_name contract_month contract_type option_type strike_price fund_type bond_type base_currency quote_currency indicator_category">
+  <td><a href="tdx_ext_instruments_tdx.html">扩展品种列表</a><code>tdx_ext_instruments_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 基础数据</td>
+  <td>6</td>
+  <td>17</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="tdx_ext_markets_tdx 扩展市场列表 通达信扩展行情 通达信扩展行情 基础数据 asset_type name limit tdx_root market_name short_name market_group asset_type asset_type_zh">
+  <td><a href="tdx_ext_markets_tdx.html">扩展市场列表</a><code>tdx_ext_markets_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 基础数据</td>
+  <td>4</td>
+  <td>5</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="fund_codes_tdx 基金列表 通达信扩展行情 通达信扩展行情 基金数据 code exchange name limit tdx_root instrument_id symbol asset_type exchange market_name market_group fund_type update_date nav accumulated_nav">
+  <td><a href="fund_codes_tdx.html">基金列表</a><code>fund_codes_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 基金数据</td>
+  <td>5</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="fund_nav_series_tdx 基金净值走势 通达信扩展行情 通达信扩展行情 基金数据 code period limit tdx_root instrument_id symbol exchange name trade_time period open high low close volume open_interest settlement">
+  <td><a href="fund_nav_series_tdx.html">基金净值走势</a><code>fund_nav_series_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 基金数据</td>
+  <td>4</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="fund_nav_tdx 基金净值 通达信扩展行情 通达信扩展行情 基金数据 code tdx_root fund_id symbol fund_type name update_date nav accumulated_nav">
+  <td><a href="fund_nav_tdx.html">基金净值</a><code>fund_nav_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 基金数据</td>
+  <td>2</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="fx_codes_tdx 外汇品种列表 通达信扩展行情 通达信扩展行情 外汇数据 code exchange name limit tdx_root instrument_id symbol asset_type exchange market_name market_group base_currency quote_currency">
+  <td><a href="fx_codes_tdx.html">外汇品种列表</a><code>fx_codes_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 外汇数据</td>
+  <td>5</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="fx_intraday_history_tdx 外汇历史分时 通达信扩展行情 通达信扩展行情 外汇数据 code trade_date tdx_root instrument_id symbol exchange name trade_date time_label price average_price volume">
+  <td><a href="fx_intraday_history_tdx.html">外汇历史分时</a><code>fx_intraday_history_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 外汇数据</td>
+  <td>3</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="fx_intraday_today_tdx 外汇当日分时 通达信扩展行情 通达信扩展行情 外汇数据 code tdx_root instrument_id symbol exchange name trade_date time_label price average_price volume">
+  <td><a href="fx_intraday_today_tdx.html">外汇当日分时</a><code>fx_intraday_today_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 外汇数据</td>
+  <td>2</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="fx_kline_tdx 外汇k线 通达信扩展行情 通达信扩展行情 外汇数据 code period limit tdx_root instrument_id symbol exchange name trade_time period open high low close volume open_interest settlement">
+  <td><a href="fx_kline_tdx.html">外汇K线</a><code>fx_kline_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 外汇数据</td>
+  <td>4</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="fx_realtime_snapshot_tdx 外汇实时快照 通达信扩展行情 通达信扩展行情 外汇数据 code tdx_root instrument_id symbol exchange name trade_date last_price pre_close pre_settlement open high low settlement average_price volume amount open_interest open_interest_change inside_volume outside_volume bid1_price bid1_volume ask1_price ask1_volume bid2_price bid2_volume ask2_price ask2_volume bid3_price bid3_volume ask3_price ask3_volume bid4_price bid4_volume ask4_price ask4_volume bid5_price bid5_volume ask5_price ask5_volume">
+  <td><a href="fx_realtime_snapshot_tdx.html">外汇实时快照</a><code>fx_realtime_snapshot_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 外汇数据</td>
+  <td>2</td>
+  <td>39</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="fx_trades_history_tdx 外汇历史逐笔 通达信扩展行情 通达信扩展行情 外汇数据 code trade_date limit all page_size tdx_root instrument_id symbol exchange name trade_date time_label price volume position_change open_close_type">
+  <td><a href="fx_trades_history_tdx.html">外汇历史逐笔</a><code>fx_trades_history_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 外汇数据</td>
+  <td>6</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="fx_trades_today_tdx 外汇当日逐笔 通达信扩展行情 通达信扩展行情 外汇数据 code limit all page_size tdx_root instrument_id symbol exchange name trade_date time_label price volume position_change open_close_type">
+  <td><a href="fx_trades_today_tdx.html">外汇当日逐笔</a><code>fx_trades_today_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 外汇数据</td>
+  <td>5</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="macro_indicator_series_tdx 宏观指标序列 通达信扩展行情 通达信扩展行情 宏观数据 code period limit tdx_root indicator_id symbol name period_date period value open high low unit frequency">
+  <td><a href="macro_indicator_series_tdx.html">宏观指标序列</a><code>macro_indicator_series_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 宏观数据</td>
+  <td>4</td>
+  <td>11</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="macro_indicator_snapshot_tdx 宏观指标快照 通达信扩展行情 通达信扩展行情 宏观数据 code tdx_root indicator_id symbol name indicator_category value period_date pre_value unit frequency">
+  <td><a href="macro_indicator_snapshot_tdx.html">宏观指标快照</a><code>macro_indicator_snapshot_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 宏观数据</td>
+  <td>2</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="macro_indicators_tdx 宏观指标列表 通达信扩展行情 通达信扩展行情 宏观数据 code exchange name limit tdx_root instrument_id symbol asset_type exchange market_name market_group indicator_category unit frequency">
+  <td><a href="macro_indicators_tdx.html">宏观指标列表</a><code>macro_indicators_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 宏观数据</td>
+  <td>5</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="option_chain_tdx 期权t型报价 通达信扩展行情 通达信扩展行情 期权数据 product_code contract_month exchange limit tdx_root product_code product_name exchange contract_month strike_price call_instrument_id call_symbol call_last_price call_volume call_open_interest put_instrument_id put_symbol put_last_price put_volume put_open_interest call_bid1_price call_bid1_volume call_ask1_price call_ask1_volume call_bid2_price call_bid2_volume call_ask2_price call_ask2_volume call_bid3_price call_bid3_volume call_ask3_price call_ask3_volume call_bid4_price call_bid4_volume call_ask4_price call_ask4_volume call_bid5_price call_bid5_volume call_ask5_price call_ask5_volume put_bid1_price put_bid1_volume put_ask1_price put_ask1_volume put_bid2_price put_bid2_volume put_ask2_price put_ask2_volume put_bid3_price put_bid3_volume put_ask3_price put_ask3_volume put_bid4_price put_bid4_volume put_ask4_price put_ask4_volume put_bid5_price put_bid5_volume put_ask5_price put_ask5_volume">
+  <td><a href="option_chain_tdx.html">期权T型报价</a><code>option_chain_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 期权数据</td>
+  <td>5</td>
+  <td>55</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="option_contracts_tdx 期权合约列表 通达信扩展行情 通达信扩展行情 期权数据 code exchange name limit tdx_root instrument_id symbol asset_type exchange market_name market_group product_code product_name contract_month option_type strike_price">
+  <td><a href="option_contracts_tdx.html">期权合约列表</a><code>option_contracts_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 期权数据</td>
+  <td>5</td>
+  <td>11</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="option_intraday_history_tdx 期权历史分时 通达信扩展行情 通达信扩展行情 期权数据 code trade_date tdx_root instrument_id symbol exchange name trade_date time_label price average_price volume">
+  <td><a href="option_intraday_history_tdx.html">期权历史分时</a><code>option_intraday_history_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 期权数据</td>
+  <td>3</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="option_intraday_today_tdx 期权当日分时 通达信扩展行情 通达信扩展行情 期权数据 code tdx_root instrument_id symbol exchange name trade_date time_label price average_price volume">
+  <td><a href="option_intraday_today_tdx.html">期权当日分时</a><code>option_intraday_today_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 期权数据</td>
+  <td>2</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="option_kline_tdx 期权k线 通达信扩展行情 通达信扩展行情 期权数据 code period limit tdx_root instrument_id symbol exchange name trade_time period open high low close volume open_interest settlement">
+  <td><a href="option_kline_tdx.html">期权K线</a><code>option_kline_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 期权数据</td>
+  <td>4</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="option_realtime_snapshot_tdx 期权实时快照 通达信扩展行情 通达信扩展行情 期权数据 code tdx_root instrument_id symbol exchange name trade_date last_price pre_close pre_settlement open high low settlement average_price volume amount open_interest open_interest_change inside_volume outside_volume bid1_price bid1_volume ask1_price ask1_volume bid2_price bid2_volume ask2_price ask2_volume bid3_price bid3_volume ask3_price ask3_volume bid4_price bid4_volume ask4_price ask4_volume bid5_price bid5_volume ask5_price ask5_volume">
+  <td><a href="option_realtime_snapshot_tdx.html">期权实时快照</a><code>option_realtime_snapshot_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 期权数据</td>
+  <td>2</td>
+  <td>39</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="futures_contracts_tdx 期货合约列表 通达信扩展行情 通达信扩展行情 期货数据 code exchange name limit tdx_root instrument_id symbol asset_type exchange market_name market_group product_code product_name contract_month contract_type">
+  <td><a href="futures_contracts_tdx.html">期货合约列表</a><code>futures_contracts_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 期货数据</td>
+  <td>5</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="futures_intraday_history_tdx 期货历史分时 通达信扩展行情 通达信扩展行情 期货数据 code trade_date tdx_root instrument_id symbol exchange name trade_date time_label price average_price volume">
+  <td><a href="futures_intraday_history_tdx.html">期货历史分时</a><code>futures_intraday_history_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 期货数据</td>
+  <td>3</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="futures_intraday_today_tdx 期货当日分时 通达信扩展行情 通达信扩展行情 期货数据 code tdx_root instrument_id symbol exchange name trade_date time_label price average_price volume">
+  <td><a href="futures_intraday_today_tdx.html">期货当日分时</a><code>futures_intraday_today_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 期货数据</td>
+  <td>2</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="futures_kline_tdx 期货k线 通达信扩展行情 通达信扩展行情 期货数据 code period limit tdx_root instrument_id symbol exchange name trade_time period open high low close volume open_interest settlement">
+  <td><a href="futures_kline_tdx.html">期货K线</a><code>futures_kline_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 期货数据</td>
+  <td>4</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="futures_realtime_snapshot_tdx 期货实时快照 通达信扩展行情 通达信扩展行情 期货数据 code tdx_root instrument_id symbol exchange name trade_date last_price pre_close pre_settlement open high low settlement average_price volume amount open_interest open_interest_change inside_volume outside_volume bid1_price bid1_volume ask1_price ask1_volume bid2_price bid2_volume ask2_price ask2_volume bid3_price bid3_volume ask3_price ask3_volume bid4_price bid4_volume ask4_price ask4_volume bid5_price bid5_volume ask5_price ask5_volume">
+  <td><a href="futures_realtime_snapshot_tdx.html">期货实时快照</a><code>futures_realtime_snapshot_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 期货数据</td>
+  <td>2</td>
+  <td>39</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="futures_trades_history_tdx 期货历史逐笔 通达信扩展行情 通达信扩展行情 期货数据 code trade_date limit all page_size tdx_root instrument_id symbol exchange name trade_date time_label price volume position_change open_close_type">
+  <td><a href="futures_trades_history_tdx.html">期货历史逐笔</a><code>futures_trades_history_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 期货数据</td>
+  <td>6</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="通达信扩展行情" data-text="futures_trades_today_tdx 期货当日逐笔 通达信扩展行情 通达信扩展行情 期货数据 code limit all page_size tdx_root instrument_id symbol exchange name trade_date time_label price volume position_change open_close_type">
+  <td><a href="futures_trades_today_tdx.html">期货当日逐笔</a><code>futures_trades_today_tdx</code></td>
+  <td>通达信扩展行情</td>
+  <td>通达信扩展行情 / 期货数据</td>
+  <td>5</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="交易所" data-text="stock_basic_info_exchange 股票基础信息 交易所 交易所 基础数据 exchange code name instrument_id symbol exchange asset_type name security_full_name market_code market industry_code industry region_code region company_code company_short_name company_full_name company_short_name_en company_full_name_en listing_status list_date delist_date total_share float_share is_profit is_vie has_weighted_voting_rights sponsor share_report_date">
+  <td><a href="stock_basic_info_exchange.html">股票基础信息</a><code>stock_basic_info_exchange</code></td>
+  <td>交易所</td>
+  <td>交易所 / 基础数据</td>
+  <td>3</td>
+  <td>27</td>
+</tr>
+
+<tr data-source="交易所" data-text="stock_historical_list_exchange 历史股票列表 交易所 交易所 基础数据 trade_date start_date end_date exchange trade_date instrument_id symbol exchange name market list_date delist_date listing_status">
+  <td><a href="stock_historical_list_exchange.html">历史股票列表</a><code>stock_historical_list_exchange</code></td>
+  <td>交易所</td>
+  <td>交易所 / 基础数据</td>
+  <td>4</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="交易所" data-text="stock_trade_calendar_exchange 交易日历 交易所 交易所 基础数据 year start_date end_date cal_date is_open pretrade_date next_trade_date">
+  <td><a href="stock_trade_calendar_exchange.html">交易日历</a><code>stock_trade_calendar_exchange</code></td>
+  <td>交易所</td>
+  <td>交易所 / 基础数据</td>
+  <td>3</td>
+  <td>4</td>
+</tr>
+
+<tr data-source="东方财富" data-text="eastmoney_stock_realtime_snapshot a股实时行情快照 东方财富 东方财富 实时数据 code filter_st page limit instrument_id symbol exchange name last_price change_pct change volume amount amplitude turnover_rate pe_ttm volume_ratio high low open pre_close total_market_value float_market_value pb">
+  <td><a href="eastmoney_stock_realtime_snapshot.html">A股实时行情快照</a><code>eastmoney_stock_realtime_snapshot</code></td>
+  <td>东方财富</td>
+  <td>东方财富 / 实时数据</td>
+  <td>4</td>
+  <td>20</td>
+</tr>
+
+<tr data-source="东方财富" data-text="eastmoney_market_index_realtime 大盘指数实时行情 东方财富 东方财富 指数数据 scope limit index_code index_name last_price change_pct change volume amount high low open pre_close">
+  <td><a href="eastmoney_market_index_realtime.html">大盘指数实时行情</a><code>eastmoney_market_index_realtime</code></td>
+  <td>东方财富</td>
+  <td>东方财富 / 指数数据</td>
+  <td>2</td>
+  <td>11</td>
+</tr>
+
+<tr data-source="东方财富" data-text="eastmoney_sector_constituents 板块成分股 东方财富 东方财富 板块数据 sector_code page limit instrument_id symbol exchange name last_price change_pct change volume amount amplitude turnover_rate pe_ttm volume_ratio high low open pre_close total_market_value float_market_value pb">
+  <td><a href="eastmoney_sector_constituents.html">板块成分股</a><code>eastmoney_sector_constituents</code></td>
+  <td>东方财富</td>
+  <td>东方财富 / 板块数据</td>
+  <td>3</td>
+  <td>20</td>
+</tr>
+
+<tr data-source="东方财富" data-text="eastmoney_sector_realtime 板块实时行情 东方财富 东方财富 板块数据 sector_type page limit sector_code sector_name sector_type last_price change_pct change volume amount amplitude turnover_rate total_market_value main_inflow lead_stock_name lead_stock_symbol lead_stock_change_pct up_count down_count">
+  <td><a href="eastmoney_sector_realtime.html">板块实时行情</a><code>eastmoney_sector_realtime</code></td>
+  <td>东方财富</td>
+  <td>东方财富 / 板块数据</td>
+  <td>3</td>
+  <td>17</td>
+</tr>
+
+<tr data-source="东方财富" data-text="eastmoney_stock_sector_belong 个股所属板块 东方财富 东方财富 板块数据 code instrument_id symbol exchange name sector_name">
+  <td><a href="eastmoney_stock_sector_belong.html">个股所属板块</a><code>eastmoney_stock_sector_belong</code></td>
+  <td>东方财富</td>
+  <td>东方财富 / 板块数据</td>
+  <td>1</td>
+  <td>5</td>
+</tr>
+
+<tr data-source="东方财富" data-text="eastmoney_limit_down_pool 跌停池 东方财富 东方财富 短线数据 trade_date trade_date instrument_id symbol exchange name market_code last_price limit_price change_pct amount float_market_value turnover_rate first_limit_time last_limit_time continuous_count open_times main_inflow sector">
+  <td><a href="eastmoney_limit_down_pool.html">跌停池</a><code>eastmoney_limit_down_pool</code></td>
+  <td>东方财富</td>
+  <td>东方财富 / 短线数据</td>
+  <td>1</td>
+  <td>18</td>
+</tr>
+
+<tr data-source="东方财富" data-text="eastmoney_limit_up_pool 涨停池 东方财富 东方财富 短线数据 trade_date trade_date instrument_id symbol exchange name market_code last_price limit_price change_pct amount float_market_value turnover_rate first_limit_time last_limit_time continuous_count open_times main_inflow sector">
+  <td><a href="eastmoney_limit_up_pool.html">涨停池</a><code>eastmoney_limit_up_pool</code></td>
+  <td>东方财富</td>
+  <td>东方财富 / 短线数据</td>
+  <td>1</td>
+  <td>18</td>
+</tr>
+
+<tr data-source="东方财富" data-text="eastmoney_stock_change_detail 个股盘口异动明细 东方财富 东方财富 短线数据 code market trade_date trade_date instrument_id symbol exchange name market_code change_time change_type change_type_name price change_pct volume">
+  <td><a href="eastmoney_stock_change_detail.html">个股盘口异动明细</a><code>eastmoney_stock_change_detail</code></td>
+  <td>东方财富</td>
+  <td>东方财富 / 短线数据</td>
+  <td>3</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="东方财富" data-text="eastmoney_stock_changes 盘口异动列表 东方财富 东方财富 短线数据 change_type filter_st instrument_id symbol exchange name market_code change_time change_pct change_type change_type_name">
+  <td><a href="eastmoney_stock_changes.html">盘口异动列表</a><code>eastmoney_stock_changes</code></td>
+  <td>东方财富</td>
+  <td>东方财富 / 短线数据</td>
+  <td>2</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="东方财富" data-text="eastmoney_yesterday_limit_up_pool 昨日涨停今日表现 东方财富 东方财富 短线数据 trade_date trade_date instrument_id symbol exchange name market_code last_price limit_price change_pct amount float_market_value turnover_rate first_limit_time last_limit_time continuous_count open_times main_inflow sector amplitude open_ratio yesterday_limit_time yesterday_continuous_count">
+  <td><a href="eastmoney_yesterday_limit_up_pool.html">昨日涨停今日表现</a><code>eastmoney_yesterday_limit_up_pool</code></td>
+  <td>东方财富</td>
+  <td>东方财富 / 短线数据</td>
+  <td>1</td>
+  <td>22</td>
+</tr>
+
+<tr data-source="东方财富" data-text="eastmoney_research_reports 个股研报列表 东方财富 东方财富 研报数据 code start_date end_date page limit report_id instrument_id symbol exchange name title publish_date org_name rating rating_change researcher eps_forecast_this_year pe_forecast_this_year file_size_kb page_count">
+  <td><a href="eastmoney_research_reports.html">个股研报列表</a><code>eastmoney_research_reports</code></td>
+  <td>东方财富</td>
+  <td>东方财富 / 研报数据</td>
+  <td>5</td>
+  <td>15</td>
+</tr>
+
+<tr data-source="东方财富" data-text="eastmoney_margin_trading 融资融券明细 东方财富 东方财富 融资融券数据 code start_date end_date page limit trade_date instrument_id symbol exchange name market close_price change_pct margin_balance margin_buy_amount margin_repay_amount margin_net_buy_amount short_balance short_sell_volume short_repay_volume short_net_sell_volume total_balance market_value">
+  <td><a href="eastmoney_margin_trading.html">融资融券明细</a><code>eastmoney_margin_trading</code></td>
+  <td>东方财富</td>
+  <td>东方财富 / 融资融券数据</td>
+  <td>5</td>
+  <td>18</td>
+</tr>
+
+<tr data-source="东方财富" data-text="eastmoney_dragon_tiger_daily 龙虎榜每日汇总 东方财富 东方财富 龙虎榜数据 trade_date page limit trade_date instrument_id symbol exchange name reason close_price change_pct turnover_rate buy_amount sell_amount net_buy_amount total_amount market">
+  <td><a href="eastmoney_dragon_tiger_daily.html">龙虎榜每日汇总</a><code>eastmoney_dragon_tiger_daily</code></td>
+  <td>东方财富</td>
+  <td>东方财富 / 龙虎榜数据</td>
+  <td>3</td>
+  <td>14</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_irm_ans_cninfo 互动易回答详情 巨潮 巨潮 互动易 question_id instrument_id symbol exchange name question_id question answer questioner question_time answer_time">
+  <td><a href="stock_irm_ans_cninfo.html">互动易回答详情</a><code>stock_irm_ans_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 互动易</td>
+  <td>1</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_irm_cninfo 互动易提问 巨潮 巨潮 互动易 code page limit start_date end_date keyword instrument_id symbol exchange name industry industry_code question_id question questioner questioner_id source question_time update_time answer_id answer answerer">
+  <td><a href="stock_irm_cninfo.html">互动易提问</a><code>stock_irm_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 互动易</td>
+  <td>6</td>
+  <td>16</td>
+</tr>
+
+<tr data-source="巨潮" data-text="bond_corporate_issue_cninfo 企业债发行 巨潮 巨潮 债券报表 start_date end_date limit bond_code bond_short_name announcement_date online_issue_start_date online_issue_end_date planned_issue_amount actual_issue_amount par_value issue_price issue_method issue_target issue_scope underwriting_method min_subscription_unit fundraising_use min_subscription_amount bond_name">
+  <td><a href="bond_corporate_issue_cninfo.html">企业债发行</a><code>bond_corporate_issue_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 债券报表</td>
+  <td>3</td>
+  <td>17</td>
+</tr>
+
+<tr data-source="巨潮" data-text="bond_cov_issue_cninfo 可转债发行 巨潮 巨潮 债券报表 start_date end_date limit bond_code bond_short_name announcement_date issue_start_date issue_end_date planned_issue_amount actual_issue_amount par_value issue_price issue_method issue_target issue_scope underwriting_method fundraising_use initial_conversion_price conversion_start_date conversion_end_date online_subscription_date online_subscription_code online_subscription_short_name online_subscription_max online_subscription_min online_subscription_unit online_lottery_result_refund_date priority_subscription_date allotment_price bondholder_record_date priority_subscription_payment_date conversion_code trading_market bond_name">
+  <td><a href="bond_cov_issue_cninfo.html">可转债发行</a><code>bond_cov_issue_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 债券报表</td>
+  <td>3</td>
+  <td>31</td>
+</tr>
+
+<tr data-source="巨潮" data-text="bond_cov_stock_issue_cninfo 可转债转股 巨潮 巨潮 债券报表 limit bond_code bond_short_name announcement_date conversion_code conversion_short_name conversion_price voluntary_conversion_start_date voluntary_conversion_end_date underlying_stock bond_name">
+  <td><a href="bond_cov_stock_issue_cninfo.html">可转债转股</a><code>bond_cov_stock_issue_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 债券报表</td>
+  <td>1</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="巨潮" data-text="bond_local_government_issue_cninfo 地方债发行 巨潮 巨潮 债券报表 start_date end_date limit bond_code bond_short_name issue_start_date issue_end_date planned_issue_amount actual_issue_amount issue_price par_value payment_date additional_issue_count trading_market issue_method issue_target announcement_date bond_name">
+  <td><a href="bond_local_government_issue_cninfo.html">地方债发行</a><code>bond_local_government_issue_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 债券报表</td>
+  <td>3</td>
+  <td>15</td>
+</tr>
+
+<tr data-source="巨潮" data-text="bond_treasure_issue_cninfo 国债发行 巨潮 巨潮 债券报表 start_date end_date limit bond_code bond_short_name issue_start_date issue_end_date planned_issue_amount actual_issue_amount issue_price par_value payment_date additional_issue_count trading_market issue_method issue_target announcement_date bond_name">
+  <td><a href="bond_treasure_issue_cninfo.html">国债发行</a><code>bond_treasure_issue_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 债券报表</td>
+  <td>3</td>
+  <td>15</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_cg_equity_mortgage_cninfo 股权质押 巨潮 巨潮 公司治理 date limit instrument_id symbol exchange stat_date name announcement_date pledgor pledgee pledged_shares pledged_total_share_pct released_pledge_shares pledge_event cumulative_pledge_total_share_pct">
+  <td><a href="stock_cg_equity_mortgage_cninfo.html">股权质押</a><code>stock_cg_equity_mortgage_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 公司治理</td>
+  <td>2</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_cg_guarantee_cninfo 对外担保 巨潮 巨潮 公司治理 market start_date end_date limit instrument_id symbol exchange name announcement_period guarantee_count guarantee_amount parent_equity guarantee_amount_net_asset_pct">
+  <td><a href="stock_cg_guarantee_cninfo.html">对外担保</a><code>stock_cg_guarantee_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 公司治理</td>
+  <td>4</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_cg_lawsuit_cninfo 公司诉讼 巨潮 巨潮 公司治理 market start_date end_date limit instrument_id symbol exchange name announcement_period lawsuit_count lawsuit_amount">
+  <td><a href="stock_cg_lawsuit_cninfo.html">公司诉讼</a><code>stock_cg_lawsuit_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 公司治理</td>
+  <td>4</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_profile_cninfo 公司概况 巨潮 巨潮 公司资料 code instrument_id symbol exchange company_name english_name former_short_name a_share_code a_share_name b_share_code b_share_name h_share_code h_share_name selected_indexes market industry legal_representative registered_capital founded_date listing_date website email phone fax registered_address office_address postcode main_business business_scope organization_profile">
+  <td><a href="stock_profile_cninfo.html">公司概况</a><code>stock_profile_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 公司资料</td>
+  <td>1</td>
+  <td>29</td>
+</tr>
+
+<tr data-source="巨潮" data-text="cninfo_announcement_detail 公告pdf元信息 巨潮 巨潮 公告数据 announcement_id url title announcement_id title content_type file_size_bytes download_url">
+  <td><a href="cninfo_announcement_detail.html">公告PDF元信息</a><code>cninfo_announcement_detail</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 公告数据</td>
+  <td>3</td>
+  <td>5</td>
+</tr>
+
+<tr data-source="巨潮" data-text="cninfo_announcements 公告列表 巨潮 巨潮 公告数据 code start_date end_date page limit instrument_id symbol exchange name announcement_id title publish_date file_type file_size_kb download_url">
+  <td><a href="cninfo_announcements.html">公告列表</a><code>cninfo_announcements</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 公告数据</td>
+  <td>5</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_zh_a_disclosure_relation_cninfo 预约披露调研公告 巨潮 巨潮 公告数据 code market start_date end_date page limit instrument_id symbol exchange name announcement_id title publish_date file_type file_size_kb download_url">
+  <td><a href="stock_zh_a_disclosure_relation_cninfo.html">预约披露调研公告</a><code>stock_zh_a_disclosure_relation_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 公告数据</td>
+  <td>6</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_zh_a_disclosure_report_cninfo 信息披露公告 巨潮 巨潮 公告数据 code market keyword category start_date end_date page limit instrument_id symbol exchange name announcement_id title publish_date file_type file_size_kb download_url">
+  <td><a href="stock_zh_a_disclosure_report_cninfo.html">信息披露公告</a><code>stock_zh_a_disclosure_report_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 公告数据</td>
+  <td>8</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_dividend_cninfo 历史分红 巨潮 巨潮 分红融资 code instrument_id symbol exchange announcement_date dividend_type bonus_share_ratio transfer_share_ratio cash_dividend_ratio record_date ex_right_date dividend_payment_date share_arrival_date plan_description report_period">
+  <td><a href="stock_dividend_cninfo.html">历史分红</a><code>stock_dividend_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 分红融资</td>
+  <td>1</td>
+  <td>14</td>
+</tr>
+
+<tr data-source="巨潮" data-text="fund_report_asset_allocation_cninfo 基金资产配置 巨潮 巨潮 基金报表  report_date fund_count equity_asset_pct bond_asset_pct cash_asset_pct fund_market_net_assets">
+  <td><a href="fund_report_asset_allocation_cninfo.html">基金资产配置</a><code>fund_report_asset_allocation_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 基金报表</td>
+  <td>0</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="巨潮" data-text="fund_report_industry_allocation_cninfo 基金行业配置 巨潮 巨潮 基金报表 date limit industry_code industry_name report_date fund_count industry_scale net_asset_pct">
+  <td><a href="fund_report_industry_allocation_cninfo.html">基金行业配置</a><code>fund_report_industry_allocation_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 基金报表</td>
+  <td>2</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="巨潮" data-text="fund_report_stock_cninfo 基金重仓股 巨潮 巨潮 基金报表 date limit instrument_id symbol exchange record_id name report_date fund_count holding_shares holding_market_value">
+  <td><a href="fund_report_stock_cninfo.html">基金重仓股</a><code>fund_report_stock_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 基金报表</td>
+  <td>2</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_ipo_summary_cninfo 上市相关 巨潮 巨潮 新股数据 code instrument_id symbol exchange prospectus_announcement_date lottery_rate_announcement_date par_value total_issue_shares nav_per_share_before_issue diluted_pe raised_funds_net online_issue_date listing_date issue_price issue_expenses_total nav_per_share_after_issue online_lottery_rate lead_underwriter">
+  <td><a href="stock_ipo_summary_cninfo.html">上市相关</a><code>stock_ipo_summary_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 新股数据</td>
+  <td>1</td>
+  <td>17</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_new_gh_cninfo 新股过会 巨潮 巨潮 新股数据 limit company_name meeting_date review_type review_content review_result announcement_date">
+  <td><a href="stock_new_gh_cninfo.html">新股过会</a><code>stock_new_gh_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 新股数据</td>
+  <td>1</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_new_ipo_cninfo 新股发行 巨潮 巨潮 新股数据 time_type market limit instrument_id symbol exchange name listing_date subscription_date issue_price total_issue_shares issue_pe online_lottery_rate lottery_result_announcement_date winning_announcement_date payment_date online_subscription_limit online_issue_shares">
+  <td><a href="stock_new_ipo_cninfo.html">新股发行</a><code>stock_new_ipo_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 新股数据</td>
+  <td>3</td>
+  <td>15</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_allotment_cninfo 配股实施方案 巨潮 巨潮 股本股东 code start_date end_date instrument_id symbol exchange record_id name suspend_start_date listing_announcement_date payment_start_date convertible_allotment_shares suspend_end_date actual_allotment_shares allotment_price allotment_ratio pre_total_share transfer_fee_per_share legal_person_actual_shares raised_funds_net major_shareholder_subscribe_method other_allotment_name issue_method failed_refund_date ex_right_date expected_issue_expense issue_result_announcement_date warrant_trade_end_date other_actual_shares state_actual_shares entrusted_unit public_transfer_shares other_allotment_code allotment_target warrant_trade_start_date fund_arrival_date organization_name record_date raised_funds_gross expected_raised_funds major_shareholder_subscribe_shares public_actual_shares transfer_actual_shares underwriting_fee legal_person_transfer_shares post_float_share stock_class public_allotment_name issue_method_code underwriting_method announcement_date allotment_listing_date payment_end_date underwriting_balance expected_allotment_shares post_total_share employee_actual_shares underwriting_method_code issue_expenses_total pre_float_share stock_class_code public_allotment_code">
+  <td><a href="stock_allotment_cninfo.html">配股实施方案</a><code>stock_allotment_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 股本股东</td>
+  <td>3</td>
+  <td>59</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_hold_change_cninfo 股本变动 巨潮 巨潮 股本股东 market instrument_id symbol exchange trade_market name announcement_date change_date change_reason total_share circulated_share circulated_ratio restricted_share">
+  <td><a href="stock_hold_change_cninfo.html">股本变动</a><code>stock_hold_change_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 股本股东</td>
+  <td>1</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_hold_control_cninfo 实际控制人持股变动 巨潮 巨潮 股本股东 control_type instrument_id symbol exchange name change_date actual_controller_name holding_shares holding_ratio direct_controller_name control_type">
+  <td><a href="stock_hold_control_cninfo.html">实际控制人持股变动</a><code>stock_hold_control_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 股本股东</td>
+  <td>1</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_hold_management_detail_cninfo 高管持股变动明细 巨潮 巨潮 股本股东 change_type start_date end_date limit instrument_id symbol exchange name change_type end_date announcement_date executive_name director_supervisor_senior_name director_supervisor_senior_position changer_relation beginning_holding_shares ending_holding_shares change_shares change_ratio average_price ending_market_value change_reason data_source">
+  <td><a href="stock_hold_management_detail_cninfo.html">高管持股变动明细</a><code>stock_hold_management_detail_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 股本股东</td>
+  <td>4</td>
+  <td>19</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_hold_num_cninfo 股东人数及持股集中度 巨潮 巨潮 股本股东 date instrument_id symbol exchange report_date name change_date shareholder_count prev_shareholder_count shareholder_count_change_pct avg_holding prev_avg_holding avg_holding_change_pct">
+  <td><a href="stock_hold_num_cninfo.html">股东人数及持股集中度</a><code>stock_hold_num_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 股本股东</td>
+  <td>1</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_share_change_cninfo 公司股本变动 巨潮 巨潮 股本股东 code start_date end_date instrument_id symbol exchange name organization_name announcement_date change_date change_reason_code change_reason total_share non_circulating_share promoter_share state_share state_owned_legal_person_share domestic_legal_person_share foreign_legal_person_share natural_person_share raised_legal_person_share employee_share transferred_share other_restricted_share preferred_share other_non_circulating_share circulating_share a_share b_share h_share executive_share other_circulating_share restricted_share allocated_legal_person_share strategic_investor_share securities_investment_fund_share general_legal_person_share state_restricted_share state_owned_legal_person_restricted_share other_domestic_restricted_share domestic_legal_person_restricted_share domestic_natural_person_restricted_share foreign_restricted_share foreign_legal_person_restricted_share foreign_natural_person_restricted_share restricted_executive_share restricted_b_share restricted_h_share controlling_shareholder_actual_controller_share">
+  <td><a href="stock_share_change_cninfo.html">公司股本变动</a><code>stock_share_change_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 股本股东</td>
+  <td>3</td>
+  <td>46</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_industry_category_cninfo 行业分类数据 巨潮 巨潮 行业数据 industry_type parent_code category_code category_name category_name_en end_date industry_type_code industry_type level">
+  <td><a href="stock_industry_category_cninfo.html">行业分类数据</a><code>stock_industry_category_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 行业数据</td>
+  <td>1</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_industry_change_cninfo 行业归属变动 巨潮 巨潮 行业数据 code start_date end_date limit instrument_id symbol exchange name organization_name change_date classification_standard_code classification_standard industry_code industry_sector industry_subcategory industry_major industry_middle latest_record_flag">
+  <td><a href="stock_industry_change_cninfo.html">行业归属变动</a><code>stock_industry_change_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 行业数据</td>
+  <td>4</td>
+  <td>14</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_industry_pe_ratio_cninfo 行业市盈率 巨潮 巨潮 行业数据 classification date limit change_date classification industry_level industry_code industry_name company_count included_company_count total_market_value_static net_profit_static static_pe_weighted static_pe_median static_pe_mean">
+  <td><a href="stock_industry_pe_ratio_cninfo.html">行业市盈率</a><code>stock_industry_pe_ratio_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 行业数据</td>
+  <td>3</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="巨潮" data-text="stock_rank_forecast_cninfo 投资评级 巨潮 巨潮 评级预测 date limit instrument_id symbol exchange name publish_date institution_short_name analyst_name rating is_first_rating rating_change previous_rating target_price_low target_price_high">
+  <td><a href="stock_rank_forecast_cninfo.html">投资评级</a><code>stock_rank_forecast_cninfo</code></td>
+  <td>巨潮</td>
+  <td>巨潮 / 评级预测</td>
+  <td>2</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="腾讯财经" data-text="get_tx_start_year 腾讯历史起始日期 腾讯财经 腾讯财经 历史行情 code instrument_id symbol exchange asset_type start_date source_value">
+  <td><a href="get_tx_start_year.html">腾讯历史起始日期</a><code>get_tx_start_year</code></td>
+  <td>腾讯财经</td>
+  <td>腾讯财经 / 历史行情</td>
+  <td>1</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="腾讯财经" data-text="stock_zh_a_hist_tx a股历史日线 腾讯财经 腾讯财经 历史行情 code start_date end_date adjust limit instrument_id symbol exchange asset_type trade_date adjust open close high low volume amount">
+  <td><a href="stock_zh_a_hist_tx.html">A股历史日线</a><code>stock_zh_a_hist_tx</code></td>
+  <td>腾讯财经</td>
+  <td>腾讯财经 / 历史行情</td>
+  <td>5</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="腾讯财经" data-text="stock_zh_index_daily_tx 指数历史日线 腾讯财经 腾讯财经 指数数据 code start_date end_date adjust limit instrument_id symbol exchange asset_type trade_date adjust open close high low volume amount">
+  <td><a href="stock_zh_index_daily_tx.html">指数历史日线</a><code>stock_zh_index_daily_tx</code></td>
+  <td>腾讯财经</td>
+  <td>腾讯财经 / 指数数据</td>
+  <td>5</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="腾讯财经" data-text="stock_zh_a_spot_tx a股实时行情列表 腾讯财经 腾讯财经 行情数据 sort_type direction offset limit instrument_id symbol exchange asset_type name last_price change change_pct amplitude volume amount turnover_rate pe_ttm total_market_value float_market_value quote_state">
+  <td><a href="stock_zh_a_spot_tx.html">A股实时行情列表</a><code>stock_zh_a_spot_tx</code></td>
+  <td>腾讯财经</td>
+  <td>腾讯财经 / 行情数据</td>
+  <td>4</td>
+  <td>16</td>
+</tr>
+
+<tr data-source="腾讯财经" data-text="tencent_realtime_snapshot 实时快照 腾讯财经 腾讯财经 行情数据 code instrument_id symbol exchange asset_type name quote_time last_price pre_close open high low change change_pct volume amount turnover_rate pe_dynamic pb total_market_value float_market_value limit_up_price limit_down_price currency">
+  <td><a href="tencent_realtime_snapshot.html">实时快照</a><code>tencent_realtime_snapshot</code></td>
+  <td>腾讯财经</td>
+  <td>腾讯财经 / 行情数据</td>
+  <td>1</td>
+  <td>23</td>
+</tr>
+
+<tr data-source="腾讯财经" data-text="stock_zh_a_tick_tx_js a股逐笔成交 腾讯财经 腾讯财经 逐笔数据 code page limit instrument_id symbol exchange sequence trade_time price change volume amount trade_side">
+  <td><a href="stock_zh_a_tick_tx_js.html">A股逐笔成交</a><code>stock_zh_a_tick_tx_js</code></td>
+  <td>腾讯财经</td>
+  <td>腾讯财经 / 逐笔数据</td>
+  <td>3</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_esg_hz_sina 新浪华证 esg 评分 新浪财经 新浪财经 esg page limit date symbol market name esg_score esg_grade env_score env_grade social_score social_grade governance_score governance_grade">
+  <td><a href="stock_esg_hz_sina.html">新浪华证 ESG 评分</a><code>stock_esg_hz_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / ESG</td>
+  <td>2</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_esg_msci_sina 新浪 msci esg 评分 新浪财经 新浪财经 esg page limit symbol name market industry_code industry_name esg_rating env_score social_score governance_score rating_date updated_time">
+  <td><a href="stock_esg_msci_sina.html">新浪 MSCI ESG 评分</a><code>stock_esg_msci_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / ESG</td>
+  <td>2</td>
+  <td>11</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_esg_rate_sina 新浪 esg 评级数据 新浪财经 新浪财经 esg page limit symbol market agency_name rating rating_period remark">
+  <td><a href="stock_esg_rate_sina.html">新浪 ESG 评级数据</a><code>stock_esg_rate_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / ESG</td>
+  <td>2</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_esg_rft_sina 新浪路孚特 esg 评分 新浪财经 新浪财经 esg page limit symbol esg_score esg_score_date env_score env_score_date social_score social_score_date governance_score governance_score_date controversy_score controversy_score_date industry exchange">
+  <td><a href="stock_esg_rft_sina.html">新浪路孚特 ESG 评分</a><code>stock_esg_rft_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / ESG</td>
+  <td>2</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_esg_zd_sina 新浪秩鼎 esg 评分 新浪财经 新浪财经 esg page limit symbol esg_score env_score social_score governance_score report_date">
+  <td><a href="stock_esg_zd_sina.html">新浪秩鼎 ESG 评分</a><code>stock_esg_zd_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / ESG</td>
+  <td>2</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="tool_trade_date_hist_sina 新浪交易日历 新浪财经 新浪财经 交易日历 start_date end_date limit trade_date exchange is_open source_calendar">
+  <td><a href="tool_trade_date_hist_sina.html">新浪交易日历</a><code>tool_trade_date_hist_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 交易日历</td>
+  <td>3</td>
+  <td>4</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="bond_gb_us_sina 新浪美国国债收益率 新浪财经 新浪财经 债券收益率 symbol start_date end_date limit source_symbol symbol_name country tenor trade_date open_yield high_yield low_yield close_yield volume">
+  <td><a href="bond_gb_us_sina.html">新浪美国国债收益率</a><code>bond_gb_us_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 债券收益率</td>
+  <td>4</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="bond_gb_zh_sina 新浪中国国债收益率 新浪财经 新浪财经 债券收益率 symbol start_date end_date limit source_symbol symbol_name country tenor trade_date open_yield high_yield low_yield close_yield volume">
+  <td><a href="bond_gb_zh_sina.html">新浪中国国债收益率</a><code>bond_gb_zh_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 债券收益率</td>
+  <td>4</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_restricted_release_queue_sina 新浪限售解禁批次 新浪财经 新浪财经 发行分配 symbol limit instrument_id symbol sina_symbol exchange name release_date release_shares_10k release_market_value_100m_yuan batch_no announcement_date">
+  <td><a href="stock_restricted_release_queue_sina.html">新浪限售解禁批次</a><code>stock_restricted_release_queue_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 发行分配</td>
+  <td>2</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="bond_cb_profile_sina 新浪可转债详情资料 新浪财经 新浪财经 可转债 symbol limit instrument_id symbol sina_symbol exchange sequence item_name item_value">
+  <td><a href="bond_cb_profile_sina.html">新浪可转债详情资料</a><code>bond_cb_profile_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 可转债</td>
+  <td>2</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="bond_cb_summary_sina 新浪可转债债券概况 新浪财经 新浪财经 可转债 symbol limit instrument_id symbol sina_symbol exchange sequence item_name item_value">
+  <td><a href="bond_cb_summary_sina.html">新浪可转债债券概况</a><code>bond_cb_summary_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 可转债</td>
+  <td>2</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="fund_etf_category_sina 基金分类行情 新浪财经 新浪财经 基金行情 category page limit instrument_id fund_code sina_symbol exchange fund_type name latest_price change change_pct bid ask prev_close open high low volume amount">
+  <td><a href="fund_etf_category_sina.html">基金分类行情</a><code>fund_etf_category_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 基金行情</td>
+  <td>3</td>
+  <td>17</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="fund_etf_dividend_sina etf 累计分红 新浪财经 新浪财经 基金行情 symbol start_date end_date limit instrument_id fund_code sina_symbol exchange dividend_date accumulated_dividend">
+  <td><a href="fund_etf_dividend_sina.html">ETF 累计分红</a><code>fund_etf_dividend_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 基金行情</td>
+  <td>4</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="fund_etf_hist_sina 新浪 etf 日行情 新浪财经 新浪财经 基金行情 symbol start_date end_date limit instrument_id fund_code sina_symbol exchange trade_date open high low close volume amount">
+  <td><a href="fund_etf_hist_sina.html">新浪 ETF 日行情</a><code>fund_etf_hist_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 基金行情</td>
+  <td>4</td>
+  <td>11</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="fund_scale_close_sina 新浪封闭式基金规模 新浪财经 新浪财经 基金规模 page limit rank fund_code fund_name fund_category unit_nav total_raised_scale latest_total_share established_date fund_manager nav_date">
+  <td><a href="fund_scale_close_sina.html">新浪封闭式基金规模</a><code>fund_scale_close_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 基金规模</td>
+  <td>2</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="fund_scale_open_sina 新浪开放式基金规模 新浪财经 新浪财经 基金规模 symbol page limit rank fund_code fund_name fund_category unit_nav total_raised_scale latest_total_share established_date fund_manager nav_date">
+  <td><a href="fund_scale_open_sina.html">新浪开放式基金规模</a><code>fund_scale_open_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 基金规模</td>
+  <td>3</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="fund_scale_structured_sina 新浪分级子基金规模 新浪财经 新浪财经 基金规模 page limit rank fund_code fund_name fund_category unit_nav total_raised_scale latest_total_share established_date fund_manager nav_date">
+  <td><a href="fund_scale_structured_sina.html">新浪分级子基金规模</a><code>fund_scale_structured_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 基金规模</td>
+  <td>2</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="currency_boc_sina 新浪中行外汇牌价 新浪财经 新浪财经 外汇 symbol start_date end_date page limit currency_code currency_name quote_date fx_buy_rate cash_buy_rate cash_sell_rate pboc_mid_rate boc_conversion_rate">
+  <td><a href="currency_boc_sina.html">新浪中行外汇牌价</a><code>currency_boc_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 外汇</td>
+  <td>5</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_hk_index_daily_sina 新浪港股指数日行情 新浪财经 新浪财经 指数数据 symbol start_date end_date limit index_code sina_symbol market asset_type trade_date open high low close volume amount">
+  <td><a href="stock_hk_index_daily_sina.html">新浪港股指数日行情</a><code>stock_hk_index_daily_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 指数数据</td>
+  <td>4</td>
+  <td>11</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_hk_index_spot_sina 新浪港股指数实时行情 新浪财经 新浪财经 指数数据 symbols limit sina_symbol index_code market asset_type name latest_price change change_pct prev_close open high low">
+  <td><a href="stock_hk_index_spot_sina.html">新浪港股指数实时行情</a><code>stock_hk_index_spot_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 指数数据</td>
+  <td>2</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_zh_index_spot_sina a 股指数实时行情 新浪财经 新浪财经 指数数据 page limit instrument_id symbol sina_symbol exchange asset_type name latest_price change change_pct bid ask prev_close open high low volume amount tick_time">
+  <td><a href="stock_zh_index_spot_sina.html">A 股指数实时行情</a><code>stock_zh_index_spot_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 指数数据</td>
+  <td>2</td>
+  <td>18</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="index_global_hist_sina 全球指数历史行情 新浪财经 新浪财经 指数行情 symbol start_date end_date limit index_code index_name trade_date open high low close volume">
+  <td><a href="index_global_hist_sina.html">全球指数历史行情</a><code>index_global_hist_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 指数行情</td>
+  <td>4</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="index_stock_cons_sina 指数成份股 新浪财经 新浪财经 指数行情 symbol page limit index_code instrument_id symbol sina_symbol exchange name latest_price change change_pct bid ask prev_close open high low volume amount tick_time pe pb market_cap float_market_cap turnover_ratio">
+  <td><a href="index_stock_cons_sina.html">指数成份股</a><code>index_stock_cons_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 指数行情</td>
+  <td>3</td>
+  <td>23</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="index_us_stock_sina 新浪美股指数日行情 新浪财经 新浪财经 指数行情 symbol start_date end_date limit source_symbol index_name trade_date open high low close volume amount">
+  <td><a href="index_us_stock_sina.html">新浪美股指数日行情</a><code>index_us_stock_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 指数行情</td>
+  <td>4</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_cffex_hs300_daily_sina 新浪中金所沪深300期权日线 新浪财经 新浪财经 期权 symbol start_date end_date limit source_symbol underlying_name option_type exercise_price trade_date open high low close volume">
+  <td><a href="option_cffex_hs300_daily_sina.html">新浪中金所沪深300期权日线</a><code>option_cffex_hs300_daily_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权</td>
+  <td>4</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_cffex_hs300_list_sina 新浪中金所沪深300期权合约列表 新浪财经 新浪财经 期权 limit sequence product_code underlying_name contract_code expire_month is_main exchange">
+  <td><a href="option_cffex_hs300_list_sina.html">新浪中金所沪深300期权合约列表</a><code>option_cffex_hs300_list_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权</td>
+  <td>1</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_cffex_hs300_spot_sina 新浪中金所沪深300期权实时 新浪财经 新浪财经 期权 symbol limit contract_code product_code underlying_name exercise_price call_symbol call_bid_volume call_bid_price call_latest_price call_ask_price call_ask_volume call_open_interest call_change put_symbol put_bid_volume put_bid_price put_latest_price put_ask_price put_ask_volume put_open_interest put_change exchange">
+  <td><a href="option_cffex_hs300_spot_sina.html">新浪中金所沪深300期权实时</a><code>option_cffex_hs300_spot_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权</td>
+  <td>2</td>
+  <td>21</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_cffex_sz50_daily_sina 新浪中金所上证50期权日线 新浪财经 新浪财经 期权 symbol start_date end_date limit source_symbol underlying_name option_type exercise_price trade_date open high low close volume">
+  <td><a href="option_cffex_sz50_daily_sina.html">新浪中金所上证50期权日线</a><code>option_cffex_sz50_daily_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权</td>
+  <td>4</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_cffex_sz50_list_sina 新浪中金所上证50期权合约列表 新浪财经 新浪财经 期权 limit sequence product_code underlying_name contract_code expire_month is_main exchange">
+  <td><a href="option_cffex_sz50_list_sina.html">新浪中金所上证50期权合约列表</a><code>option_cffex_sz50_list_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权</td>
+  <td>1</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_cffex_sz50_spot_sina 新浪中金所上证50期权实时 新浪财经 新浪财经 期权 symbol limit contract_code product_code underlying_name exercise_price call_symbol call_bid_volume call_bid_price call_latest_price call_ask_price call_ask_volume call_open_interest call_change put_symbol put_bid_volume put_bid_price put_latest_price put_ask_price put_ask_volume put_open_interest put_change exchange">
+  <td><a href="option_cffex_sz50_spot_sina.html">新浪中金所上证50期权实时</a><code>option_cffex_sz50_spot_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权</td>
+  <td>2</td>
+  <td>21</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_cffex_zz1000_daily_sina 新浪中金所中证1000期权日线 新浪财经 新浪财经 期权 symbol start_date end_date limit source_symbol underlying_name option_type exercise_price trade_date open high low close volume">
+  <td><a href="option_cffex_zz1000_daily_sina.html">新浪中金所中证1000期权日线</a><code>option_cffex_zz1000_daily_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权</td>
+  <td>4</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_cffex_zz1000_list_sina 新浪中金所中证1000期权合约列表 新浪财经 新浪财经 期权 limit sequence product_code underlying_name contract_code expire_month is_main exchange">
+  <td><a href="option_cffex_zz1000_list_sina.html">新浪中金所中证1000期权合约列表</a><code>option_cffex_zz1000_list_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权</td>
+  <td>1</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_cffex_zz1000_spot_sina 新浪中金所中证1000期权实时 新浪财经 新浪财经 期权 symbol limit contract_code product_code underlying_name exercise_price call_symbol call_bid_volume call_bid_price call_latest_price call_ask_price call_ask_volume call_open_interest call_change put_symbol put_bid_volume put_bid_price put_latest_price put_ask_price put_ask_volume put_open_interest put_change exchange">
+  <td><a href="option_cffex_zz1000_spot_sina.html">新浪中金所中证1000期权实时</a><code>option_cffex_zz1000_spot_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权</td>
+  <td>2</td>
+  <td>21</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_commodity_contract_sina 新浪商品期权品种列表 新浪财经 新浪财经 期权 limit sequence option_name product_code exchange source_path source_url">
+  <td><a href="option_commodity_contract_sina.html">新浪商品期权品种列表</a><code>option_commodity_contract_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权</td>
+  <td>1</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_commodity_contract_table_sina 新浪商品期权合约月份列表 新浪财经 新浪财经 期权 symbol limit sequence option_name product_code exchange contract_code expire_month is_main source_url">
+  <td><a href="option_commodity_contract_table_sina.html">新浪商品期权合约月份列表</a><code>option_commodity_contract_table_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权</td>
+  <td>2</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_commodity_hist_sina 新浪商品期权历史日线 新浪财经 新浪财经 期权 symbol option_name start_date end_date limit source_symbol option_name product_code exchange option_type exercise_price trade_date open high low close volume">
+  <td><a href="option_commodity_hist_sina.html">新浪商品期权历史日线</a><code>option_commodity_hist_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权</td>
+  <td>5</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_finance_minute_sina 新浪金融期权分钟行情 新浪财经 新浪财经 期权行情 symbol limit option_code sina_symbol trade_date trade_time price volume open_interest avg_price">
+  <td><a href="option_finance_minute_sina.html">新浪金融期权分钟行情</a><code>option_finance_minute_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权行情</td>
+  <td>2</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_sse_codes_sina 上交所期权代码发现 新浪财经 新浪财经 期权行情 symbol trade_date underlying limit sequence option_code sina_symbol option_type underlying underlying_name expire_month exchange">
+  <td><a href="option_sse_codes_sina.html">上交所期权代码发现</a><code>option_sse_codes_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权行情</td>
+  <td>4</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_sse_daily_sina 上交所期权日线 新浪财经 新浪财经 期权行情 symbol start_date end_date limit option_code sina_symbol trade_date open high low close volume">
+  <td><a href="option_sse_daily_sina.html">上交所期权日线</a><code>option_sse_daily_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权行情</td>
+  <td>4</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_sse_expire_day_sina 上交所期权到期日 新浪财经 新浪财经 期权行情 symbol trade_date underlying underlying_name expire_month expire_date remainder_days cate_id source_category underlying_source_name underlying_sina_symbol exchange">
+  <td><a href="option_sse_expire_day_sina.html">上交所期权到期日</a><code>option_sse_expire_day_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权行情</td>
+  <td>2</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_sse_greeks_sina 上交所期权 greeks 新浪财经 新浪财经 期权行情 symbol option_code sina_symbol contract_name volume delta gamma theta vega implied_volatility high low trading_code exercise_price latest_price theoretical_value main_contract_flag">
+  <td><a href="option_sse_greeks_sina.html">上交所期权 Greeks</a><code>option_sse_greeks_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权行情</td>
+  <td>1</td>
+  <td>16</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_sse_list_sina 上交所期权到期月份列表 新浪财经 新浪财经 期权行情 symbol limit sequence underlying underlying_name expire_month cate_id exchange">
+  <td><a href="option_sse_list_sina.html">上交所期权到期月份列表</a><code>option_sse_list_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权行情</td>
+  <td>2</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_sse_minute_sina 上交所期权分钟行情 新浪财经 新浪财经 期权行情 symbol limit option_code sina_symbol trade_date trade_time price volume open_interest avg_price">
+  <td><a href="option_sse_minute_sina.html">上交所期权分钟行情</a><code>option_sse_minute_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权行情</td>
+  <td>2</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_sse_spot_price_sina 上交所期权实时行情 新浪财经 新浪财经 期权行情 symbol option_code sina_symbol buy_volume buy_price latest_price sell_price sell_volume open_interest change_pct exercise_price prev_close open limit_up limit_down quote_time quote_status status_code underlying_type underlying contract_name amplitude high low volume amount main_contract_flag option_type expire_date remaining_days">
+  <td><a href="option_sse_spot_price_sina.html">上交所期权实时行情</a><code>option_sse_spot_price_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权行情</td>
+  <td>1</td>
+  <td>29</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="option_sse_underlying_spot_price_sina 上交所期权标的实时行情 新浪财经 新浪财经 期权行情 symbol instrument_id fund_code sina_symbol exchange name open prev_close latest_price high low bid ask volume amount bid_volume_1 bid_price_1 ask_volume_1 ask_price_1 quote_date quote_time halt_status">
+  <td><a href="option_sse_underlying_spot_price_sina.html">上交所期权标的实时行情</a><code>option_sse_underlying_spot_price_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期权行情</td>
+  <td>1</td>
+  <td>21</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="futures_display_main_sina 新浪期货主力连续展示 新浪财经 新浪财经 期货行情 node page limit rank source_node source_symbol exchange name trade_date tick_time last_price open high low close preclose settlement prev_settlement bid_price_1 ask_price_1 bid_volume_1 ask_volume_1 volume open_interest change_pct">
+  <td><a href="futures_display_main_sina.html">新浪期货主力连续展示</a><code>futures_display_main_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期货行情</td>
+  <td>3</td>
+  <td>22</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="futures_hold_pos_sina 新浪期货成交持仓排名 新浪财经 新浪财经 期货行情 symbol contract date limit trade_date contract metric rank member_name value change">
+  <td><a href="futures_hold_pos_sina.html">新浪期货成交持仓排名</a><code>futures_hold_pos_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期货行情</td>
+  <td>4</td>
+  <td>7</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="futures_main_sina 新浪期货主力连续日线 新浪财经 新浪财经 期货行情 symbol start_date end_date limit source_symbol trade_date open high low close volume open_interest settlement">
+  <td><a href="futures_main_sina.html">新浪期货主力连续日线</a><code>futures_main_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期货行情</td>
+  <td>4</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="futures_zh_daily_sina 新浪中国期货日线 新浪财经 新浪财经 期货行情 symbol start_date end_date limit source_symbol trade_date open high low close volume open_interest settlement">
+  <td><a href="futures_zh_daily_sina.html">新浪中国期货日线</a><code>futures_zh_daily_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期货行情</td>
+  <td>4</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="futures_zh_minute_sina 新浪中国期货分钟线 新浪财经 新浪财经 期货行情 symbol period limit source_symbol period datetime trade_date trade_time open high low close volume open_interest">
+  <td><a href="futures_zh_minute_sina.html">新浪中国期货分钟线</a><code>futures_zh_minute_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期货行情</td>
+  <td>3</td>
+  <td>11</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="rv_from_futures_zh_minute_sina 新浪中国期货分钟实现波动 新浪财经 新浪财经 期货行情 symbol period limit source_symbol period start_datetime end_datetime sample_count return_count realized_variance realized_volatility">
+  <td><a href="rv_from_futures_zh_minute_sina.html">新浪中国期货分钟实现波动</a><code>rv_from_futures_zh_minute_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 期货行情</td>
+  <td>3</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_classify_sina 新浪股票分类成份 新浪财经 新浪财经 股票分类 symbol category class_name node page limit category class_name source_node rank instrument_id symbol sina_symbol exchange name latest_price change change_pct bid ask prev_close open high low volume amount tick_time">
+  <td><a href="stock_classify_sina.html">新浪股票分类成份</a><code>stock_classify_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 股票分类</td>
+  <td>6</td>
+  <td>21</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_intraday_sina 新浪 a 股逐笔分时成交 新浪财经 新浪财经 股票行情 symbol date page limit instrument_id symbol sina_symbol exchange trade_date tick_time price volume prev_price trade_type">
+  <td><a href="stock_intraday_sina.html">新浪 A 股逐笔分时成交</a><code>stock_intraday_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 股票行情</td>
+  <td>4</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_financial_report_sina 新浪 json 财务报表 新浪财经 新浪财经 财务报表 stock symbol limit item_limit instrument_id symbol sina_symbol exchange statement_type statement_name report_date date_description date_type item_field item_name item_value item_display_type item_display item_precision item_group_no item_source item_yoy data_source is_audit publish_date currency report_type update_time">
+  <td><a href="stock_financial_report_sina.html">新浪 JSON 财务报表</a><code>stock_financial_report_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 财务报表</td>
+  <td>4</td>
+  <td>24</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_info_global_sina 新浪全球财经快讯 新浪财经 新浪财经 资讯快讯 page page_size limit zhibo_id tag_id feed_id create_time content">
+  <td><a href="stock_info_global_sina.html">新浪全球财经快讯</a><code>stock_info_global_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 资讯快讯</td>
+  <td>5</td>
+  <td>3</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_lhb_detail_daily_sina 龙虎榜每日详情 新浪财经 新浪财经 龙虎榜 date limit trade_date rank instrument_id symbol exchange name close metric_value volume_10k_shares amount_10k_yuan indicator">
+  <td><a href="stock_lhb_detail_daily_sina.html">龙虎榜每日详情</a><code>stock_lhb_detail_daily_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 龙虎榜</td>
+  <td>2</td>
+  <td>11</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_lhb_ggtj_sina 龙虎榜个股上榜统计 新浪财经 新浪财经 龙虎榜 symbol page limit recent_days page rank instrument_id symbol exchange name list_count buy_amount_10k_yuan sell_amount_10k_yuan net_amount_10k_yuan buy_seat_count sell_seat_count">
+  <td><a href="stock_lhb_ggtj_sina.html">龙虎榜个股上榜统计</a><code>stock_lhb_ggtj_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 龙虎榜</td>
+  <td>3</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_lhb_jgmx_sina 龙虎榜机构席位明细 新浪财经 新浪财经 龙虎榜 page limit page rank instrument_id symbol exchange name trade_date institution_buy_amount_10k_yuan institution_sell_amount_10k_yuan trade_type">
+  <td><a href="stock_lhb_jgmx_sina.html">龙虎榜机构席位明细</a><code>stock_lhb_jgmx_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 龙虎榜</td>
+  <td>2</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_lhb_jgzz_sina 龙虎榜机构席位追踪 新浪财经 新浪财经 龙虎榜 symbol page limit recent_days page rank instrument_id symbol exchange name buy_amount_10k_yuan buy_count sell_amount_10k_yuan sell_count net_amount_10k_yuan">
+  <td><a href="stock_lhb_jgzz_sina.html">龙虎榜机构席位追踪</a><code>stock_lhb_jgzz_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 龙虎榜</td>
+  <td>3</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="新浪财经" data-text="stock_lhb_yytj_sina 龙虎榜营业部上榜统计 新浪财经 新浪财经 龙虎榜 symbol page limit recent_days page rank brokerage_name list_count buy_amount_10k_yuan buy_seat_count sell_amount_10k_yuan sell_seat_count top_buy_stocks">
+  <td><a href="stock_lhb_yytj_sina.html">龙虎榜营业部上榜统计</a><code>stock_lhb_yytj_sina</code></td>
+  <td>新浪财经</td>
+  <td>新浪财经 / 龙虎榜</td>
+  <td>3</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="财联社" data-text="cls_stock_timeline 个股分时 财联社 财联社 实时数据 code instrument_id symbol exchange secu_code secu_name trade_date minute last_price amount volume open pre_close avg_price">
+  <td><a href="cls_stock_timeline.html">个股分时</a><code>cls_stock_timeline</code></td>
+  <td>财联社</td>
+  <td>财联社 / 实时数据</td>
+  <td>1</td>
+  <td>13</td>
+</tr>
+
+<tr data-source="财联社" data-text="cls_market_emotion 市场情绪 财联社 财联社 情绪数据  market_degree shsz_balance preview_balance up_ratio up_ratio_num up_open_num performance rise_num fall_num flat_num up_num down_num raw_up_down_dis raw_limit_up_board">
+  <td><a href="cls_market_emotion.html">市场情绪</a><code>cls_market_emotion</code></td>
+  <td>财联社</td>
+  <td>财联社 / 情绪数据</td>
+  <td>0</td>
+  <td>14</td>
+</tr>
+
+<tr data-source="财联社" data-text="cls_sector_heat 板块热度排行 财联社 财联社 板块数据  plate_code plate_name rank cur_heat rank_change is_new">
+  <td><a href="cls_sector_heat.html">板块热度排行</a><code>cls_sector_heat</code></td>
+  <td>财联社</td>
+  <td>财联社 / 板块数据</td>
+  <td>0</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="财联社" data-text="cls_sector_industry 行业板块实时行情 财联社 财联社 板块数据  plate_code plate_name change_pct main_fund_diff rise_count fall_count limit_up_count limit_down_count trade_status raw_first_stock">
+  <td><a href="cls_sector_industry.html">行业板块实时行情</a><code>cls_sector_industry</code></td>
+  <td>财联社</td>
+  <td>财联社 / 板块数据</td>
+  <td>0</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="财联社" data-text="cls_sector_popular_stocks 板块热门股 财联社 财联社 板块数据 plate_code instrument_id symbol exchange secu_code secu_name change_text change change_px board_tag head_rank">
+  <td><a href="cls_sector_popular_stocks.html">板块热门股</a><code>cls_sector_popular_stocks</code></td>
+  <td>财联社</td>
+  <td>财联社 / 板块数据</td>
+  <td>1</td>
+  <td>10</td>
+</tr>
+
+<tr data-source="财联社" data-text="cls_sector_rotation 板块轮动 财联社 财联社 板块数据 days trade_date plate_code plate_name change_pct rank">
+  <td><a href="cls_sector_rotation.html">板块轮动</a><code>cls_sector_rotation</code></td>
+  <td>财联社</td>
+  <td>财联社 / 板块数据</td>
+  <td>1</td>
+  <td>5</td>
+</tr>
+
+<tr data-source="财联社" data-text="cls_limit_up_pool 涨停池含原因 财联社 财联社 短线数据  instrument_id symbol exchange secu_code secu_name last_price change_pct up_reason">
+  <td><a href="cls_limit_up_pool.html">涨停池含原因</a><code>cls_limit_up_pool</code></td>
+  <td>财联社</td>
+  <td>财联社 / 短线数据</td>
+  <td>0</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="财联社" data-text="cls_stock_kline 个股k线 财联社 财联社 行情数据 code kline_type limit offset instrument_id symbol exchange secu_code secu_name trade_date open high low close volume amount change change_pct">
+  <td><a href="cls_stock_kline.html">个股K线</a><code>cls_stock_kline</code></td>
+  <td>财联社</td>
+  <td>财联社 / 行情数据</td>
+  <td>4</td>
+  <td>14</td>
+</tr>
+
+<tr data-source="财联社" data-text="cls_news_telegraph 电报快讯 财联社 财联社 资讯数据 date category limit news_id title content publish_time ctime category">
+  <td><a href="cls_news_telegraph.html">电报快讯</a><code>cls_news_telegraph</code></td>
+  <td>财联社</td>
+  <td>财联社 / 资讯数据</td>
+  <td>3</td>
+  <td>6</td>
+</tr>
+
+<tr data-source="财联社" data-text="cls_market_mainline 今日主线机会 财联社 财联社 题材数据  block_key title summary raw_item">
+  <td><a href="cls_market_mainline.html">今日主线机会</a><code>cls_market_mainline</code></td>
+  <td>财联社</td>
+  <td>财联社 / 题材数据</td>
+  <td>0</td>
+  <td>4</td>
+</tr>
+
+<tr data-source="财联社" data-text="cls_market_wind 今日风口板块 财联社 财联社 题材数据  plate_code plate_name catalyst">
+  <td><a href="cls_market_wind.html">今日风口板块</a><code>cls_market_wind</code></td>
+  <td>财联社</td>
+  <td>财联社 / 题材数据</td>
+  <td>0</td>
+  <td>3</td>
+</tr>
+
+<tr data-source="财联社" data-text="cls_market_wind_stocks 风口板块龙头股 财联社 财联社 题材数据 plate_code instrument_id symbol exchange secu_code secu_name last_price change_pct continuous_count">
+  <td><a href="cls_market_wind_stocks.html">风口板块龙头股</a><code>cls_market_wind_stocks</code></td>
+  <td>财联社</td>
+  <td>财联社 / 题材数据</td>
+  <td>1</td>
+  <td>8</td>
+</tr>
+
+<tr data-source="开盘红" data-text="kph_limit_ladder 涨停天梯 开盘红 开盘红 复盘数据 trade_date trade_date instrument_id symbol exchange name limit_count limit_time plate_id plate_name one_word popular plate_limit_up_count amount plate_amount">
+  <td><a href="kph_limit_ladder.html">涨停天梯</a><code>kph_limit_ladder</code></td>
+  <td>开盘红</td>
+  <td>开盘红 / 复盘数据</td>
+  <td>1</td>
+  <td>14</td>
+</tr>
+
+<tr data-source="开盘红" data-text="kph_limit_resumption_history 历史涨停复盘 开盘红 开盘红 复盘数据 trade_date limit offset trade_date plate_id plate_name instrument_id symbol exchange name limit_tag limit_count themes reason_short reason_detail">
+  <td><a href="kph_limit_resumption_history.html">历史涨停复盘</a><code>kph_limit_resumption_history</code></td>
+  <td>开盘红</td>
+  <td>开盘红 / 复盘数据</td>
+  <td>3</td>
+  <td>12</td>
+</tr>
+
+<tr data-source="开盘红" data-text="kph_market_review_events 盘面梳理事件 开盘红 开盘红 复盘数据 trade_date limit offset trade_date event_time tag_id tag_name tag_attribute plate_id plate_name detail raw_stock_list">
+  <td><a href="kph_market_review_events.html">盘面梳理事件</a><code>kph_market_review_events</code></td>
+  <td>开盘红</td>
+  <td>开盘红 / 复盘数据</td>
+  <td>3</td>
+  <td>9</td>
+</tr>
+
+<tr data-source="开盘红" data-text="kph_market_emotion 市场情绪 开盘红 开盘红 情绪数据 trade_date trade_date limit_up_count limit_down_count real_limit_up_count real_limit_down_count st_limit_up_count st_limit_down_count rise_count fall_count flat_count market_sign raw_rise_dist raw_fall_dist total_amount">
+  <td><a href="kph_market_emotion.html">市场情绪</a><code>kph_market_emotion</code></td>
+  <td>开盘红</td>
+  <td>开盘红 / 情绪数据</td>
+  <td>1</td>
+  <td>14</td>
+</tr>
+
+<tr data-source="开盘红" data-text="kph_sector_constituents_history 历史板块成分股 开盘红 开盘红 板块数据 plate_id trade_date trade_date plate_id instrument_id symbol exchange name tags last_price change_pct amount turnover_rate float_market_value main_net limit_tag rank_tag limit_count">
+  <td><a href="kph_sector_constituents_history.html">历史板块成分股</a><code>kph_sector_constituents_history</code></td>
+  <td>开盘红</td>
+  <td>开盘红 / 板块数据</td>
+  <td>2</td>
+  <td>16</td>
+</tr>
+
+<tr data-source="开盘红" data-text="kph_sector_ranking 板块排行 开盘红 开盘红 板块数据 trade_date sector_type fetch_all trade_date plate_id plate_name sector_type change_pct amount amplitude net_inflow turnover_rate market_cap stock_count">
+  <td><a href="kph_sector_ranking.html">板块排行</a><code>kph_sector_ranking</code></td>
+  <td>开盘红</td>
+  <td>开盘红 / 板块数据</td>
+  <td>3</td>
+  <td>11</td>
+</tr>
+
+<tr data-source="开盘红" data-text="kph_limit_down_history 历史跌停股 开盘红 开盘红 短线数据 trade_date trade_date instrument_id symbol exchange name limit_time open_time seal_amount seal_money limit_tag limit_count themes reason net_inflow turnover turnover_rate market_cap industry_id industry_limit_up_count">
+  <td><a href="kph_limit_down_history.html">历史跌停股</a><code>kph_limit_down_history</code></td>
+  <td>开盘红</td>
+  <td>开盘红 / 短线数据</td>
+  <td>1</td>
+  <td>19</td>
+</tr>
+
+<tr data-source="开盘红" data-text="kph_limit_up_history 历史涨停股 开盘红 开盘红 短线数据 trade_date trade_date instrument_id symbol exchange name limit_time open_time seal_amount seal_money limit_tag limit_count themes reason net_inflow turnover turnover_rate market_cap industry_id industry_limit_up_count">
+  <td><a href="kph_limit_up_history.html">历史涨停股</a><code>kph_limit_up_history</code></td>
+  <td>开盘红</td>
+  <td>开盘红 / 短线数据</td>
+  <td>1</td>
+  <td>19</td>
+</tr>
+
+<tr data-source="开盘红" data-text="kph_wind_vane_history 历史风向标 开盘红 开盘红 短线数据 trade_date trade_date instrument_id symbol exchange name limit_time open_time seal_amount seal_money limit_tag limit_count themes reason net_inflow turnover turnover_rate market_cap industry_id industry_limit_up_count">
+  <td><a href="kph_wind_vane_history.html">历史风向标</a><code>kph_wind_vane_history</code></td>
+  <td>开盘红</td>
+  <td>开盘红 / 短线数据</td>
+  <td>1</td>
+  <td>19</td>
+</tr></tbody>
+    </table>
+  </div>
+</section>
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+<script>
+const searchInput = document.getElementById("interface-search");
+const sourceFilter = document.getElementById("source-filter");
+const rows = Array.from(document.querySelectorAll("#interface-table tbody tr"));
+function applyFilters() {
+  const query = searchInput.value.trim().toLowerCase();
+  const source = sourceFilter.value;
+  for (const row of rows) {
+    const matchesSource = !source || row.dataset.source === source;
+    const matchesQuery = !query || row.dataset.text.includes(query);
+    row.hidden = !(matchesSource && matchesQuery);
+  }
+}
+searchInput.addEventListener("input", applyFilters);
+sourceFilter.addEventListener("change", applyFilters);
+</script>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新浪中国期货分钟线 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>新浪中国期货分钟线</h1>
+  <p class="code-title">futures_zh_minute_sina</p>
+  <p class="lead">临时获取新浪财经新浪中国期货分钟线数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>futures_zh_minute_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 期货行情</dd></div><div><dt>资产类型</dt><dd>future</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪期货单合约分钟线小样本，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>symbol</code></td><td>string</td><td>否</td><td>新浪期货合约代码，例如 RB0、IF2008；默认 RB0。</td><td>&quot;RB0&quot;</td></tr><tr><td><code>period</code></td><td>string</td><td>否</td><td>分钟周期，可选 1、5、15、30、60；默认 1。</td><td>&quot;1&quot;</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多返回行数，默认 100，最大 2000。</td><td>100</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>source_symbol</code></td><td>string</td><td>新浪期货合约代码，例如 RB0 或 IF2008。</td></tr><tr><td><code>period</code></td><td>string</td><td>分钟周期，可选 1、5、15、30、60。</td></tr><tr><td><code>datetime</code></td><td>datetime</td><td>分钟时间，格式 YYYYMMDDHHMMSS。</td></tr><tr><td><code>trade_date</code></td><td>date</td><td>交易日期，格式 YYYYMMDD。</td></tr><tr><td><code>trade_time</code></td><td>string</td><td>交易时间，格式 HH:MM:SS。</td></tr><tr><td><code>open</code></td><td>number</td><td>开盘价。</td></tr><tr><td><code>high</code></td><td>number</td><td>最高价。</td></tr><tr><td><code>low</code></td><td>number</td><td>最低价。</td></tr><tr><td><code>close</code></td><td>number</td><td>收盘价。</td></tr><tr><td><code>volume</code></td><td>number</td><td>成交量，单位：手。</td></tr><tr><td><code>open_interest</code></td><td>number</td><td>持仓量，单位：手。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;futures_zh_minute_sina&quot;,
+    limit=1,
+    period=&#x27;1&#x27;,
+    symbol=&#x27;RB0&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/futures_zh_minute_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;symbol&quot;: &quot;RB0&quot;,
+    &quot;period&quot;: &quot;1&quot;,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;symbol&quot;: &quot;RB0&quot;,
+  &quot;period&quot;: &quot;1&quot;,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;source_symbol&quot;: &quot;RB0&quot;,
+    &quot;period&quot;: &quot;1&quot;,
+    &quot;datetime&quot;: &quot;20260701091300&quot;,
+    &quot;trade_date&quot;: &quot;20260701&quot;,
+    &quot;trade_time&quot;: &quot;09:13:00&quot;,
+    &quot;open&quot;: 3075.0,
+    &quot;high&quot;: 3075.0,
+    &quot;low&quot;: 3073.0,
+    &quot;close&quot;: 3073.0,
+    &quot;volume&quot;: 5640.0,
+    &quot;open_interest&quot;: 1998668.0
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

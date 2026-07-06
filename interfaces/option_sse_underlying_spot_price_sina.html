@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>上交所期权标的实时行情 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>上交所期权标的实时行情</h1>
+  <p class="code-title">option_sse_underlying_spot_price_sina</p>
+  <p class="lead">临时获取新浪财经上交所期权标的实时行情数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>option_sse_underlying_spot_price_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 期权行情</dd></div><div><dt>资产类型</dt><dd>option</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪上交所期权标的实时行情，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>symbol</code></td><td>string</td><td>否</td><td>标的证券代码，支持 sh510050、510050.SH；默认 sh510050。</td><td>&quot;sh510050&quot;</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>fund_code</code></td><td>string</td><td>六位标的证券代码。</td></tr><tr><td><code>sina_symbol</code></td><td>string</td><td>新浪带市场前缀代码，例如 sh510050。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>标的证券简称。</td></tr><tr><td><code>open</code></td><td>number</td><td>今日开盘价，单位/口径沿用新浪源端。</td></tr><tr><td><code>prev_close</code></td><td>number</td><td>昨日收盘价，单位/口径沿用新浪源端。</td></tr><tr><td><code>latest_price</code></td><td>number</td><td>最近成交价，单位/口径沿用新浪源端。</td></tr><tr><td><code>high</code></td><td>number</td><td>最高成交价，单位/口径沿用新浪源端。</td></tr><tr><td><code>low</code></td><td>number</td><td>最低成交价，单位/口径沿用新浪源端。</td></tr><tr><td><code>bid</code></td><td>number</td><td>买入价，单位/口径沿用新浪源端。</td></tr><tr><td><code>ask</code></td><td>number</td><td>卖出价，单位/口径沿用新浪源端。</td></tr><tr><td><code>volume</code></td><td>number</td><td>成交数量，单位/口径沿用新浪源端。</td></tr><tr><td><code>amount</code></td><td>number</td><td>成交金额，金额单位/口径沿用新浪源端。</td></tr><tr><td><code>bid_volume_1</code></td><td>number</td><td>买一数量，源端口径。</td></tr><tr><td><code>bid_price_1</code></td><td>number</td><td>买一价，单位/口径沿用新浪源端。</td></tr><tr><td><code>ask_volume_1</code></td><td>number</td><td>卖一数量，源端口径。</td></tr><tr><td><code>ask_price_1</code></td><td>number</td><td>卖一价，单位/口径沿用新浪源端。</td></tr><tr><td><code>quote_date</code></td><td>date</td><td>行情日期，格式 YYYYMMDD。</td></tr><tr><td><code>quote_time</code></td><td>string</td><td>行情时间，格式 HH:MM:SS。</td></tr><tr><td><code>halt_status</code></td><td>string</td><td>停牌状态，源端编码。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;option_sse_underlying_spot_price_sina&quot;,
+    symbol=&#x27;sh510050&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/option_sse_underlying_spot_price_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;symbol&quot;: &quot;sh510050&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;symbol&quot;: &quot;sh510050&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;510050.SH&quot;,
+    &quot;fund_code&quot;: &quot;510050&quot;,
+    &quot;sina_symbol&quot;: &quot;sh510050&quot;,
+    &quot;exchange&quot;: &quot;SSE&quot;,
+    &quot;name&quot;: &quot;上证50ETF华夏&quot;,
+    &quot;open&quot;: 3.003,
+    &quot;prev_close&quot;: 3.003,
+    &quot;latest_price&quot;: 3.023,
+    &quot;high&quot;: 3.048,
+    &quot;low&quot;: 3.003,
+    &quot;bid&quot;: 3.023,
+    &quot;ask&quot;: 3.024,
+    &quot;volume&quot;: 536339530.0,
+    &quot;amount&quot;: 1621596612.0,
+    &quot;bid_volume_1&quot;: 543700.0,
+    &quot;bid_price_1&quot;: 3.023,
+    &quot;ask_volume_1&quot;: 690700.0,
+    &quot;ask_price_1&quot;: 3.024,
+    &quot;quote_date&quot;: &quot;20260703&quot;,
+    &quot;quote_time&quot;: &quot;15:00:01&quot;,
+    &quot;halt_status&quot;: &quot;00&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

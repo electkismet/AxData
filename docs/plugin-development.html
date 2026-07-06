@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>插件开发总览 - AxData 文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="" href="../interfaces/index.html">接口文档</a><a class="active" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">开发文档</a></p>
+  <h1>插件开发总览</h1>
+</section>
+<article class="markdown-body"><h2>AxData 插件开发指南</h2>
+<p>本文面向准备为 AxData 编写数据源、采集器或工具能力的开发者。它描述 AxData 采用的本地插件模型：AxData Core 是数据库、插件容器、任务平台、存储、查询、API、Web 和 CLI 宿主；数据源能力来自预装插件或外部插件。预装能力可以默认启用；社区或第三方插件是用户本地安装、本地启用、本地运行的 Python 代码，用户自行选择来源并承担运行风险。</p>
+<p>如果你只是想安装和管理插件，先读 <a href="plugin-install-management.html">plugin-install-management.md</a>。如果你要查看完整协议字段，读 <a href="plugin-spec.html">plugin-spec.md</a>。本文更像实际开发手册：从最小目录、manifest、命名、接口、采集能力、打包安装到调试诊断。</p>
+<p>插件能力边界和 Web UI 口径以 <a href="axdata-development-standards.html">axdata-development-standards.md</a> 为准。一个插件包可以同时提供 Provider、Collector、DownloaderProfile 或工具能力，但这些能力的身份、注册表和运行路径必须分开：Provider 不等于 Collector，DownloaderProfile 也不是新采集器身份。</p>
+<h3>1. 插件能提供什么</h3>
+<p>AxData 插件可以提供一种或多种能力：</p>
+<div class="table-wrap"><table><thead><tr><th>能力</th><th>说明</th></tr></thead><tbody><tr><td>Provider</td><td>声明接口、参数、字段、样例，并实现源端临时调用。</td></tr><tr><td>DownloaderProfile</td><td>兼容路径：声明某个接口如何批量下载、使用哪个资源组、默认并发和写入建议。</td></tr><tr><td>CollectorSpec</td><td>声明一个可由 AxData Collector Runner 运行的独立采集器。</td></tr><tr><td>Task Template</td><td>给用户创建 CollectorTask 的安全默认模板。当前仓库内置模板由 core 管理，插件可通过 CollectorSpec 和 manifest 元数据为模板化入口提供素材。</td></tr><tr><td>DependencySpec</td><td>声明 Python 依赖和可选包内 wheel，用于安装前预览。</td></tr><tr><td>ConfigSchema</td><td>声明需要用户自行配置的环境变量或配置项，只做展示提示。</td></tr></tbody></table></div>
+<p>边界速查：</p>
+<div class="table-wrap"><table><thead><tr><th>能力</th><th>注册位置</th><th>主要用户入口</th><th>是否默认写入</th></tr></thead><tbody><tr><td>Provider</td><td>Source Provider Registry</td><td>接口页、<code>client.call(...)</code>、<code>POST /v1/request/{interface}</code></td><td>否</td></tr><tr><td>CollectorSpec</td><td>Collector Registry</td><td>采集页、Collector CLI/API、调度器</td><td>是</td></tr><tr><td>DownloaderProfile</td><td>兼容下载入口</td><td>旧显式下载路径和诊断</td><td>仅显式下载时</td></tr></tbody></table></div>
+<p>允许的插件形态：</p>
+<ul>
+<li>source_request-only：只有 Provider 和接口临时调用，不提供采集能力。</li>
+<li>Provider + DownloaderProfile：接口可临时调用，也可通过旧下载 profile 显式写出。</li>
+<li>Provider + legacy CollectorSpec：当前兼容路径，接口、下载 profile 和采集器一起提供；新开发不要把它作为最终形态。</li>
+<li>collector-only：不提供新 Provider，声明独立采集器、运行入口和输出数据集。</li>
+<li>工具型插件：用于清洗、指标或格式转换，不应伪造数据源身份。</li>
+</ul>
+<p>源端临时调用和采集入库必须分开。<code>client.call(...)</code>、<code>axdata request</code> 和 <code>/v1/request/*</code> 默认只请求源端一次，不写入 <code>raw/staging/core/factor</code>，也不会自动创建采集任务。需要长期保存时，新插件应提供独立 CollectorSpec / Collector manifest 和 runner entry，让运行进入 AxData Collector Runner；不要通过 <code>/v1/request</code>、SDK <code>call</code>、ProviderRegistry interface route 或旧 DownloaderProfile 链路套接口采集。</p>
+<h3>2. 最小目录结构</h3>
+<p>Provider 插件的推荐目录：</p>
+<pre><code class="language-text">axdata-source-demo/
+  pyproject.toml
+  README.md
+  LICENSE
+  src/
+    axdata_source_demo/
+      __init__.py
+      provider.py
+      adapter.py
+      catalog.py
+      normalization.py
+      downloader_profiles.py
+      collectors.py
+      axdata-provider.json
+      samples/
+        demo_snapshot.json
+  tests/
+    test_manifest.py
+    test_adapter.py
+    test_catalog.py</code></pre>
+<p>只有 Collector 的插件可以省略 <code>provider.py</code> 和 <code>adapter.py</code>，但仍应有 <code>axdata-plugin.json</code>、<code>collectors.py</code>、runner 实现和测试。包名建议使用 <code>axdata-collector-&lt;name&gt;</code> 或清晰的组织前缀，Python module 使用小写 snake_case，例如 <code>axdata_collector_demo</code>。如果同一包同时提供数据源接口和采集器，也要把接口 ID、采集器 ID 和数据集 ID 分开命名。</p>
+<p><code>pyproject.toml</code> 最小示例：</p>
+<pre><code class="language-toml">[project]
+name = &quot;axdata-source-demo&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [&quot;axdata-core&gt;=0.1.0&quot;]
+
+[project.entry-points.&quot;axdata.providers&quot;]
+demo = &quot;axdata_source_demo.provider:provider&quot;
+
+[tool.setuptools.package-data]
+axdata_source_demo = [&quot;axdata-provider.json&quot;, &quot;samples/*.json&quot;]</code></pre>
+<p>V2 多能力插件也可以使用 <code>axdata.plugins</code> entry point：</p>
+<pre><code class="language-toml">[project.entry-points.&quot;axdata.plugins&quot;]
+demo = &quot;axdata_source_demo.plugin:plugin&quot;</code></pre>
+<p>当前 Registry 同时识别 <code>axdata.providers</code> 和 <code>axdata.plugins</code>。无论使用哪个 entry point，wheel 或 editable 项目中都必须能找到 <code>axdata-provider.json</code> 或 <code>axdata-plugin.json</code>。</p>
+<h3>3. Manifest 是必需的</h3>
+<p><code>axdata-provider.json</code> / <code>axdata-plugin.json</code> 是 AxData 识别插件的 manifest。没有 manifest 的 Python 包不算 AxData 插件，即使它声明了 <code>axdata.providers</code> 或 <code>axdata.plugins</code> entry point。</p>
+<p>两种 manifest 的角色：</p>
+<div class="table-wrap"><table><thead><tr><th>文件</th><th>当前用途</th></tr></thead><tbody><tr><td><code>axdata-provider.json</code></td><td>当前 Provider 插件主路径，适合包含 Provider/interfaces/downloaders/legacy collectors 的兼容插件。</td></tr><tr><td><code>axdata-plugin.json</code></td><td>多能力插件通用文件名，适合独立 collector-only 或工具型插件；CollectorRegistry 会以它作为新采集器插件主路径。</td></tr></tbody></table></div>
+<p>Registry 发现插件时会先读取 distribution 中的 manifest，不 import Provider 代码。只有用户真正调用接口或运行采集时，才加载插件运行时代码。这能让 <code>plugin list</code>、Web 插件页和接口目录保持轻量，也避免破损插件拖垮整个系统。</p>
+<p>最小 manifest 骨架：</p>
+<pre><code class="language-json">{
+  &quot;manifest_version&quot;: &quot;1.0&quot;,
+  &quot;plugin_api_version&quot;: &quot;1.0&quot;,
+  &quot;plugin&quot;: {
+    &quot;plugin_id&quot;: &quot;axdata.plugin.demo&quot;,
+    &quot;name_zh&quot;: &quot;示例插件&quot;,
+    &quot;version&quot;: &quot;0.1.0&quot;,
+    &quot;description&quot;: &quot;示例数据源和采集能力&quot;
+  },
+  &quot;provider&quot;: {
+    &quot;provider_id&quot;: &quot;axdata.source.demo&quot;,
+    &quot;source_code&quot;: &quot;demo&quot;,
+    &quot;source_name_zh&quot;: &quot;示例数据源&quot;,
+    &quot;version&quot;: &quot;0.1.0&quot;,
+    &quot;declared_trust_level&quot;: &quot;community&quot;,
+    &quot;description&quot;: &quot;示例 Provider&quot;
+  },
+  &quot;interfaces&quot;: [],
+  &quot;downloaders&quot;: [],
+  &quot;collectors&quot;: [],
+  &quot;dependencies&quot;: [],
+  &quot;config_schema&quot;: {&quot;required_config&quot;: []},
+  &quot;required_config&quot;: []
+}</code></pre>
+<p>推荐流程是由插件代码生成 manifest，再把 manifest 打进 wheel。不要让 Python 代码、README 和 manifest 变成三份互相漂移的真相源。</p>
+<h3>4. 命名和冲突规则</h3>
+<p><code>provider_id</code> 是插件身份，必须稳定且全局唯一。推荐：</p>
+<ul>
+<li><code>axdata.source.&lt;name&gt;</code>：个人或项目内源插件。</li>
+<li><code>com.example.axdata.source.&lt;name&gt;</code>：组织或公司前缀。</li>
+<li>不要使用已有预装插件的 <code>provider_id</code>。</li>
+<li>不要把 <code>source_code</code> 当成 <code>provider_id</code>。多个 Provider 可以共享 <code>source_code</code>，但不能共享 <code>provider_id</code>。</li>
+</ul>
+<p><code>interface_name</code> 是用户调用、HTTP 路由和 Registry 精确分发的名字，也必须全局唯一。推荐：</p>
+<ul>
+<li>小写 snake_case。</li>
+<li>表达数据口径和来源，例如 <code>stock_snapshot_demo</code>、<code>announcements_vendor_x</code>。</li>
+<li>外部插件尽量带来源前缀或后缀，例如 <code>_tdx</code>、<code>tencent_</code>、<code>myvendor_</code>。</li>
+<li>不要依赖后缀触发路由；后缀只是名字的一部分。</li>
+</ul>
+<p>冲突规则：</p>
+<ul>
+<li>同一个 <code>provider_id</code> 被重复发现时，Registry 只保留优先级更高的一条有效 Provider，重复候选进入诊断，不进入普通插件列表。</li>
+<li>不同 <code>provider_id</code> 声明同一个 <code>interface_name</code> 时，会进入 conflict，而不是静默覆盖。</li>
+<li>外部插件不能用已有预装插件的 <code>provider_id</code> 接管路由。</li>
+<li>用户可以通过禁用其中一个插件、改名重发插件，或 override 配置解决接口冲突。</li>
+</ul>
+<h3>5. Provider 和接口</h3>
+<p>Provider 对象最少声明身份、接口目录和 Adapter：</p>
+<pre><code class="language-python">from axdata_core.plugins import SourceProvider
+
+from .adapter import DemoAdapter
+from .catalog import INTERFACES, DOWNLOADER_PROFILES
+
+
+class DemoProvider(SourceProvider):
+    provider_id = &quot;axdata.source.demo&quot;
+    source_code = &quot;demo&quot;
+    source_name_zh = &quot;示例数据源&quot;
+    version = &quot;0.1.0&quot;
+    plugin_api_version = &quot;1.0&quot;
+
+    def interfaces(self):
+        return tuple(INTERFACES)
+
+    def create_adapter(self, options=None):
+        return DemoAdapter(options=options)
+
+    def downloader_profiles(self):
+        return tuple(DOWNLOADER_PROFILES)
+
+
+provider = DemoProvider()</code></pre>
+<p>Provider 的 <code>collectors()</code> 只作为旧 Provider manifest 兼容入口保留。新插件如果要提供采集器，应使用独立 CollectorSpec / Collector manifest 和 <code>runner_entry</code>，让采集器进入 CollectorRegistry，而不是把采集器挂在接口 Provider 下面。</p>
+<p>Adapter 只负责源端请求和字段归一，默认不落盘：</p>
+<pre><code class="language-python">class DemoAdapter:
+    def __init__(self, options=None):
+        self.options = dict(options or {})
+
+    def call(self, interface_name, params=None, fields=None, options=None):
+        if interface_name == &quot;stock_snapshot_demo&quot;:
+            return self._stock_snapshot(dict(params or {}), fields)
+        raise KeyError(interface_name)</code></pre>
+<p>Adapter 不应 import 时联网，不应写 Parquet，不应启动后台线程，不应把第三方 token 写进日志。</p>
+<h3>6. 参数、字段和样例</h3>
+<p>每个 InterfaceSpec 至少写清：</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>要求</th></tr></thead><tbody><tr><td><code>name</code></td><td>全局唯一接口名。</td></tr><tr><td><code>display_name_zh</code></td><td>中文展示名。</td></tr><tr><td><code>source_code</code> / <code>source_name_zh</code></td><td>源命名空间和中文名。</td></tr><tr><td><code>asset_class</code></td><td><code>stock/index/etf/fund/bond/future/option/fx/macro</code> 之一。</td></tr><tr><td><code>menu_path</code></td><td>Web 接口目录完整路径，由插件声明，Web 只负责渲染。</td></tr><tr><td><code>request_mode</code></td><td>通常为 <code>source_request</code>。</td></tr><tr><td><code>summary_zh</code></td><td>Web 接口页顶部中文短摘要，属于插件接口契约。</td></tr><tr><td><code>description_zh</code></td><td>Web 接口页中文正文说明，存在时优先于调试用 <code>notes</code> 展示。</td></tr><tr><td><code>params_note_zh</code></td><td>参数区中文补充说明。</td></tr><tr><td><code>params_example_zh</code></td><td>参数区静态 SDK 调用示例，不触发源端请求。</td></tr><tr><td><code>parameters</code></td><td>参数名、类型、是否必填、枚举、默认值和说明。</td></tr><tr><td><code>fields</code></td><td>AxData 字段名、类型、单位、是否必填和说明。</td></tr><tr><td><code>example</code> / <code>examples</code></td><td>运行时接口目录使用单个 <code>example</code>；manifest 协议可写 <code>examples</code> 数组，但必须选出主样例给接口页和 API 使用。</td></tr><tr><td><code>reference_sections</code></td><td>可选静态参考表，例如类别码、枚举映射、字段口径说明；属于插件接口契约，不能只写在 Web 里。</td></tr><tr><td><code>collection</code></td><td>兼容下载提示；支持时可指向默认 DownloaderProfile，但不等于 CollectorSpec，也不是采集器 catalog 的事实源。</td></tr></tbody></table></div>
+<p>接口目录也属于插件接口契约。小数据源可以声明 <code>[&quot;巨潮&quot;, &quot;公告数据&quot;]</code> 这类两层目录；通达信这类大数据源应声明 <code>[&quot;通达信&quot;, &quot;股票数据&quot;, &quot;基础数据&quot;]</code> 这类完整源内分层。不要依赖 Web 静态文件替插件补目录。</p>
+<p>接口页中文内容也属于插件接口契约。短摘要、正文说明、参数提示和参数调用示例应写入 <code>summary_zh</code>、<code>description_zh</code>、<code>params_note_zh</code>、<code>params_example_zh</code>，让插件安装、分享、禁用和 Web 展示使用同一份事实源。Web request 接口页不应为某个接口维护单独的静态文案副本。</p>
+<p>接口页的参考内容也跟插件走。像通达信股本变迁的“类别码参考”这类表，应写入 <code>reference_sections</code>，由 Web 通用渲染；Web 不应为某个数据源单独保存一份参考表副本。</p>
+<p>参数示例：</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;trade_date&quot;,
+  &quot;display_name_zh&quot;: &quot;交易日期&quot;,
+  &quot;type&quot;: &quot;date&quot;,
+  &quot;required&quot;: false,
+  &quot;multiple&quot;: false,
+  &quot;default&quot;: null,
+  &quot;control&quot;: &quot;date&quot;,
+  &quot;placeholder&quot;: &quot;20260105&quot;,
+  &quot;description&quot;: &quot;不填时返回源端最新可用日期。&quot;
+}</code></pre>
+<p>字段示例：</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;instrument_id&quot;,
+  &quot;display_name_zh&quot;: &quot;证券代码&quot;,
+  &quot;type&quot;: &quot;string&quot;,
+  &quot;required&quot;: true,
+  &quot;unit&quot;: null,
+  &quot;description&quot;: &quot;AxData 统一证券代码，例如 000001.SZ。&quot;
+}</code></pre>
+<p>字段必须尽量使用 AxData 稳定字段，不要把上游原始列名直接暴露给用户。日期使用 <code>YYYYMMDD</code>。字段名使用 snake_case。价格、成交量、成交额、股本和百分比必须写单位和口径。</p>
+<h3>7. source_request-only 插件</h3>
+<p>如果接口只适合临时查询，就做 source_request-only 插件：</p>
+<ul>
+<li><code>interfaces[].request_mode = &quot;source_request&quot;</code>。</li>
+<li><code>interfaces[].collection.supported = false</code>。</li>
+<li><code>downloaders = []</code>。</li>
+<li><code>collectors = []</code>。</li>
+<li>示例只展示小样本参数，不暗示入库。</li>
+</ul>
+<p>适合 source_request-only 的接口包括实时快照、盘口、当日排行、调试接口、服务器状态和低稳定性的网页接口。它们可以通过：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata request stock_snapshot_demo --param code=000001.SZ --json</code></pre>
+<p>或：</p>
+<pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(&quot;stock_snapshot_demo&quot;, code=&quot;000001.SZ&quot;)</code></pre>
+<p>这些调用默认不写入本地数据目录。</p>
+<h3>8. DownloaderProfile</h3>
+<p>DownloaderProfile 是当前兼容模型的一部分。它说明如何把一个已注册接口变成一次显式下载：资源组、默认参数、并发建议、输出层和写入策略。它可以继续服务旧接口下载和旧 Provider manifest collectors，但新采集器插件不应把 DownloaderProfile 当作采集器身份，也不应要求每个采集器都先有接口。</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;demo.stock_snapshot.latest&quot;,
+  &quot;interface_name&quot;: &quot;stock_snapshot_demo&quot;,
+  &quot;display_name_zh&quot;: &quot;示例快照采集&quot;,
+  &quot;resource_group&quot;: &quot;demo.http&quot;,
+  &quot;mode&quot;: &quot;snapshot&quot;,
+  &quot;default_options&quot;: {
+    &quot;formats&quot;: [&quot;parquet&quot;],
+    &quot;timeout_seconds&quot;: 10
+  },
+  &quot;default_limits&quot;: {
+    &quot;max_active_jobs&quot;: 1,
+    &quot;max_connections_total&quot;: 4,
+    &quot;request_interval_ms&quot;: 200
+  },
+  &quot;output&quot;: {
+    &quot;layer&quot;: &quot;snapshot&quot;,
+    &quot;default_dir_name&quot;: &quot;stock_snapshot_demo&quot;,
+    &quot;write_mode&quot;: &quot;snapshot&quot;,
+    &quot;primary_key&quot;: [&quot;instrument_id&quot;],
+    &quot;date_field&quot;: &quot;trade_date&quot;
+  }
+}</code></pre>
+<p>资源组建议使用 <code>{source_code}.{resource_type}</code>，例如 <code>demo.http</code>、<code>tdx.quote</code>、<code>tdx.f10</code>。共享同一个上游配额的接口应使用同一个资源组，让 Collector Runner 能做全局排队和限流。</p>
+<p>写入策略应与 <a href="data-layers.html">data-layers.md</a> 对齐。常见模式包括 <code>snapshot</code>、<code>append</code>、<code>overwrite_partition</code>、<code>replace_range</code> 和 <code>upsert_by_key</code>。声明 <code>upsert_by_key</code> 时必须同时声明 <code>primary_key</code>；声明 <code>replace_range</code> 时必须声明 <code>date_field</code>。</p>
+<h3>9. CollectorSpec</h3>
+<p>CollectorSpec 描述一个可运行采集器。新模型中，采集器和数据源 Provider 是平级插件能力：采集器有自己的 <code>collector_id</code>、<code>collector_plugin_id</code>、<code>dataset_id</code> 和 <code>runner_entry</code>，可以自带取数逻辑，不要求存在对应 Provider、<code>interface_name</code> 或 <code>downloader_profile</code>。插件只声明采集能力，实际排队、状态、日志、失败退避、资源组限制、质量检查和写入由 AxData Collector Runner 执行。</p>
+<pre><code class="language-json">{
+  &quot;collector_id&quot;: &quot;demo.stock_snapshot.snapshot&quot;,
+  &quot;display_name_zh&quot;: &quot;示例股票快照采集&quot;,
+  &quot;description&quot;: &quot;按小样本参数采集示例股票快照并写出 Parquet。&quot;,
+  &quot;collector_plugin_id&quot;: &quot;axdata.collector.demo&quot;,
+  &quot;dataset_id&quot;: &quot;demo.stock_snapshot&quot;,
+  &quot;asset_class&quot;: &quot;stock&quot;,
+  &quot;category&quot;: &quot;snapshot&quot;,
+  &quot;resource_group&quot;: &quot;demo.http&quot;,
+  &quot;runner_entry&quot;: &quot;axdata_collector_demo.runner:run&quot;,
+  &quot;default_schedule&quot;: {
+    &quot;kind&quot;: &quot;manual&quot;
+  },
+  &quot;default_params&quot;: {
+    &quot;code&quot;: &quot;000001.SZ&quot;
+  },
+  &quot;required_interfaces&quot;: [],
+  &quot;output&quot;: {
+    &quot;layer&quot;: &quot;snapshot&quot;,
+    &quot;formats&quot;: [&quot;parquet&quot;]
+  }
+}</code></pre>
+<p>独立 CollectorSpec 的推荐字段：</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td><code>collector_id</code> / <code>name</code></td><td>采集器系统 ID，独立于 interface_name 和 dataset_id。</td></tr><tr><td><code>display_name_zh</code></td><td>中文展示名，可与接口中文名相同。</td></tr><tr><td><code>collector_plugin_id</code></td><td>贡献该采集器的插件 ID。</td></tr><tr><td><code>dataset_id</code></td><td>采集结果进入的数据集 ID。</td></tr><tr><td><code>asset_class</code> / <code>category</code></td><td>资产类别和业务分类。</td></tr><tr><td><code>default_params</code> / <code>config_schema</code></td><td>默认参数与用户可配置项。</td></tr><tr><td><code>default_schedule</code></td><td>默认调度建议，用户可覆盖。</td></tr><tr><td><code>output</code> / <code>quality</code></td><td>输出层、路径、写入策略和质量契约。</td></tr><tr><td><code>runner_entry</code></td><td>Collector Runner 调用的 Python 入口。</td></tr><tr><td><code>resource_group</code></td><td>全局资源组，用于排队和限流。</td></tr><tr><td><code>lifecycle_status</code></td><td>experimental、stable、deprecated 等生命周期状态。</td></tr></tbody></table></div>
+<p><code>interfaces</code>、<code>required_interfaces</code> 和 <code>downloader_profile</code> 是旧 Provider-manifest 兼容字段。旧插件可以继续声明它们，AxData 会作为 legacy collector 导入；新插件不要依赖它们运行。</p>
+<p>Collector 插件不要自己长期运行后台线程，不要绕过 AxData 队列直接开并发，不要自己维护一套与 AxData 无关的任务状态。禁用或卸载插件后，插件贡献的 CollectorSpec 会从可用能力中消失；用户已经创建的 Task 和 Run History 保留，依赖状态会变为 disabled、missing 或 uninstalled。</p>
+<p>collector-only 插件可以只声明 CollectorSpec 并自带 runner。例如一个本地研究团队可以写“每日收盘后刷新核心表”的插件，它不提供新数据源，也不伪造 Provider；runner 可以直接请求上游、读取本地文件或复用公共库，但不能通过 <code>/v1/request</code>、SDK <code>call</code> 或 ProviderRegistry route 把接口临时调用伪装成采集。</p>
+<h3>10. Task Template</h3>
+<p>Task Template 是给用户一键创建 CollectorTask 的产品化入口。当前仓库内置的模板在 <code>axdata_core.collector_templates.TaskTemplate</code> 中，字段包括 <code>template_id</code>、<code>collector_name</code>、<code>interface_name</code>、默认参数、输出层、写入策略、依赖插件、安全限制和下一步动作。</p>
+<p>插件开发时应把以下信息放进 CollectorSpec、DownloaderProfile 和 manifest：</p>
+<ul>
+<li>安全默认参数，不要默认全市场重采。</li>
+<li>推荐 <code>trigger_type</code> 或 <code>default_schedule</code>。</li>
+<li><code>resource_group</code> 和默认限流。</li>
+<li><code>write_mode</code>、<code>partition_by</code>、<code>primary_key</code>、<code>date_field</code>。</li>
+<li><code>required_plugin</code> 或 required interfaces。</li>
+<li>当依赖缺失时的可读说明。</li>
+</ul>
+<p>把插件能力接入 Web/CLI 模板时，应沿用这些信息。模板只是创建本地任务的默认值，不代表安装插件后会自动联网采集。</p>
+<h3>11. 依赖和配置</h3>
+<p>插件依赖应同时写在 <code>pyproject.toml</code> 和 manifest 的 <code>dependencies</code> 中。AxData 默认离线处理依赖；<code>.axp</code> 可以携带 dependency wheels。只有用户显式传入 <code>--allow-online-deps</code> 或 API 的 <code>allow_online_deps=true</code> 时，才允许 pip 使用当前环境配置的索引联网安装。</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;beautifulsoup4&quot;,
+  &quot;version_spec&quot;: &quot;&gt;=4.12&quot;,
+  &quot;optional&quot;: false,
+  &quot;source&quot;: &quot;pypi&quot;,
+  &quot;wheel&quot;: &quot;wheels/beautifulsoup4-4.12.3-py3-none-any.whl&quot;,
+  &quot;description&quot;: &quot;解析网页公告。&quot;
+}</code></pre>
+<p>第三方源 token 不由 AxData core 托管、注入或代理。需要 token 时，插件自行从环境变量或自己的配置文件读取，并在 manifest 中声明展示提示：</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;DEMO_TOKEN&quot;,
+  &quot;kind&quot;: &quot;env&quot;,
+  &quot;required&quot;: true,
+  &quot;description&quot;: &quot;示例源 token，由插件自行读取。&quot;
+}</code></pre>
+<p>不要把 token 写进样例、日志、manifest 或测试快照。</p>
+<h3>12. 打包和安装</h3>
+<p>开发期 editable 安装：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\python -m pip install -e C:\path\to\axdata-source-demo
+.\.venv\Scripts\axdata plugin list --json
+.\.venv\Scripts\axdata plugin enable axdata.source.demo</code></pre>
+<p>普通 pip 安装：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\python -m pip install axdata-source-demo
+.\.venv\Scripts\axdata plugin list --json
+.\.venv\Scripts\axdata plugin enable axdata.source.demo</code></pre>
+<p>AXP 是本地安装信封，通常包含：</p>
+<pre><code class="language-text">demo.axp
+  manifest.json
+  README.md
+  LICENSE
+  checksums.txt
+  wheels/
+    axdata_source_demo-0.1.0-py3-none-any.whl
+    beautifulsoup4-4.12.3-py3-none-any.whl
+  samples/</code></pre>
+<p>预览和安装：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata plugin axp-preview C:\path\to\demo.axp --json
+.\.venv\Scripts\axdata plugin axp-install C:\path\to\demo.axp --json
+.\.venv\Scripts\axdata plugin axp-install C:\path\to\demo.axp --enable --json</code></pre>
+<p>Web 插件页的“导出 AXP”导出的是插件安装包，不是数据导出。导出包只应包含 manifest、wheels、README 和 checksums，不包含本地 <code>data/</code>、metadata、任务历史、run history、logs、cache 或任何 token。安装后仍由 manifest 判断它提供 Provider、Collector 还是组合能力。</p>
+<p>AXP checksum 只用于文件完整性和打包一致性检查，不证明作者身份，不证明代码安全，也不授予特殊权限。</p>
+<h3>13. 启用、禁用和卸载</h3>
+<p>对社区或第三方插件，安装不等于启用。插件只有启用后才进入接口路由、Downloader/Collector 能力和 task template 可用性判断；<code>axdata</code> 默认能力可安装后默认启用，但仍允许用户禁用。</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata plugin list --json
+.\.venv\Scripts\axdata plugin info axdata.source.demo --json
+.\.venv\Scripts\axdata plugin enable axdata.source.demo
+.\.venv\Scripts\axdata plugin disable axdata.source.demo
+.\.venv\Scripts\axdata plugin uninstall axdata.source.demo --json</code></pre>
+<p>生命周期规则：</p>
+<ul>
+<li>预装插件可启用、禁用、逻辑卸载和重新启用；逻辑卸载只隐藏当前 runtime 的能力，不物理删除随包代码。</li>
+<li>AXP 管理插件可以由 AxData 物理卸载。</li>
+<li>pip 或 editable/development 安装的外部插件由 Python 环境管理；AxData 会提示使用 <code>pip uninstall</code> 或移除开发路径。</li>
+<li>卸载任何插件都不会删除 <code>data/</code>、已采集 Parquet、metadata、用户 Task 或 Run History。</li>
+</ul>
+<h3>14. 调试和诊断</h3>
+<p>常用命令：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata doctor --json
+.\.venv\Scripts\axdata status --json
+.\.venv\Scripts\axdata plugin list --json
+.\.venv\Scripts\axdata plugin info axdata.source.demo --json
+.\.venv\Scripts\axdata request stock_snapshot_demo --param code=000001.SZ --json
+.\.venv\Scripts\axdata plugin collectors --json
+.\.venv\Scripts\axdata collector task list --json
+.\.venv\Scripts\axdata collector task templates --json
+.\.venv\Scripts\axdata collector run list --json</code></pre>
+<p>HTTP/API 排查：</p>
+<pre><code class="language-powershell">curl http://127.0.0.1:8666/v1/plugins/providers
+curl http://127.0.0.1:8666/v1/request/interfaces
+curl http://127.0.0.1:8666/v1/plugins/collectors
+curl http://127.0.0.1:8666/v1/collector/tasks/templates</code></pre>
+<p>如果 entry point 可见但缺少 <code>axdata-plugin.json</code> / <code>axdata-provider.json</code>，它会作为 ignored candidate 进入 <code>doctor/status</code> 诊断，例如 <code>plugins.ignored_candidates</code> 和 <code>registry.ignored_candidate_count</code>。它不会出现在普通 <code>plugin list</code>、<code>/v1/plugins/providers</code> 或 Web 普通插件列表里，也不会计入有效插件统计。常见修复：</p>
+<ul>
+<li>确认 wheel 的 package data 包含 manifest。</li>
+<li>editable 安装时确认 <code>direct_url.json</code>、<code>top_level.txt</code> 和源码目录能定位到 manifest。</li>
+<li>确认 entry point 指向的 distribution 和 manifest 属于同一个包。</li>
+<li>确认没有复用已有 <code>provider_id</code>。</li>
+</ul>
+<p>接口冲突时，<code>plugin list --json</code> 和 Provider 状态会显示 conflict。不要通过改用户本地配置偷偷覆盖别人接口；更稳的做法是改名、禁用冲突插件，或在用户明确知道的情况下设置 override。</p>
+<h3>15. 测试清单</h3>
+<p>至少覆盖：</p>
+<ul>
+<li>manifest 能解析，且包含 <code>axdata-provider.json</code> 或 <code>axdata-plugin.json</code>。</li>
+<li>wheel 包含 manifest、entry point、README/LICENSE 和需要的样例资源。</li>
+<li><code>provider_id</code> 和 <code>interface_name</code> 合法且不重复。</li>
+<li>Provider 的 <code>interfaces()</code>、<code>downloader_profiles()</code>、<code>collectors()</code> 与 manifest 一致。</li>
+<li>插件 discovery 不 import Provider runtime。</li>
+<li>真正调用接口时才 import Adapter。</li>
+<li>参数校验、字段裁剪、错误映射和空结果处理。</li>
+<li>DownloaderProfile 引用的接口存在。</li>
+<li>独立 CollectorSpec 包含 <code>collector_id</code>、<code>collector_plugin_id</code>、<code>dataset_id</code>、<code>runner_entry</code>、<code>output</code> 和 <code>quality</code> 等新字段。</li>
+<li>legacy Provider manifest CollectorSpec 引用的接口和 DownloaderProfile 存在。</li>
+<li>source_request-only 接口不误标为 CollectorSpec 或默认采集器。</li>
+<li>缺 token、缺依赖、网络超时、上游限流能给出可读错误。</li>
+<li>禁用插件后接口不可调用，采集任务依赖状态变为 disabled。</li>
+<li>不同 <code>provider_id</code> 的同名接口进入 conflict，不静默覆盖。</li>
+</ul>
+<p>默认测试不应请求真实网络。真实源 smoke 必须显式 opt-in，并写入临时目录或用户指定输出目录。</p>
+<h3>16. 本地风险边界</h3>
+<p>AxData 插件就是本地 Python 代码。启用插件意味着允许该插件在当前 Python 环境里运行。Manifest 中的作者、信任等级、是否联网、依赖说明都只是声明或展示信息，不是沙箱保证。</p>
+<p>当前产品边界：</p>
+<ul>
+<li>不做插件市场。</li>
+<li>不做中心审核。</li>
+<li>不做签名信任体系。</li>
+<li>不做沙箱。</li>
+<li>不自动联网安装依赖。</li>
+<li>不保存、注入或代理第三方源 token。</li>
+</ul>
+<p>插件作者应该清楚写明数据来源、使用限制、依赖、网络行为、默认并发和失败边界。用户应该只安装自己信任来源的插件，并在需要隔离依赖时使用单独 Python 环境。</p></article>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

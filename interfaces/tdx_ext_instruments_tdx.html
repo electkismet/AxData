@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>扩展品种列表 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信扩展行情</p>
+  <h1>扩展品种列表</h1>
+  <p class="code-title">tdx_ext_instruments_tdx</p>
+  <p class="lead">读取本机扩展资产品种目录，可按资产类型、代码、交易所或关键词过滤。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>tdx_ext_instruments_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_ext_external</dd></div><div><dt>数据源</dt><dd>通达信扩展行情 / tdx_ext</dd></div><div><dt>目录</dt><dd>通达信扩展行情 / 基础数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>读取本机扩展资产品种目录，可按资产类型、代码、交易所或关键词过滤。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>asset_type</code></td><td>string</td><td>否</td><td>资产类型过滤：futures、option、fund、bond、fx、macro。</td><td></td></tr><tr><td><code>code</code></td><td>string</td><td>否</td><td>品种代码过滤；可传单个、列表或英文逗号分隔字符串。</td><td></td></tr><tr><td><code>exchange</code></td><td>string</td><td>否</td><td>交易所或资产场所过滤；不传或 all 表示全部。</td><td></td></tr><tr><td><code>name</code></td><td>string</td><td>否</td><td>名称、品种或市场关键词过滤。</td><td></td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>返回前多少行，默认 1000。</td><td>1000</td></tr><tr><td><code>tdx_root</code></td><td>string</td><td>否</td><td>本机通达信目录（可选，高级）</td><td></td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>默认不用传 tdx_root；只有 API 服务器上的通达信安装目录不是常见位置，或想指定某个 hq_cache 目录时才需要传。</p></div>
+  <div class="note"><strong>参数示例</strong><p># 查看外汇品种
+client.call(&quot;tdx_ext_instruments_tdx&quot;, asset_type=&quot;fx&quot;, limit=3)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 扩展资产统一代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>源端品种代码。</td></tr><tr><td><code>asset_type</code></td><td>string</td><td>资产类型：futures 期货、option 期权、fund 基金、bond 债券、fx 外汇、macro 宏观。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>归一后的交易所或资产场所。</td></tr><tr><td><code>market_name</code></td><td>string</td><td>本机扩展资产目录中的市场名称。</td></tr><tr><td><code>market_group</code></td><td>string</td><td>本机扩展资产目录中的分组名称。</td></tr><tr><td><code>product_code</code></td><td>string</td><td>品种代码。</td></tr><tr><td><code>product_name</code></td><td>string</td><td>品种名称。</td></tr><tr><td><code>contract_month</code></td><td>string</td><td>合约月份，YYYYMM。</td></tr><tr><td><code>contract_type</code></td><td>string</td><td>可确认时返回合约类型。</td></tr><tr><td><code>option_type</code></td><td>string</td><td>期权方向，可确认时为 call 或 put。</td></tr><tr><td><code>strike_price</code></td><td>number</td><td>期权行权价。</td></tr><tr><td><code>fund_type</code></td><td>string</td><td>基金市场类型。</td></tr><tr><td><code>bond_type</code></td><td>string</td><td>债券市场类型。</td></tr><tr><td><code>base_currency</code></td><td>string</td><td>基础货币。</td></tr><tr><td><code>quote_currency</code></td><td>string</td><td>报价货币。</td></tr><tr><td><code>indicator_category</code></td><td>string</td><td>宏观指标分类。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;tdx_ext_instruments_tdx&quot;,
+    asset_type=&#x27;fx&#x27;,
+    limit=3,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/tdx_ext_instruments_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;asset_type&quot;: &quot;fx&quot;,
+    &quot;limit&quot;: 3
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;asset_type&quot;: &quot;fx&quot;,
+  &quot;limit&quot;: 3
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;AUDUSD.FX&quot;,
+    &quot;symbol&quot;: &quot;AUDUSD&quot;,
+    &quot;asset_type&quot;: &quot;fx&quot;,
+    &quot;exchange&quot;: &quot;FX&quot;,
+    &quot;market_name&quot;: &quot;基本汇率&quot;,
+    &quot;market_group&quot;: &quot;环球行情&quot;,
+    &quot;base_currency&quot;: &quot;AUD&quot;,
+    &quot;quote_currency&quot;: &quot;USD&quot;
+  },
+  {
+    &quot;instrument_id&quot;: &quot;CNHHKD.FX&quot;,
+    &quot;symbol&quot;: &quot;CNHHKD&quot;,
+    &quot;asset_type&quot;: &quot;fx&quot;,
+    &quot;exchange&quot;: &quot;FX&quot;,
+    &quot;market_name&quot;: &quot;基本汇率&quot;,
+    &quot;market_group&quot;: &quot;环球行情&quot;,
+    &quot;product_code&quot;: null,
+    &quot;product_name&quot;: null,
+    &quot;contract_month&quot;: null,
+    &quot;contract_type&quot;: null,
+    &quot;option_type&quot;: null,
+    &quot;strike_price&quot;: null,
+    &quot;fund_type&quot;: null,
+    &quot;bond_type&quot;: null,
+    &quot;base_currency&quot;: &quot;CNH&quot;,
+    &quot;quote_currency&quot;: &quot;HKD&quot;,
+    &quot;indicator_category&quot;: null
+  },
+  {
+    &quot;instrument_id&quot;: &quot;CNHUSD.FX&quot;,
+    &quot;symbol&quot;: &quot;CNHUSD&quot;,
+    &quot;asset_type&quot;: &quot;fx&quot;,
+    &quot;exchange&quot;: &quot;FX&quot;,
+    &quot;market_name&quot;: &quot;基本汇率&quot;,
+    &quot;market_group&quot;: &quot;环球行情&quot;,
+    &quot;product_code&quot;: null,
+    &quot;product_name&quot;: null,
+    &quot;contract_month&quot;: null,
+    &quot;contract_type&quot;: null,
+    &quot;option_type&quot;: null,
+    &quot;strike_price&quot;: null,
+    &quot;fund_type&quot;: null,
+    &quot;bond_type&quot;: null,
+    &quot;base_currency&quot;: &quot;CNH&quot;,
+    &quot;quote_currency&quot;: &quot;USD&quot;,
+    &quot;indicator_category&quot;: null
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

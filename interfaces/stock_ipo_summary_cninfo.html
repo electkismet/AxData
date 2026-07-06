@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>上市相关 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>上市相关</h1>
+  <p class="code-title">stock_ipo_summary_cninfo</p>
+  <p class="lead">临时获取巨潮上市相关数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_ipo_summary_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 新股数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求巨潮单股上市相关 webapi，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>股票代码，支持 600030、600030.SH。</td><td></td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>prospectus_announcement_date</code></td><td>date</td><td>招股公告日期，格式 YYYYMMDD。</td></tr><tr><td><code>lottery_rate_announcement_date</code></td><td>date</td><td>中签率公告日，格式 YYYYMMDD。</td></tr><tr><td><code>par_value</code></td><td>number</td><td>每股面值，单位：元。</td></tr><tr><td><code>total_issue_shares</code></td><td>number</td><td>总发行数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>nav_per_share_before_issue</code></td><td>number</td><td>发行前每股净资产，单位：元。</td></tr><tr><td><code>diluted_pe</code></td><td>number</td><td>摊薄发行市盈率。</td></tr><tr><td><code>raised_funds_net</code></td><td>number</td><td>募集资金净额，金额单位/口径沿用巨潮源端。</td></tr><tr><td><code>online_issue_date</code></td><td>date</td><td>上网发行日期，格式 YYYYMMDD。</td></tr><tr><td><code>listing_date</code></td><td>date</td><td>上市日期，格式 YYYYMMDD。</td></tr><tr><td><code>issue_price</code></td><td>number</td><td>发行价格，单位：元。</td></tr><tr><td><code>issue_expenses_total</code></td><td>number</td><td>发行费用总额，金额单位/口径沿用巨潮源端。</td></tr><tr><td><code>nav_per_share_after_issue</code></td><td>number</td><td>发行后每股净资产，单位：元。</td></tr><tr><td><code>online_lottery_rate</code></td><td>number</td><td>上网发行中签率，源端百分比数值口径。</td></tr><tr><td><code>lead_underwriter</code></td><td>string</td><td>主承销商。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_ipo_summary_cninfo&quot;,
+    code=&#x27;600030.SH&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_ipo_summary_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;600030.SH&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;600030.SH&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;600030.SH&quot;,
+    &quot;symbol&quot;: &quot;600030&quot;,
+    &quot;exchange&quot;: &quot;SSE&quot;,
+    &quot;prospectus_announcement_date&quot;: &quot;20021213&quot;,
+    &quot;lottery_rate_announcement_date&quot;: null,
+    &quot;par_value&quot;: 1.0,
+    &quot;total_issue_shares&quot;: 40000.0,
+    &quot;nav_per_share_before_issue&quot;: 1.67,
+    &quot;diluted_pe&quot;: 15.0,
+    &quot;raised_funds_net&quot;: 175967.3375,
+    &quot;online_issue_date&quot;: &quot;20021217&quot;,
+    &quot;listing_date&quot;: &quot;20030106&quot;,
+    &quot;issue_price&quot;: 4.5,
+    &quot;issue_expenses_total&quot;: 4032.6625,
+    &quot;nav_per_share_after_issue&quot;: 2.11,
+    &quot;online_lottery_rate&quot;: 0.282,
+    &quot;lead_underwriter&quot;: &quot;广发证券股份有限公司&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

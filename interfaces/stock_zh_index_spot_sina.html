@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A 股指数实时行情 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>A 股指数实时行情</h1>
+  <p class="code-title">stock_zh_index_spot_sina</p>
+  <p class="lead">临时获取新浪财经A 股指数实时行情数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_zh_index_spot_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 指数数据</dd></div><div><dt>资产类型</dt><dd>index</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪行情中心 A 股指数单页，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>page</code></td><td>integer</td><td>否</td><td>页码，默认 1。</td><td>1</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>当前页最多返回行数，默认 80，最大 80。</td><td>80</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一指数代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位指数代码。</td></tr><tr><td><code>sina_symbol</code></td><td>string</td><td>新浪带市场前缀代码，例如 sh000001。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE。</td></tr><tr><td><code>asset_type</code></td><td>string</td><td>资产类型，固定为 index。</td></tr><tr><td><code>name</code></td><td>string</td><td>指数名称。</td></tr><tr><td><code>latest_price</code></td><td>number</td><td>最新点位。</td></tr><tr><td><code>change</code></td><td>number</td><td>涨跌额。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>涨跌幅，源端百分比数值口径。</td></tr><tr><td><code>bid</code></td><td>number</td><td>买入价，指数通常为 0。</td></tr><tr><td><code>ask</code></td><td>number</td><td>卖出价，指数通常为 0。</td></tr><tr><td><code>prev_close</code></td><td>number</td><td>昨收点位。</td></tr><tr><td><code>open</code></td><td>number</td><td>今开点位。</td></tr><tr><td><code>high</code></td><td>number</td><td>最高点位。</td></tr><tr><td><code>low</code></td><td>number</td><td>最低点位。</td></tr><tr><td><code>volume</code></td><td>number</td><td>成交量，沿用新浪源端指数口径。</td></tr><tr><td><code>amount</code></td><td>number</td><td>成交额，沿用新浪源端指数口径。</td></tr><tr><td><code>tick_time</code></td><td>string</td><td>源端行情时间。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_zh_index_spot_sina&quot;,
+    limit=1,
+    page=1,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_zh_index_spot_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;page&quot;: 1,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;page&quot;: 1,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000001.SH&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;sina_symbol&quot;: &quot;sh000001&quot;,
+    &quot;exchange&quot;: &quot;SSE&quot;,
+    &quot;asset_type&quot;: &quot;index&quot;,
+    &quot;name&quot;: &quot;上证指数&quot;,
+    &quot;latest_price&quot;: 4043.6432,
+    &quot;change&quot;: 14.739,
+    &quot;change_pct&quot;: 0.366,
+    &quot;bid&quot;: 0.0,
+    &quot;ask&quot;: 0.0,
+    &quot;prev_close&quot;: 4028.9038,
+    &quot;open&quot;: 4031.3351,
+    &quot;high&quot;: 4073.8802,
+    &quot;low&quot;: 4027.2553,
+    &quot;volume&quot;: 602009738.0,
+    &quot;amount&quot;: 1465563104854.0,
+    &quot;tick_time&quot;: &quot;15:30:39&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

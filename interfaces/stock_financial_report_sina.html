@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新浪 JSON 财务报表 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>新浪 JSON 财务报表</h1>
+  <p class="code-title">stock_financial_report_sina</p>
+  <p class="lead">临时获取新浪财经新浪 JSON 财务报表数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_financial_report_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 财务报表</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪 JSON 财报接口并归一为长表，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>stock</code></td><td>string</td><td>否</td><td>股票代码，支持 sh600600、600600.SH、600600；默认 sh600600。</td><td>&quot;sh600600&quot;</td></tr><tr><td><code>symbol</code></td><td>string</td><td>否</td><td>报表类型：资产负债表、利润表、现金流量表；也兼容 balance、income、cashflow；默认 资产负债表。</td><td>&quot;资产负债表&quot;</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多报告期数量，默认 1，最大 100。</td><td>1</td></tr><tr><td><code>item_limit</code></td><td>integer</td><td>否</td><td>每个报告期最多项目数，默认 200，最大 2000。</td><td>200</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位股票代码。</td></tr><tr><td><code>sina_symbol</code></td><td>string</td><td>新浪带市场前缀代码，例如 sh600600。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>statement_type</code></td><td>string</td><td>报表类型：balance、income、cashflow。</td></tr><tr><td><code>statement_name</code></td><td>string</td><td>报表中文名称。</td></tr><tr><td><code>report_date</code></td><td>date</td><td>报告期日期，格式 YYYYMMDD。</td></tr><tr><td><code>date_description</code></td><td>string</td><td>报告期说明，例如 2026一季报。</td></tr><tr><td><code>date_type</code></td><td>integer</td><td>源端报告期类型编码。</td></tr><tr><td><code>item_field</code></td><td>string</td><td>源端项目字段编码。</td></tr><tr><td><code>item_name</code></td><td>string</td><td>报表项目名称。</td></tr><tr><td><code>item_value</code></td><td>number</td><td>项目数值，金额单位/口径沿用新浪源端。</td></tr><tr><td><code>item_display_type</code></td><td>integer</td><td>源端展示类型编码。</td></tr><tr><td><code>item_display</code></td><td>string</td><td>源端展示层级，例如 大类/小类。</td></tr><tr><td><code>item_precision</code></td><td>string</td><td>源端数值精度标记。</td></tr><tr><td><code>item_group_no</code></td><td>integer</td><td>源端项目分组编号。</td></tr><tr><td><code>item_source</code></td><td>string</td><td>源端项目所属报表源编码。</td></tr><tr><td><code>item_yoy</code></td><td>number</td><td>项目同比，源端数值口径。</td></tr><tr><td><code>data_source</code></td><td>string</td><td>报告数据来源。</td></tr><tr><td><code>is_audit</code></td><td>string</td><td>是否审计，源端中文口径。</td></tr><tr><td><code>publish_date</code></td><td>date</td><td>公告日期，格式 YYYYMMDD。</td></tr><tr><td><code>currency</code></td><td>string</td><td>币种，例如 CNY。</td></tr><tr><td><code>report_type</code></td><td>string</td><td>报告类型，例如 合并期末。</td></tr><tr><td><code>update_time</code></td><td>integer</td><td>源端更新时间 Unix 秒。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_financial_report_sina&quot;,
+    item_limit=1,
+    limit=1,
+    stock=&#x27;sh600600&#x27;,
+    symbol=&#x27;资产负债表&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_financial_report_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;stock&quot;: &quot;sh600600&quot;,
+    &quot;symbol&quot;: &quot;资产负债表&quot;,
+    &quot;limit&quot;: 1,
+    &quot;item_limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;stock&quot;: &quot;sh600600&quot;,
+  &quot;symbol&quot;: &quot;资产负债表&quot;,
+  &quot;limit&quot;: 1,
+  &quot;item_limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;600600.SH&quot;,
+    &quot;symbol&quot;: &quot;600600&quot;,
+    &quot;sina_symbol&quot;: &quot;sh600600&quot;,
+    &quot;exchange&quot;: &quot;SSE&quot;,
+    &quot;statement_type&quot;: &quot;balance&quot;,
+    &quot;statement_name&quot;: &quot;资产负债表&quot;,
+    &quot;report_date&quot;: &quot;20260331&quot;,
+    &quot;date_description&quot;: &quot;2026一季报&quot;,
+    &quot;date_type&quot;: 1,
+    &quot;item_field&quot;: null,
+    &quot;item_name&quot;: &quot;流动资产&quot;,
+    &quot;item_value&quot;: null,
+    &quot;item_display_type&quot;: 1,
+    &quot;item_display&quot;: &quot;大类&quot;,
+    &quot;item_precision&quot;: &quot;f2&quot;,
+    &quot;item_group_no&quot;: 1,
+    &quot;item_source&quot;: &quot;fzb&quot;,
+    &quot;item_yoy&quot;: null,
+    &quot;data_source&quot;: &quot;定期报告&quot;,
+    &quot;is_audit&quot;: &quot;未审计&quot;,
+    &quot;publish_date&quot;: &quot;20260428&quot;,
+    &quot;currency&quot;: &quot;CNY&quot;,
+    &quot;report_type&quot;: &quot;合并期末&quot;,
+    &quot;update_time&quot;: 1777285085
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

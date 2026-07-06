@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>公司概况 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>公司概况</h1>
+  <p class="code-title">stock_profile_cninfo</p>
+  <p class="lead">临时获取巨潮公司概况数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_profile_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 公司资料</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求巨潮公司概况 webapi，返回单家公司资料，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>股票代码，支持 600030、600030.SH。</td><td></td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>company_name</code></td><td>string</td><td>公司全称。</td></tr><tr><td><code>english_name</code></td><td>string</td><td>英文名称。</td></tr><tr><td><code>former_short_name</code></td><td>string</td><td>曾用简称。</td></tr><tr><td><code>a_share_code</code></td><td>string</td><td>A 股代码。</td></tr><tr><td><code>a_share_name</code></td><td>string</td><td>A 股简称。</td></tr><tr><td><code>b_share_code</code></td><td>string</td><td>B 股代码。</td></tr><tr><td><code>b_share_name</code></td><td>string</td><td>B 股简称。</td></tr><tr><td><code>h_share_code</code></td><td>string</td><td>H 股代码。</td></tr><tr><td><code>h_share_name</code></td><td>string</td><td>H 股简称。</td></tr><tr><td><code>selected_indexes</code></td><td>string</td><td>入选指数，沿用巨潮源端文本。</td></tr><tr><td><code>market</code></td><td>string</td><td>所属市场。</td></tr><tr><td><code>industry</code></td><td>string</td><td>所属行业。</td></tr><tr><td><code>legal_representative</code></td><td>string</td><td>法人代表。</td></tr><tr><td><code>registered_capital</code></td><td>number</td><td>注册资金，沿用巨潮源端单位/口径。</td></tr><tr><td><code>founded_date</code></td><td>date</td><td>成立日期，格式 YYYYMMDD。</td></tr><tr><td><code>listing_date</code></td><td>date</td><td>上市日期，格式 YYYYMMDD。</td></tr><tr><td><code>website</code></td><td>string</td><td>官方网站。</td></tr><tr><td><code>email</code></td><td>string</td><td>电子邮箱。</td></tr><tr><td><code>phone</code></td><td>string</td><td>联系电话。</td></tr><tr><td><code>fax</code></td><td>string</td><td>传真。</td></tr><tr><td><code>registered_address</code></td><td>string</td><td>注册地址。</td></tr><tr><td><code>office_address</code></td><td>string</td><td>办公地址。</td></tr><tr><td><code>postcode</code></td><td>string</td><td>邮政编码。</td></tr><tr><td><code>main_business</code></td><td>string</td><td>主营业务。</td></tr><tr><td><code>business_scope</code></td><td>string</td><td>经营范围。</td></tr><tr><td><code>organization_profile</code></td><td>string</td><td>机构简介。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_profile_cninfo&quot;,
+    code=&#x27;600030.SH&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_profile_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;600030.SH&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;600030.SH&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;600030.SH&quot;,
+    &quot;symbol&quot;: &quot;600030&quot;,
+    &quot;exchange&quot;: &quot;SSE&quot;,
+    &quot;company_name&quot;: &quot;中信证券股份有限公司&quot;,
+    &quot;english_name&quot;: &quot;CITIC Securities Company Limited&quot;,
+    &quot;former_short_name&quot;: null,
+    &quot;a_share_code&quot;: &quot;600030&quot;,
+    &quot;a_share_name&quot;: &quot;中信证券&quot;,
+    &quot;b_share_code&quot;: null,
+    &quot;b_share_name&quot;: null,
+    &quot;h_share_code&quot;: &quot;06030&quot;,
+    &quot;h_share_name&quot;: &quot;中信证券&quot;,
+    &quot;selected_indexes&quot;: &quot;分析师指数,国证Ａ指,国证红利,沪深300,巨潮100,巨潮大盘,上证180,上证50,中证央企&quot;,
+    &quot;market&quot;: &quot;上交所&quot;,
+    &quot;industry&quot;: &quot;资本市场服务&quot;,
+    &quot;legal_representative&quot;: &quot;张佑君&quot;,
+    &quot;registered_capital&quot;: 1482054.6829,
+    &quot;founded_date&quot;: &quot;19951025&quot;,
+    &quot;listing_date&quot;: &quot;20030106&quot;,
+    &quot;website&quot;: &quot;www.citics.com&quot;,
+    &quot;email&quot;: &quot;ir@citics.com&quot;,
+    &quot;phone&quot;: &quot;0755-23835888&quot;,
+    &quot;fax&quot;: &quot;0755-23835861&quot;,
+    &quot;registered_address&quot;: &quot;广东省深圳市福田区中心三路8号卓越时代广场(二期)北座&quot;,
+    &quot;office_address&quot;: &quot;北京市朝阳区亮马桥路48号中信证券大厦；广东省深圳市福田区中心三路8号中信证券大厦&quot;,
+    &quot;postcode&quot;: &quot;100026&quot;,
+    &quot;main_business&quot;: &quot;主要从事证券承销和上市推荐证券自营买卖资产管理和证券代理买卖等业务。&quot;,
+    &quot;business_scope&quot;: &quot;证券经纪（限山东省、河南省、浙江省天台县、浙江省苍南县以外区域）；证券投资咨询；与证券交易、证券投资活动有关的财务顾问；证券承销与保荐；证券自营；证券资产管理；融资融券；证券投资基金代销；为期货公司提供中间介绍业务；代销金融产品；股票期权做市。&quot;,
+    &quot;organization_profile&quot;: &quot;公司的前身中信证券有限责任公司是经中国人民银行银复[1995]313号文批准，由中信公司，中信兴业信托投资公司，中信上海信托投资公司和中信宁波公司于1995年10月25日出资设立的。&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

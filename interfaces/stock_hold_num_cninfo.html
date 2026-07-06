@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>股东人数及持股集中度 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>股东人数及持股集中度</h1>
+  <p class="code-title">stock_hold_num_cninfo</p>
+  <p class="lead">临时获取巨潮股东人数及持股集中度数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_hold_num_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 股本股东</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求巨潮股东人数及持股集中度专题统计，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>date</code></td><td>string</td><td>否</td><td>报告期日期，YYYYMMDD 或 YYYY-MM-DD；默认 20210630。</td><td>&quot;20210630&quot;</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>report_date</code></td><td>date</td><td>请求报告期日期，格式 YYYYMMDD。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>change_date</code></td><td>date</td><td>变动日期，格式 YYYYMMDD。</td></tr><tr><td><code>shareholder_count</code></td><td>number</td><td>本期股东人数，单位：户。</td></tr><tr><td><code>prev_shareholder_count</code></td><td>number</td><td>上期股东人数，单位：户。</td></tr><tr><td><code>shareholder_count_change_pct</code></td><td>number</td><td>股东人数增幅，源端百分比数值口径。</td></tr><tr><td><code>avg_holding</code></td><td>number</td><td>本期人均持股数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>prev_avg_holding</code></td><td>number</td><td>上期人均持股数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>avg_holding_change_pct</code></td><td>number</td><td>人均持股数量增幅，源端百分比数值口径。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_hold_num_cninfo&quot;,
+    date=&#x27;20210630&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_hold_num_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;date&quot;: &quot;20210630&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;date&quot;: &quot;20210630&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;002054.SZ&quot;,
+    &quot;symbol&quot;: &quot;002054&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;report_date&quot;: &quot;20210630&quot;,
+    &quot;name&quot;: &quot;德美化工&quot;,
+    &quot;change_date&quot;: &quot;20210630&quot;,
+    &quot;shareholder_count&quot;: 17768.0,
+    &quot;prev_shareholder_count&quot;: 19463.0,
+    &quot;shareholder_count_change_pct&quot;: -8.71,
+    &quot;avg_holding&quot;: 27134.0,
+    &quot;prev_avg_holding&quot;: 24771.0,
+    &quot;avg_holding_change_pct&quot;: 9.54
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

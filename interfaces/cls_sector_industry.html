@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>行业板块实时行情 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 财联社</p>
+  <h1>行业板块实时行情</h1>
+  <p class="code-title">cls_sector_industry</p>
+  <p class="lead">临时获取财联社行业板块实时行情数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>cls_sector_industry</dd></div><div><dt>Provider</dt><dd>axdata.source.cls</dd></div><div><dt>数据源</dt><dd>财联社 / cls</dd></div><div><dt>目录</dt><dd>财联社 / 板块数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>请求财联社行业板块实时行情，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  <p>无参数。</p>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>plate_code</code></td><td>string</td><td>板块代码。</td></tr><tr><td><code>plate_name</code></td><td>string</td><td>板块名称。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>涨跌幅。</td></tr><tr><td><code>main_fund_diff</code></td><td>number</td><td>主力净流入。</td></tr><tr><td><code>rise_count</code></td><td>integer</td><td>上涨家数。</td></tr><tr><td><code>fall_count</code></td><td>integer</td><td>下跌家数。</td></tr><tr><td><code>limit_up_count</code></td><td>integer</td><td>涨停家数。</td></tr><tr><td><code>limit_down_count</code></td><td>integer</td><td>跌停家数。</td></tr><tr><td><code>trade_status</code></td><td>string</td><td>交易状态。</td></tr><tr><td><code>raw_first_stock</code></td><td>string</td><td>领涨股原始摘要。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(&quot;cls_sector_industry&quot;)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/cls_sector_industry
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {}
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;plate_code&quot;: &quot;cls82074&quot;,
+    &quot;plate_name&quot;: &quot;通信&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

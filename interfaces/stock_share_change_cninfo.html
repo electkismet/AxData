@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>公司股本变动 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>公司股本变动</h1>
+  <p class="code-title">stock_share_change_cninfo</p>
+  <p class="lead">临时获取巨潮公司股本变动数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_share_change_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 股本股东</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求巨潮单股公司股本变动 webapi，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>股票代码，支持 002594、002594.SZ。</td><td></td></tr><tr><td><code>start_date</code></td><td>string</td><td>否</td><td>开始日期，YYYYMMDD 或 YYYY-MM-DD；默认 19900101。</td><td>&quot;19900101&quot;</td></tr><tr><td><code>end_date</code></td><td>string</td><td>否</td><td>结束日期，YYYYMMDD 或 YYYY-MM-DD；默认 20991231。</td><td>&quot;20991231&quot;</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>organization_name</code></td><td>string</td><td>机构名称。</td></tr><tr><td><code>announcement_date</code></td><td>date</td><td>公告日期，格式 YYYYMMDD。</td></tr><tr><td><code>change_date</code></td><td>date</td><td>变动日期，格式 YYYYMMDD。</td></tr><tr><td><code>change_reason_code</code></td><td>string</td><td>变动原因编码。</td></tr><tr><td><code>change_reason</code></td><td>string</td><td>变动原因。</td></tr><tr><td><code>total_share</code></td><td>number</td><td>总股本，单位/口径沿用巨潮源端。</td></tr><tr><td><code>non_circulating_share</code></td><td>number</td><td>未流通股份，单位/口径沿用巨潮源端。</td></tr><tr><td><code>promoter_share</code></td><td>number</td><td>发起人股份，单位/口径沿用巨潮源端。</td></tr><tr><td><code>state_share</code></td><td>number</td><td>国家持股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>state_owned_legal_person_share</code></td><td>number</td><td>国有法人持股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>domestic_legal_person_share</code></td><td>number</td><td>境内法人持股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>foreign_legal_person_share</code></td><td>number</td><td>境外法人持股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>natural_person_share</code></td><td>number</td><td>自然人持股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>raised_legal_person_share</code></td><td>number</td><td>募集法人股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>employee_share</code></td><td>number</td><td>内部职工股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>transferred_share</code></td><td>number</td><td>转配股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>other_restricted_share</code></td><td>number</td><td>其他流通受限股份，单位/口径沿用巨潮源端。</td></tr><tr><td><code>preferred_share</code></td><td>number</td><td>优先股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>other_non_circulating_share</code></td><td>number</td><td>其他未流通股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>circulating_share</code></td><td>number</td><td>已流通股份，单位/口径沿用巨潮源端。</td></tr><tr><td><code>a_share</code></td><td>number</td><td>人民币普通股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>b_share</code></td><td>number</td><td>境内上市外资股 B 股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>h_share</code></td><td>number</td><td>境外上市外资股 H 股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>executive_share</code></td><td>number</td><td>高管股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>other_circulating_share</code></td><td>number</td><td>其他流通股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>restricted_share</code></td><td>number</td><td>流通受限股份，单位/口径沿用巨潮源端。</td></tr><tr><td><code>allocated_legal_person_share</code></td><td>number</td><td>配售法人股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>strategic_investor_share</code></td><td>number</td><td>战略投资者持股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>securities_investment_fund_share</code></td><td>number</td><td>证券投资基金持股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>general_legal_person_share</code></td><td>number</td><td>一般法人持股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>state_restricted_share</code></td><td>number</td><td>国家持股-受限，单位/口径沿用巨潮源端。</td></tr><tr><td><code>state_owned_legal_person_restricted_share</code></td><td>number</td><td>国有法人持股-受限，单位/口径沿用巨潮源端。</td></tr><tr><td><code>other_domestic_restricted_share</code></td><td>number</td><td>其他内资持股-受限，单位/口径沿用巨潮源端。</td></tr><tr><td><code>domestic_legal_person_restricted_share</code></td><td>number</td><td>其中：境内法人持股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>domestic_natural_person_restricted_share</code></td><td>number</td><td>其中：境内自然人持股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>foreign_restricted_share</code></td><td>number</td><td>外资持股-受限，单位/口径沿用巨潮源端。</td></tr><tr><td><code>foreign_legal_person_restricted_share</code></td><td>number</td><td>其中：境外法人持股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>foreign_natural_person_restricted_share</code></td><td>number</td><td>其中：境外自然人持股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>restricted_executive_share</code></td><td>number</td><td>其中：限售高管股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>restricted_b_share</code></td><td>number</td><td>其中：限售 B 股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>restricted_h_share</code></td><td>number</td><td>其中：限售 H 股，单位/口径沿用巨潮源端。</td></tr><tr><td><code>controlling_shareholder_actual_controller_share</code></td><td>number</td><td>控股股东、实际控制人持股，单位/口径沿用巨潮源端。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_share_change_cninfo&quot;,
+    code=&#x27;002594.SZ&#x27;,
+    end_date=&#x27;20241021&#x27;,
+    start_date=&#x27;20091227&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_share_change_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;002594.SZ&quot;,
+    &quot;start_date&quot;: &quot;20091227&quot;,
+    &quot;end_date&quot;: &quot;20241021&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;002594.SZ&quot;,
+  &quot;start_date&quot;: &quot;20091227&quot;,
+  &quot;end_date&quot;: &quot;20241021&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;002594.SZ&quot;,
+    &quot;symbol&quot;: &quot;002594&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;比亚迪&quot;,
+    &quot;organization_name&quot;: &quot;比亚迪股份有限公司&quot;,
+    &quot;announcement_date&quot;: &quot;20110823&quot;,
+    &quot;change_date&quot;: &quot;20110630&quot;,
+    &quot;change_reason_code&quot;: &quot;015001,015019&quot;,
+    &quot;change_reason&quot;: &quot;A股上市,定期报告&quot;,
+    &quot;total_share&quot;: 235410.0,
+    &quot;non_circulating_share&quot;: 0.0,
+    &quot;promoter_share&quot;: 0.0,
+    &quot;state_share&quot;: null,
+    &quot;state_owned_legal_person_share&quot;: null,
+    &quot;domestic_legal_person_share&quot;: null,
+    &quot;foreign_legal_person_share&quot;: null,
+    &quot;natural_person_share&quot;: null,
+    &quot;raised_legal_person_share&quot;: null,
+    &quot;employee_share&quot;: null,
+    &quot;transferred_share&quot;: null,
+    &quot;other_restricted_share&quot;: 148200.0,
+    &quot;preferred_share&quot;: null,
+    &quot;other_non_circulating_share&quot;: null,
+    &quot;circulating_share&quot;: 85710.0,
+    &quot;a_share&quot;: 6400.0,
+    &quot;b_share&quot;: 0.0,
+    &quot;h_share&quot;: 79310.0,
+    &quot;executive_share&quot;: 0.0,
+    &quot;other_circulating_share&quot;: 0.0,
+    &quot;restricted_share&quot;: 149700.0,
+    &quot;allocated_legal_person_share&quot;: 1500.0,
+    &quot;strategic_investor_share&quot;: null,
+    &quot;securities_investment_fund_share&quot;: 0.0,
+    &quot;general_legal_person_share&quot;: 1500.0,
+    &quot;state_restricted_share&quot;: 0.0,
+    &quot;state_owned_legal_person_restricted_share&quot;: null,
+    &quot;other_domestic_restricted_share&quot;: 146457.396,
+    &quot;domestic_legal_person_restricted_share&quot;: 16939.146,
+    &quot;domestic_natural_person_restricted_share&quot;: 129518.25,
+    &quot;foreign_restricted_share&quot;: 1742.604,
+    &quot;foreign_legal_person_restricted_share&quot;: 1742.604,
+    &quot;foreign_natural_person_restricted_share&quot;: 0.0,
+    &quot;restricted_executive_share&quot;: null,
+    &quot;restricted_b_share&quot;: null,
+    &quot;restricted_h_share&quot;: null,
+    &quot;controlling_shareholder_actual_controller_share&quot;: null
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

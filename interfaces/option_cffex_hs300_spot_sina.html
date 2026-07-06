@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新浪中金所沪深300期权实时 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>新浪中金所沪深300期权实时</h1>
+  <p class="code-title">option_cffex_hs300_spot_sina</p>
+  <p class="lead">临时获取新浪财经新浪中金所沪深300期权实时数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>option_cffex_hs300_spot_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 期权</dd></div><div><dt>资产类型</dt><dd>option</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪中金所沪深300指数期权单合约月份实时链，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>symbol</code></td><td>string</td><td>否</td><td>中金所沪深300期权合约月份代码，例如 io2607；默认 io2607。</td><td>&quot;io2607&quot;</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多返回行权价档位数，默认 100，最大 200。</td><td>100</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>contract_code</code></td><td>string</td><td>合约月份代码，例如 io2607。</td></tr><tr><td><code>product_code</code></td><td>string</td><td>中金所期权品种代码，例如 io。</td></tr><tr><td><code>underlying_name</code></td><td>string</td><td>期权标的指数名称，例如 沪深300指数。</td></tr><tr><td><code>exercise_price</code></td><td>number</td><td>行权价，单位：指数点。</td></tr><tr><td><code>call_symbol</code></td><td>string</td><td>看涨期权完整合约代码。</td></tr><tr><td><code>call_bid_volume</code></td><td>number</td><td>看涨买量。</td></tr><tr><td><code>call_bid_price</code></td><td>number</td><td>看涨买价，单位：点。</td></tr><tr><td><code>call_latest_price</code></td><td>number</td><td>看涨最新价，单位：点。</td></tr><tr><td><code>call_ask_price</code></td><td>number</td><td>看涨卖价，单位：点。</td></tr><tr><td><code>call_ask_volume</code></td><td>number</td><td>看涨卖量。</td></tr><tr><td><code>call_open_interest</code></td><td>number</td><td>看涨持仓量。</td></tr><tr><td><code>call_change</code></td><td>number</td><td>看涨涨跌，单位/口径沿用新浪源端。</td></tr><tr><td><code>put_symbol</code></td><td>string</td><td>看跌期权完整合约代码。</td></tr><tr><td><code>put_bid_volume</code></td><td>number</td><td>看跌买量。</td></tr><tr><td><code>put_bid_price</code></td><td>number</td><td>看跌买价，单位：点。</td></tr><tr><td><code>put_latest_price</code></td><td>number</td><td>看跌最新价，单位：点。</td></tr><tr><td><code>put_ask_price</code></td><td>number</td><td>看跌卖价，单位：点。</td></tr><tr><td><code>put_ask_volume</code></td><td>number</td><td>看跌卖量。</td></tr><tr><td><code>put_open_interest</code></td><td>number</td><td>看跌持仓量。</td></tr><tr><td><code>put_change</code></td><td>number</td><td>看跌涨跌，单位/口径沿用新浪源端。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码，固定为 CFFEX。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;option_cffex_hs300_spot_sina&quot;,
+    limit=1,
+    symbol=&#x27;io2607&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/option_cffex_hs300_spot_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;symbol&quot;: &quot;io2607&quot;,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;symbol&quot;: &quot;io2607&quot;,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;contract_code&quot;: &quot;io2607&quot;,
+    &quot;product_code&quot;: &quot;io&quot;,
+    &quot;underlying_name&quot;: &quot;沪深300指数&quot;,
+    &quot;exercise_price&quot;: 4200.0,
+    &quot;call_symbol&quot;: &quot;io2607C4200&quot;,
+    &quot;call_bid_volume&quot;: 1.0,
+    &quot;call_bid_price&quot;: 605.8,
+    &quot;call_latest_price&quot;: 626.0,
+    &quot;call_ask_price&quot;: 627.8,
+    &quot;call_ask_volume&quot;: 1.0,
+    &quot;call_open_interest&quot;: 83.0,
+    &quot;call_change&quot;: 5.89,
+    &quot;put_symbol&quot;: &quot;io2607P4200&quot;,
+    &quot;put_bid_volume&quot;: 7.0,
+    &quot;put_bid_price&quot;: 1.2,
+    &quot;put_latest_price&quot;: 1.2,
+    &quot;put_ask_price&quot;: 1.4,
+    &quot;put_ask_volume&quot;: 5.0,
+    &quot;put_open_interest&quot;: 818.0,
+    &quot;put_change&quot;: -50.0,
+    &quot;exchange&quot;: &quot;CFFEX&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

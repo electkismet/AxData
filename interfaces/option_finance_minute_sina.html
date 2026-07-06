@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新浪金融期权分钟行情 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>新浪金融期权分钟行情</h1>
+  <p class="code-title">option_finance_minute_sina</p>
+  <p class="lead">临时获取新浪财经新浪金融期权分钟行情数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>option_finance_minute_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 期权行情</dd></div><div><dt>资产类型</dt><dd>option</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪金融期权当前交易日分钟行情，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>symbol</code></td><td>string</td><td>否</td><td>期权合约代码，支持 10011799 或 CON_OP_10011799；默认 10011799。</td><td>&quot;10011799&quot;</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>按源端时间顺序最多返回行数，默认 241，最大 1000。</td><td>241</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>option_code</code></td><td>string</td><td>上交所期权合约数字代码。</td></tr><tr><td><code>sina_symbol</code></td><td>string</td><td>新浪期权行情代码，例如 CON_OP_10011799。</td></tr><tr><td><code>trade_date</code></td><td>date</td><td>交易日期，格式 YYYYMMDD；源端当前交易日口径。</td></tr><tr><td><code>trade_time</code></td><td>string</td><td>分钟时间，格式 HH:MM:SS。</td></tr><tr><td><code>price</code></td><td>number</td><td>分钟价格，单位/口径沿用新浪源端。</td></tr><tr><td><code>volume</code></td><td>number</td><td>分钟成交量，单位/口径沿用新浪源端。</td></tr><tr><td><code>open_interest</code></td><td>number</td><td>持仓量，源端口径。</td></tr><tr><td><code>avg_price</code></td><td>number</td><td>均价，单位/口径沿用新浪源端。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;option_finance_minute_sina&quot;,
+    limit=1,
+    symbol=&#x27;10011799&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/option_finance_minute_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;symbol&quot;: &quot;10011799&quot;,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;symbol&quot;: &quot;10011799&quot;,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;option_code&quot;: &quot;10011799&quot;,
+    &quot;sina_symbol&quot;: &quot;CON_OP_10011799&quot;,
+    &quot;trade_date&quot;: &quot;20260703&quot;,
+    &quot;trade_time&quot;: &quot;09:30:00&quot;,
+    &quot;price&quot;: 0.0,
+    &quot;volume&quot;: 0.0,
+    &quot;open_interest&quot;: 847.0,
+    &quot;avg_price&quot;: 0.0
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

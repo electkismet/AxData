@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>大盘指数实时行情 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 东方财富</p>
+  <h1>大盘指数实时行情</h1>
+  <p class="code-title">eastmoney_market_index_realtime</p>
+  <p class="lead">临时获取东方财富大盘指数实时行情数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>eastmoney_market_index_realtime</dd></div><div><dt>Provider</dt><dd>axdata.source.eastmoney</dd></div><div><dt>数据源</dt><dd>东方财富 / eastmoney</dd></div><div><dt>目录</dt><dd>东方财富 / 指数数据</dd></div><div><dt>资产类型</dt><dd>index</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>请求东方财富指数实时行情，默认只返回常用指数，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>scope</code></td><td>string</td><td>否</td><td>指数范围：default 常用指数，all 全部指数。</td><td>&quot;default&quot;</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多返回条数，默认 100。</td><td>100</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>index_code</code></td><td>string</td><td>指数代码。</td></tr><tr><td><code>index_name</code></td><td>string</td><td>指数名称。</td></tr><tr><td><code>last_price</code></td><td>number</td><td>最新价。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>涨跌幅，百分比数值。</td></tr><tr><td><code>change</code></td><td>number</td><td>涨跌额。</td></tr><tr><td><code>volume</code></td><td>number</td><td>成交量，源端口径。</td></tr><tr><td><code>amount</code></td><td>number</td><td>成交额，单位：元。</td></tr><tr><td><code>high</code></td><td>number</td><td>最高价。</td></tr><tr><td><code>low</code></td><td>number</td><td>最低价。</td></tr><tr><td><code>open</code></td><td>number</td><td>开盘价。</td></tr><tr><td><code>pre_close</code></td><td>number</td><td>昨收价。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;eastmoney_market_index_realtime&quot;,
+    limit=6,
+    scope=&#x27;default&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/eastmoney_market_index_realtime
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;scope&quot;: &quot;default&quot;,
+    &quot;limit&quot;: 6
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;scope&quot;: &quot;default&quot;,
+  &quot;limit&quot;: 6
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;index_code&quot;: &quot;000001&quot;,
+    &quot;index_name&quot;: &quot;上证指数&quot;,
+    &quot;last_price&quot;: 3200.5
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

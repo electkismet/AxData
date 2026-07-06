@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>新浪股票分类成份 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 新浪财经</p>
+  <h1>新浪股票分类成份</h1>
+  <p class="code-title">stock_classify_sina</p>
+  <p class="lead">临时获取新浪财经新浪股票分类成份数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_classify_sina</dd></div><div><dt>Provider</dt><dd>axdata.source.sina</dd></div><div><dt>数据源</dt><dd>新浪财经 / sina</dd></div><div><dt>目录</dt><dd>新浪财经 / 股票分类</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求新浪行情中心单个股票分类节点的单页行情，默认不入库；不按 AkShare 参考实现全分类全页拉取。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>symbol</code></td><td>string</td><td>否</td><td>分类组别别名，例如 新浪行业、热门概念；仅用于结果标注，默认 新浪行业。</td><td>&quot;新浪行业&quot;</td></tr><tr><td><code>category</code></td><td>string</td><td>否</td><td>分类组别名称；优先级高于 symbol，仅用于结果标注。</td><td></td></tr><tr><td><code>class_name</code></td><td>string</td><td>否</td><td>分类名称，仅用于结果标注；默认 玻璃行业。</td><td>&quot;玻璃行业&quot;</td></tr><tr><td><code>node</code></td><td>string</td><td>否</td><td>新浪分类节点代码，例如 new_blhy；默认 new_blhy。</td><td>&quot;new_blhy&quot;</td></tr><tr><td><code>page</code></td><td>integer</td><td>否</td><td>页码，默认 1。</td><td>1</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>每页条数/最多返回行数，默认 80，最大 3000。</td><td>80</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>category</code></td><td>string</td><td>分类组别，例如 新浪行业、热门概念；由请求参数标注。</td></tr><tr><td><code>class_name</code></td><td>string</td><td>分类名称，例如 玻璃行业；由请求参数标注。</td></tr><tr><td><code>source_node</code></td><td>string</td><td>新浪行情中心分类节点代码，例如 new_blhy。</td></tr><tr><td><code>rank</code></td><td>integer</td><td>当前请求页内展开后的全局序号。</td></tr><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>sina_symbol</code></td><td>string</td><td>新浪带市场前缀代码，例如 sh600000。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>latest_price</code></td><td>number</td><td>最新价，单位：元。</td></tr><tr><td><code>change</code></td><td>number</td><td>涨跌额，单位：元。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>涨跌幅，源端百分比数值口径。</td></tr><tr><td><code>bid</code></td><td>number</td><td>买入价，单位：元。</td></tr><tr><td><code>ask</code></td><td>number</td><td>卖出价，单位：元。</td></tr><tr><td><code>prev_close</code></td><td>number</td><td>昨收，单位：元。</td></tr><tr><td><code>open</code></td><td>number</td><td>今开，单位：元。</td></tr><tr><td><code>high</code></td><td>number</td><td>最高价，单位：元。</td></tr><tr><td><code>low</code></td><td>number</td><td>最低价，单位：元。</td></tr><tr><td><code>volume</code></td><td>number</td><td>成交量，单位/口径沿用新浪源端。</td></tr><tr><td><code>amount</code></td><td>number</td><td>成交额，金额单位/口径沿用新浪源端。</td></tr><tr><td><code>tick_time</code></td><td>string</td><td>源端行情时间。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_classify_sina&quot;,
+    class_name=&#x27;玻璃行业&#x27;,
+    limit=1,
+    node=&#x27;new_blhy&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_classify_sina
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;node&quot;: &quot;new_blhy&quot;,
+    &quot;class_name&quot;: &quot;玻璃行业&quot;,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;node&quot;: &quot;new_blhy&quot;,
+  &quot;class_name&quot;: &quot;玻璃行业&quot;,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;category&quot;: &quot;新浪行业&quot;,
+    &quot;class_name&quot;: &quot;玻璃行业&quot;,
+    &quot;source_node&quot;: &quot;new_blhy&quot;,
+    &quot;rank&quot;: 1,
+    &quot;instrument_id&quot;: &quot;600176.SH&quot;,
+    &quot;symbol&quot;: &quot;600176&quot;,
+    &quot;sina_symbol&quot;: &quot;sh600176&quot;,
+    &quot;exchange&quot;: &quot;SSE&quot;,
+    &quot;name&quot;: &quot;中国巨石&quot;,
+    &quot;latest_price&quot;: 70.9,
+    &quot;change&quot;: 3.08,
+    &quot;change_pct&quot;: 4.541,
+    &quot;bid&quot;: 70.9,
+    &quot;ask&quot;: 70.91,
+    &quot;prev_close&quot;: 67.82,
+    &quot;open&quot;: 68.18,
+    &quot;high&quot;: 74.6,
+    &quot;low&quot;: 65.51,
+    &quot;volume&quot;: 232101396.0,
+    &quot;amount&quot;: 16653576270.0,
+    &quot;tick_time&quot;: &quot;15:00:01&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

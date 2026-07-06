@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>公司概况 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>公司概况</h1>
+  <p class="code-title">stock_company_profile_tdx</p>
+  <p class="lead">查询公司发行上市资料和指数调入调出记录。 源端直取默认不写入本地数据。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_company_profile_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 股票数据 / F10数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>查询公司发行上市资料和指数调入调出记录。 源端直取默认不写入本地数据。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>股票代码：支持 000001、000001.SZ、sz000001；批量可传列表或英文逗号分隔字符串。</td><td></td></tr><tr><td><code>type</code></td><td>string</td><td>否</td><td>资料类型：listing 发行上市信息，index_change 指数调入调出；默认 listing。</td><td>&quot;listing&quot;</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码，例如 000001.SZ。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始六位代码。</td></tr><tr><td><code>stock_type</code></td><td>string</td><td>股票类别。</td></tr><tr><td><code>list_date</code></td><td>date</td><td>上市日期。</td></tr><tr><td><code>issue_method</code></td><td>string</td><td>发行方式。</td></tr><tr><td><code>issue_system</code></td><td>string</td><td>发行制度。</td></tr><tr><td><code>par_value</code></td><td>number</td><td>每股面值，单位：元。</td></tr><tr><td><code>issue_price</code></td><td>number</td><td>发行价格，单位：元。</td></tr><tr><td><code>issue_volume</code></td><td>number</td><td>发行数量。</td></tr><tr><td><code>raised_amount</code></td><td>number</td><td>实际募资总额。</td></tr><tr><td><code>net_raised_amount</code></td><td>number</td><td>实际募资净额。</td></tr><tr><td><code>first_open</code></td><td>number</td><td>首日开盘价，单位：元。</td></tr><tr><td><code>first_close</code></td><td>number</td><td>首日收盘价，单位：元。</td></tr><tr><td><code>lead_underwriter</code></td><td>string</td><td>主承销商。</td></tr><tr><td><code>sponsor</code></td><td>string</td><td>上市保荐人。</td></tr><tr><td><code>publish_date</code></td><td>date</td><td>指数调整公布日期。</td></tr><tr><td><code>change_direction</code></td><td>string</td><td>指数调入/调出方向。</td></tr><tr><td><code>index_name</code></td><td>string</td><td>指数名称。</td></tr><tr><td><code>publish_date_change_pct</code></td><td>number</td><td>公布日涨跌幅，单位：%。</td></tr><tr><td><code>effective_date</code></td><td>date</td><td>指数调整日期。</td></tr><tr><td><code>effective_date_change_pct</code></td><td>number</td><td>调整日涨跌幅，单位：%。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_company_profile_tdx&quot;,
+    code=&#x27;000001.SZ&#x27;,
+    type=&#x27;listing&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_company_profile_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;000001.SZ&quot;,
+    &quot;type&quot;: &quot;listing&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;000001.SZ&quot;,
+  &quot;type&quot;: &quot;listing&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;stock_type&quot;: &quot;A股&quot;,
+    &quot;list_date&quot;: &quot;19940509&quot;,
+    &quot;issue_method&quot;: &quot;申请表抽签限额认购&quot;,
+    &quot;issue_system&quot;: &quot;核准制&quot;,
+    &quot;par_value&quot;: 1.0,
+    &quot;issue_price&quot;: 5.2,
+    &quot;issue_volume&quot;: 4680,
+    &quot;raised_amount&quot;: 24336,
+    &quot;net_raised_amount&quot;: 23390.2,
+    &quot;first_open&quot;: 7.2,
+    &quot;first_close&quot;: 6.76,
+    &quot;lead_underwriter&quot;: &quot;巨田证券有限责任公司&quot;,
+    &quot;sponsor&quot;: &quot;巨田证券有限责任公司&quot;,
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

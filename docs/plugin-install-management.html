@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>插件安装管理 - AxData 文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="" href="../interfaces/index.html">接口文档</a><a class="active" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">开发文档</a></p>
+  <h1>插件安装管理</h1>
+</section>
+<article class="markdown-body"><h2>插件安装管理</h2>
+<p>本文描述当前已经实现的 AxData 本地插件安装管理流程：预览、安装、列出、启用、禁用、替换和卸载 AxData 管理的 <code>.axp</code> 包。插件作者应先读 <a href="plugin-development.html">plugin-development.md</a>，再用本文验证安装、启停、卸载和诊断路径。</p>
+<p>AxData 插件是本地 Python 扩展。用户在自己的机器上安装和启用插件，并承担本地代码执行风险。AxData 不提供插件市场、插件审核、签名信任体系或沙箱。当前安装管理已包含依赖预览和包内 dependency wheels 离线安装；维护重点是插件作者工具和 UI 引导，不是中心化市场基础设施。只有带 <code>axdata-provider.json</code> 或 <code>axdata-plugin.json</code> manifest 的 Python 包才会进入普通 AxData 插件列表；缺 manifest 的 entry point 只作为 ignored candidate 出现在诊断信息中。</p>
+<h3>Provider 插件</h3>
+<p>Provider 插件和 Collector 插件是平级能力：Provider 进入源端接口目录，Collector 进入采集页和 CollectorRegistry。当前安装管理从 Provider 插件起步，并在 manifest/Registry 层兼容 collectors、downloaders、dependencies 等能力声明。</p>
+<p>每个 Provider 声明：</p>
+<ul>
+<li>稳定的 <code>provider_id</code>，例如 <code>axdata.source.tencent_external</code></li>
+<li><code>source_code</code>，例如 <code>tencent</code></li>
+<li>源端直取接口，例如 <code>tencent_realtime_snapshot</code></li>
+<li>可选的 DownloaderProfile</li>
+<li>可选的 CollectorSpec；进入采集页时应以独立 CollectorSpec/runner_entry 为准</li>
+<li>可选的依赖声明</li>
+<li>API、CLI、Web 展示所需元数据</li>
+</ul>
+<p>真实可执行包格式仍是 Python wheel + entry point + embedded <code>axdata-provider.json</code> manifest。AxData 先读 manifest 做目录展示、版本门禁和冲突检查，只有调用具体接口时才 import Provider 代码。</p>
+<h3>AXP 安装包</h3>
+<p><code>.axp</code> 是围绕一个或多个插件 wheel 的本地安装信封。它是一个 zip archive，通常包含：</p>
+<ul>
+<li><code>manifest.json</code>，或 wheel 内嵌的 provider manifest</li>
+<li><code>wheels/*.whl</code></li>
+<li><code>checksums.txt</code>，记录 sha256 checksum</li>
+<li>可选 README / LICENSE</li>
+<li>可选 dependency wheels</li>
+</ul>
+<p>AXP 只是分发和安装单位，不决定插件能力类型。安装预览会读取 wheel 内的 <code>axdata-provider.json</code> / <code>axdata-plugin.json</code> manifest，并按能力声明分流：<code>provider</code> + <code>interfaces</code> 进入 ProviderRegistry，<code>collectors</code> / CollectorSpec 进入 CollectorRegistry。同一个 AXP 可以是 source-only、collector-only，也可以同时包含 Provider 和 Collector 能力。</p>
+<p>安装 <code>.axp</code> 默认不启用 Provider。外部插件安装后状态为 <code>disabled</code>，用户可以先检查 provider、interfaces、downloaders、collectors、dependencies 和 dependency_status，再决定是否 enable。</p>
+<p><code>checksums.txt</code> 只用于文件完整性和打包一致性检查。它不证明插件作者身份，不证明代码安全，也不授予内置权限。AxData 当前本地优先模型不实现签名验签。</p>
+<h3>依赖处理策略</h3>
+<p>当前依赖处理默认离线：</p>
+<ul>
+<li>预览 manifest、embedded wheel metadata 和简单 bundled <code>pyproject.toml</code> 声明的 Python 依赖。</li>
+<li>检测缺失依赖、版本不满足、非法版本约束、声明但缺失的 dependency wheel。</li>
+<li>将 <code>axdata-core</code> / <code>axdata</code> 视为运行中的 AxData 宿主依赖。</li>
+<li>先安装 <code>.axp</code> 包内 dependency wheels，再安装插件 wheel。</li>
+<li>默认拒绝缺失或版本不满足的 required dependency。</li>
+<li>只有用户显式 opt-in 时才允许联网安装依赖。</li>
+<li>清楚报告依赖冲突，但不做复杂自动冲突求解。</li>
+</ul>
+<p>如果两个插件需要同一个 Python 包的不兼容版本，AxData 会按安装模式提示或拒绝。插件作者或用户应修正依赖集合、选择兼容版本，或使用单独环境。</p>
+<h3>CLI 使用</h3>
+<p>测试插件安装时建议使用干净或显式指定的 data root。AxData 会把 <code>metadata</code>、托管插件目录、 <code>cache</code> 和 <code>logs</code> 放在 data root 同级；如果需要完整隔离的临时环境，可以把 <code>--data-root</code> 指向一个 <code>data</code> 子目录：</p>
+<pre><code class="language-powershell">$base = &quot;$env:TEMP\axdata-plugin-smoke&quot;
+$root = Join-Path $base &quot;data&quot;</code></pre>
+<p>安装或启用插件前，先初始化并检查本地运行环境：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata --data-root $root init
+.\.venv\Scripts\axdata --data-root $root doctor
+.\.venv\Scripts\axdata --data-root $root status
+.\.venv\Scripts\axdata --data-root $root config show</code></pre>
+<p><code>doctor</code> 会报告插件配置路径、AxData 托管的插件 <code>site-packages</code>、ProviderRegistry 加载状态、 已安装/已启用/已禁用/失败/冲突的 Provider、TDX 插件状态和最近 Collector 失败信息。它是离线检查： 不会安装依赖、启用插件、导入 Provider 运行时代码，也不会请求真实数据源。</p>
+<p>预览归档：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata --data-root $root plugin axp-preview C:\path\to\plugin.axp --json</code></pre>
+<p>安装归档：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata --data-root $root plugin axp-install C:\path\to\plugin.axp --json</code></pre>
+<p>安装并显式启用：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata --data-root $root plugin axp-install C:\path\to\plugin.axp --enable --json</code></pre>
+<p>显式允许在线安装依赖：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata --data-root $root plugin axp-install C:\path\to\plugin.axp --allow-online-deps --json</code></pre>
+<p>Default dependency handling is offline. If preview reports a missing required dependency, an unsatisfied version, a declared dependency wheel that is absent from the archive, or an obvious conflict, fix the <code>.axp</code> contents or the plugin environment first. Use <code>--allow-online-deps</code> only when you intentionally want pip to use the current environment&#x27;s configured indexes.</p>
+<p>列出 AxData 托管安装的插件：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata --data-root $root plugin installed --json</code></pre>
+<p>列出已发现的 Provider 和采集能力：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata --data-root $root plugin list --json
+.\.venv\Scripts\axdata --data-root $root plugin collectors --json</code></pre>
+<p><code>plugin list --json</code>、<code>plugin info --json</code>、<code>plugin installed --json</code>, <code>/v1/plugins/providers</code>, and <code>/v1/plugins/installed</code> include <code>status_message</code>, <code>next_action</code>, and <code>action_command</code> when AxData can suggest the next local step. Typical cases: disabled plugins suggest an explicit <code>plugin enable</code> command, TDX disabled/missing states use neutral TDX wording, manifest discovery failures point to the missing <code>axdata-provider.json</code> / <code>axdata-plugin.json</code>, incompatible plugins 指向 <code>plugin_api_version</code>，冲突时会提示禁用其中一个 Provider 或设置 override。</p>
+<p>这些 payload 还包含 CLI、API、诊断和 Web 共用的管理字段：</p>
+<ul>
+<li><code>install_source</code>: <code>preinstalled</code>, <code>axp_managed</code>, <code>python_environment</code>, <code>editable/development</code>, <code>missing</code>, or <code>unknown</code>.</li>
+<li><code>provider_kind</code>: <code>source_plugin</code>, <code>collector_plugin</code>, <code>tool_plugin</code>, or <code>core</code>.</li>
+<li><code>lifecycle_status</code>: 运行时生命周期状态，例如 <code>enabled</code>、<code>disabled</code>、<code>missing</code> 或 <code>uninstalled</code>。</li>
+<li><code>can_enable</code> / <code>can_disable</code>: AxData 是否能在当前状态下改变 Provider 路由状态。</li>
+<li><code>can_uninstall</code>: 预装源插件和通过 AxData 托管 <code>.axp</code> 流程安装的插件为 true。</li>
+<li><code>uninstall_mode</code>: 预装插件为 <code>managed_disable</code>，AxData 托管 AXP 插件为 <code>physical_remove</code>。</li>
+<li><code>uninstall_block_reason</code>: 插件无法由 AxData 移除时，返回给用户看的原因。</li>
+</ul>
+<p>预装源插件可以启用、禁用、逻辑卸载和重新启用。当前预装卸载是逻辑卸载：AxData 将插件标记为从当前 runtime 移除，隐藏它贡献的 interfaces、downloaders、collectors 和 task templates，但不物理删除随包代码。AXP 托管插件可以物理卸载；如果当前已启用，可以传入 <code>disable_first=true</code>。Python environment 或 editable/development 插件会出现在 Provider 状态里，但 AxData 不会从 Python 环境中删除它们；请使用 <code>pip uninstall</code> 或移除开发路径。卸载永远不删除 <code>data/</code>、已采集 Parquet 文件、用户任务定义、运行历史、metadata 或 logs。</p>
+<p>Web 配置页的 Provider 状态和已安装插件卡片会展示同样的 guidance 字段，适合不用切回命令行时先判断“为什么不可用”和“下一步做什么”。Web 不提供插件市场、在线下载中心或自动联网安装依赖。</p>
+<p>启用或禁用 Provider：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata --data-root $root plugin enable axdata.source.tencent_external
+.\.venv\Scripts\axdata --data-root $root plugin disable axdata.source.tencent_external
+.\.venv\Scripts\axdata --data-root $root doctor</code></pre>
+<p>卸载预装插件或已禁用的外部插件：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata --data-root $root plugin uninstall axdata.source.tencent --json
+.\.venv\Scripts\axdata --data-root $root plugin uninstall axdata.source.tencent_external --json</code></pre>
+<p>对于 AXP 托管的外部插件，默认拒绝直接卸载已启用的 Provider。可以先禁用，也可以使用：</p>
+<pre><code class="language-powershell">.venv\Scripts\python -m axdata_core.cli --data-root $root plugin uninstall axdata.source.tencent_external --disable-first --json</code></pre>
+<p>再次安装同一个 Provider：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\axdata --data-root $root plugin axp-install C:\path\to\plugin.axp --replace --json</code></pre>
+<p>不带 <code>--replace</code> 时，同一个 <code>provider_id</code> 的重复安装会被拒绝。<code>--replace</code> 会覆盖 AxData 托管的安装记录和托管包文件。除非同时传入 <code>--enable</code>，替换后的插件仍保持禁用状态。</p>
+<p>Web 的 AXP 安装面板遵循同一规则：先预览上传的 <code>.axp</code>，如果发现同一个插件身份已经存在于 AXP 安装记录中，按钮会从“安装”切换为“更新插件”。当前 API/CLI 返回字段仍统一叫 <code>provider_id</code>，对数据源插件通常就是 Provider ID，对 collector-only 插件则承载对应的插件身份。更新时 Web 会提交 <code>replace=true</code>；如果用户勾选“更新后保持启用”，同时提交 <code>enable=true</code>。更新只替换插件包和安装记录，不删除 <code>data/</code>、metadata、采集任务、运行历史、日志、缓存、API token 或第三方凭据。</p>
+<h3>API 使用</h3>
+<p>API 使用当前运行服务的 data root。</p>
+<ul>
+<li><code>POST /v1/plugins/axp/preview</code>：预览上传的 <code>.axp</code>。</li>
+<li><code>POST /v1/plugins/axp/install</code>：安装上传的 <code>.axp</code>。</li>
+<li><code>GET /v1/plugins/axp/export/{provider_id}</code>：把已发现插件导出为可下载的 <code>.axp</code>。</li>
+<li><code>GET /v1/plugins/installed</code>：列出 AxData 托管安装的插件。</li>
+<li><code>DELETE /v1/plugins/installed/{provider_id}</code>：卸载托管插件或预装插件。</li>
+<li><code>POST /v1/plugins/installed/{provider_id}/uninstall</code>：卸载托管插件或预装插件。</li>
+<li><code>POST /v1/plugins/providers/{provider_id}/enable</code>：启用 Provider。</li>
+<li><code>POST /v1/plugins/providers/{provider_id}/disable</code>：禁用 Provider。</li>
+</ul>
+<p>AXP 上传使用 multipart form 字段 <code>file</code>。安装接口接受以下 form 字段：</p>
+<ul>
+<li><code>enable=true</code>：安装后显式启用。</li>
+<li><code>replace=true</code>：替换同一 <code>provider_id</code> 的既有托管安装。</li>
+<li><code>allow_online_deps=true</code>：允许 pip 从当前配置的索引安装缺失依赖。</li>
+</ul>
+<p>重复安装会返回 <code>409</code>，除非安装表单传入 <code>replace=true</code>。缺少必需依赖会返回 <code>400</code>，除非依赖可以由包内 dependency wheels 满足，或调用方显式传入 <code>allow_online_deps=true</code>。卸载已启用的 AXP 托管插件会返回 <code>409</code>，除非传入 <code>disable_first=true</code>。卸载预装插件会返回 <code>uninstall_mode=managed_disable</code>，隐藏该插件的运行能力，但不删除数据或历史。尝试卸载仅从 Python 环境或 editable/development 路径发现的 Provider 时，会返回错误并提示使用 <code>pip uninstall</code> 或移除开发路径。</p>
+<p>AXP 导出返回文件响应。路径参数是插件身份：数据源插件通常是 <code>provider_id</code>，collector-only 插件可以是 <code>collector_plugin_id</code>。导出的归档只包含插件 manifest、wheels、README 和 checksums；不包含已采集的 Parquet/CSV/DuckDB 数据、metadata 数据库、task 或 run history、logs、cache、AxData API token 或第三方数据源凭据。</p>
+<h3>TDX 插件使用</h3>
+<p>TDX 能力来自独立插件包，不属于 core 的可运行能力。普通 TDX 和 TDX Ext 扩展行情是两个独立 Provider：</p>
+<div class="table-wrap"><table><thead><tr><th>Provider</th><th>包</th><th>数据范围</th></tr></thead><tbody><tr><td><code>axdata.source.tdx_external</code></td><td><code>axdata-source-tdx</code></td><td>股票、指数、ETF、K 线、F10、短线等普通行情接口。</td></tr><tr><td><code>axdata.source.tdx_ext_external</code></td><td><code>axdata-source-tdx-ext</code></td><td>期货、期权、基金、债券、外汇、宏观等扩展行情接口。</td></tr></tbody></table></div>
+<p>普通 TDX 与 TDX Ext 互相独立，禁用其中一个不应影响另一个。通过 <code>axdata</code>、随包 wheel 或当前源码仓库安装时，TDX 与 TDX Ext 默认可用；用户仍可用 <code>plugin disable &lt;provider_id&gt;</code> 按需关闭。扩展行情接口会以“通达信扩展行情”一级菜单进入运行目录。</p>
+<p>用户路径是：</p>
+<ol>
+<li>安装 TDX 或 TDX Ext 插件包，或安装包含对应 Provider 的 <code>.axp</code>。</li>
+<li><code>plugin list</code> 或 <code>GET /v1/plugins/providers</code> 确认 Provider 可见。</li>
+<li><code>GET /v1/request/interfaces</code> 查看对应接口是否进入运行目录。</li>
+<li>使用 <code>client.call(...)</code>、<code>/v1/request/*</code>、Downloader 或 Collector task。</li>
+</ol>
+<p>未安装或被显式禁用时，系统会在 Provider 状态中提示原因；禁用后的接口不会参与路由。用户文档不提供 core 可运行兜底路径。</p>
+<p>本地开发时可以直接 editable 安装插件包：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\python -m pip install -e packages\axdata-source-tdx
+.\.venv\Scripts\python -m pip install -e packages\axdata-source-tdx-ext
+.\.venv\Scripts\axdata plugin list --json
+.\.venv\Scripts\axdata doctor</code></pre>
+<p>AXP 或第三方 Python 包安装只让 Provider 可被发现；启用状态仍由 AxData 插件配置控制，默认 disabled。AxData 随包提供的 TDX/TDX Ext 包是发布入口的默认能力，安装后默认 enabled；当前仓库开发环境也会把随仓库提供的 TDX 与 TDX Ext 包投影为预装插件。只有包文件、manifest 或 import 路径损坏时才显示 missing。</p>
+<h3>发布安装检查</h3>
+<p>仓库提供一个临时环境检查脚本，用于验证发布/安装体验，不提交任何 venv、wheelhouse、AXP 或数据产物。默认使用当前解释器创建临时 venv，安装本地 workspace、<code>axdata-core</code>、<code>axdata</code> SDK 和 TDX 插件，运行 <code>axdata --help/init/config show/doctor/status</code>，并检查 TDX manifest 和资源文件。</p>
+<p>快速 editable 插件路径：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\python scripts\packaging_smoke.py --json</code></pre>
+<p>AXP 插件路径：</p>
+<pre><code class="language-powershell">.\.venv\Scripts\python scripts\packaging_smoke.py --tdx-mode axp --json</code></pre>
+<p>保留临时目录以便排错：</p>
+<pre><code class="language-powershell">$work = &quot;$env:TEMP\axdata-packaging-smoke&quot;
+.\.venv\Scripts\python scripts\packaging_smoke.py --tdx-mode axp --work-dir $work --json</code></pre>
+<p>这个检查不运行真实源请求；真实源小样本仍使用 <code>scripts\smoke_real_sources.py --run</code> 显式触发。</p>
+<h3>预装插件与 Core</h3>
+<p>AxData Core 是数据库、插件协议、Registry、任务平台、存储/查询层、API、Web 和 CLI 宿主。Core 不是数据源，不能通过插件管理卸载。</p>
+<p>随 AxData 提供的数据源是预装插件。它们不是通过 <code>.axp</code> 安装，但 AxData 仍可在本地插件状态中管理其生命周期：启用、禁用、逻辑卸载、重新安装或重新启用。逻辑卸载使用 <code>uninstall_mode=managed_disable</code>：插件贡献的 interfaces、downloaders、collectors 和 task templates 会从当前 runtime 中消失，但随包代码、已采集数据、metadata、用户创建的 Task 定义和 Run History 保留。</p>
+<h3>当前边界</h3>
+<ul>
+<li>签名验签不属于当前本地优先插件模型。外部 <code>.axp</code> 按本地 community 插件处理。</li>
+<li>不做插件市场。</li>
+<li><code>.axp</code> 安装只处理明显依赖状态和包内 dependency wheels，不做复杂依赖冲突求解。</li>
+<li>在线依赖安装必须显式 opt-in，并委托当前环境配置的 pip indexes。</li>
+<li>预装插件卸载当前是逻辑卸载，不物理删除随包代码。</li>
+<li>Python 环境或 editable/development 路径发现的非预装 Provider 会在状态页可见，但不由 AxData 删除。</li>
+<li>卸载不删除用户数据、Parquet、日志、metadata、用户 Task 或 Run History。</li>
+</ul></article>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

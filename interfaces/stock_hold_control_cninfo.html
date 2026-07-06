@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>实际控制人持股变动 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>实际控制人持股变动</h1>
+  <p class="code-title">stock_hold_control_cninfo</p>
+  <p class="lead">临时获取巨潮实际控制人持股变动数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_hold_control_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 股本股东</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求巨潮实际控制人持股变动专题统计，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>control_type</code></td><td>string</td><td>否</td><td>控制类型：单独控制、实际控制人、一致行动人、家族控制、全部；默认 实际控制人。</td><td>&quot;实际控制人&quot;</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>change_date</code></td><td>date</td><td>变动日期，格式 YYYYMMDD。</td></tr><tr><td><code>actual_controller_name</code></td><td>string</td><td>实际控制人名称。</td></tr><tr><td><code>holding_shares</code></td><td>number</td><td>控股数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>holding_ratio</code></td><td>number</td><td>控股比例，源端数值口径。</td></tr><tr><td><code>direct_controller_name</code></td><td>string</td><td>直接控制人名称。</td></tr><tr><td><code>control_type</code></td><td>string</td><td>控制类型。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_hold_control_cninfo&quot;,
+    control_type=&#x27;实际控制人&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_hold_control_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;control_type&quot;: &quot;实际控制人&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;control_type&quot;: &quot;实际控制人&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;600081.SH&quot;,
+    &quot;symbol&quot;: &quot;600081&quot;,
+    &quot;exchange&quot;: &quot;SSE&quot;,
+    &quot;name&quot;: &quot;东风科技&quot;,
+    &quot;change_date&quot;: &quot;20140630&quot;,
+    &quot;actual_controller_name&quot;: &quot;国务院国有资产监督管理委员会;法国雷诺公司&quot;,
+    &quot;holding_shares&quot;: 20381.0,
+    &quot;holding_ratio&quot;: 65.0,
+    &quot;direct_controller_name&quot;: &quot;东风汽车公司;日产自动车株式会社&quot;,
+    &quot;control_type&quot;: &quot;实际控制人&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

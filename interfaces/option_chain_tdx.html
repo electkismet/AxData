@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>期权T型报价 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信扩展行情</p>
+  <h1>期权T型报价</h1>
+  <p class="code-title">option_chain_tdx</p>
+  <p class="lead">用期权合约列表和实时快照拼出 T 型报价，按行权价组织认购、认沽两侧行情。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>option_chain_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_ext_external</dd></div><div><dt>数据源</dt><dd>通达信扩展行情 / tdx_ext</dd></div><div><dt>目录</dt><dd>通达信扩展行情 / 期权数据</dd></div><div><dt>资产类型</dt><dd>option</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>用期权合约列表和实时快照拼出 T 型报价，按行权价组织认购、认沽两侧行情。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>product_code</code></td><td>string</td><td>否</td><td>期权品种代码过滤，例如 AP；不传则按其它参数筛选。</td><td></td></tr><tr><td><code>contract_month</code></td><td>string</td><td>否</td><td>合约月份过滤，YYYYMM。</td><td></td></tr><tr><td><code>exchange</code></td><td>string</td><td>否</td><td>交易所过滤；不传表示全部。</td><td></td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>拼 T 型报价前最多请求多少个期权合约，默认 100。</td><td>100</td></tr><tr><td><code>tdx_root</code></td><td>string</td><td>否</td><td>本机通达信目录（可选，高级）</td><td></td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>默认不用传 tdx_root；只有 API 服务器上的通达信安装目录不是常见位置，或想指定某个 hq_cache 目录时才需要传。</p></div>
+  <div class="note"><strong>参数示例</strong><p># 苹果期权T型报价
+client.call(&quot;option_chain_tdx&quot;, product_code=&quot;AP&quot;, contract_month=&quot;202610&quot;, limit=3)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>product_code</code></td><td>string</td><td>期权品种代码。</td></tr><tr><td><code>product_name</code></td><td>string</td><td>期权品种名称。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所。</td></tr><tr><td><code>contract_month</code></td><td>string</td><td>合约月份，YYYYMM。</td></tr><tr><td><code>strike_price</code></td><td>number</td><td>行权价。</td></tr><tr><td><code>call_instrument_id</code></td><td>string</td><td>认购合约代码。</td></tr><tr><td><code>call_symbol</code></td><td>string</td><td>认购源端代码。</td></tr><tr><td><code>call_last_price</code></td><td>number</td><td>认购最新价。</td></tr><tr><td><code>call_volume</code></td><td>integer</td><td>认购成交量。</td></tr><tr><td><code>call_open_interest</code></td><td>integer</td><td>认购持仓量。</td></tr><tr><td><code>put_instrument_id</code></td><td>string</td><td>认沽合约代码。</td></tr><tr><td><code>put_symbol</code></td><td>string</td><td>认沽源端代码。</td></tr><tr><td><code>put_last_price</code></td><td>number</td><td>认沽最新价。</td></tr><tr><td><code>put_volume</code></td><td>integer</td><td>认沽成交量。</td></tr><tr><td><code>put_open_interest</code></td><td>integer</td><td>认沽持仓量。</td></tr><tr><td><code>call_bid1_price</code></td><td>number</td><td>认购买一价。</td></tr><tr><td><code>call_bid1_volume</code></td><td>integer</td><td>认购买一量。</td></tr><tr><td><code>call_ask1_price</code></td><td>number</td><td>认购卖一价。</td></tr><tr><td><code>call_ask1_volume</code></td><td>integer</td><td>认购卖一量。</td></tr><tr><td><code>call_bid2_price</code></td><td>number</td><td>认购买二价。</td></tr><tr><td><code>call_bid2_volume</code></td><td>integer</td><td>认购买二量。</td></tr><tr><td><code>call_ask2_price</code></td><td>number</td><td>认购卖二价。</td></tr><tr><td><code>call_ask2_volume</code></td><td>integer</td><td>认购卖二量。</td></tr><tr><td><code>call_bid3_price</code></td><td>number</td><td>认购买三价。</td></tr><tr><td><code>call_bid3_volume</code></td><td>integer</td><td>认购买三量。</td></tr><tr><td><code>call_ask3_price</code></td><td>number</td><td>认购卖三价。</td></tr><tr><td><code>call_ask3_volume</code></td><td>integer</td><td>认购卖三量。</td></tr><tr><td><code>call_bid4_price</code></td><td>number</td><td>认购买四价。</td></tr><tr><td><code>call_bid4_volume</code></td><td>integer</td><td>认购买四量。</td></tr><tr><td><code>call_ask4_price</code></td><td>number</td><td>认购卖四价。</td></tr><tr><td><code>call_ask4_volume</code></td><td>integer</td><td>认购卖四量。</td></tr><tr><td><code>call_bid5_price</code></td><td>number</td><td>认购买五价。</td></tr><tr><td><code>call_bid5_volume</code></td><td>integer</td><td>认购买五量。</td></tr><tr><td><code>call_ask5_price</code></td><td>number</td><td>认购卖五价。</td></tr><tr><td><code>call_ask5_volume</code></td><td>integer</td><td>认购卖五量。</td></tr><tr><td><code>put_bid1_price</code></td><td>number</td><td>认沽买一价。</td></tr><tr><td><code>put_bid1_volume</code></td><td>integer</td><td>认沽买一量。</td></tr><tr><td><code>put_ask1_price</code></td><td>number</td><td>认沽卖一价。</td></tr><tr><td><code>put_ask1_volume</code></td><td>integer</td><td>认沽卖一量。</td></tr><tr><td><code>put_bid2_price</code></td><td>number</td><td>认沽买二价。</td></tr><tr><td><code>put_bid2_volume</code></td><td>integer</td><td>认沽买二量。</td></tr><tr><td><code>put_ask2_price</code></td><td>number</td><td>认沽卖二价。</td></tr><tr><td><code>put_ask2_volume</code></td><td>integer</td><td>认沽卖二量。</td></tr><tr><td><code>put_bid3_price</code></td><td>number</td><td>认沽买三价。</td></tr><tr><td><code>put_bid3_volume</code></td><td>integer</td><td>认沽买三量。</td></tr><tr><td><code>put_ask3_price</code></td><td>number</td><td>认沽卖三价。</td></tr><tr><td><code>put_ask3_volume</code></td><td>integer</td><td>认沽卖三量。</td></tr><tr><td><code>put_bid4_price</code></td><td>number</td><td>认沽买四价。</td></tr><tr><td><code>put_bid4_volume</code></td><td>integer</td><td>认沽买四量。</td></tr><tr><td><code>put_ask4_price</code></td><td>number</td><td>认沽卖四价。</td></tr><tr><td><code>put_ask4_volume</code></td><td>integer</td><td>认沽卖四量。</td></tr><tr><td><code>put_bid5_price</code></td><td>number</td><td>认沽买五价。</td></tr><tr><td><code>put_bid5_volume</code></td><td>integer</td><td>认沽买五量。</td></tr><tr><td><code>put_ask5_price</code></td><td>number</td><td>认沽卖五价。</td></tr><tr><td><code>put_ask5_volume</code></td><td>integer</td><td>认沽卖五量。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;option_chain_tdx&quot;,
+    contract_month=&#x27;202610&#x27;,
+    limit=3,
+    product_code=&#x27;AP&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/option_chain_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;product_code&quot;: &quot;AP&quot;,
+    &quot;contract_month&quot;: &quot;202610&quot;,
+    &quot;limit&quot;: 3
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;product_code&quot;: &quot;AP&quot;,
+  &quot;contract_month&quot;: &quot;202610&quot;,
+  &quot;limit&quot;: 3
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;product_code&quot;: &quot;AP&quot;,
+    &quot;product_name&quot;: &quot;苹果&quot;,
+    &quot;exchange&quot;: &quot;CZCE&quot;,
+    &quot;contract_month&quot;: &quot;202610&quot;,
+    &quot;strike_price&quot;: 6400.0,
+    &quot;call_instrument_id&quot;: &quot;AP2610-C-6400.CZCE&quot;,
+    &quot;call_symbol&quot;: &quot;AP2610-C-6400&quot;,
+    &quot;call_last_price&quot;: null,
+    &quot;call_bid1_price&quot;: 832.5,
+    &quot;call_ask1_price&quot;: 1301.5,
+    &quot;call_volume&quot;: 0,
+    &quot;call_open_interest&quot;: 7,
+    &quot;put_instrument_id&quot;: &quot;AP2610-P-6400.CZCE&quot;,
+    &quot;put_symbol&quot;: &quot;AP2610-P-6400&quot;,
+    &quot;put_last_price&quot;: 22.5,
+    &quot;put_bid1_price&quot;: 19.0,
+    &quot;put_ask1_price&quot;: 24.0,
+    &quot;put_volume&quot;: 65,
+    &quot;put_open_interest&quot;: 201
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

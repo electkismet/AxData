@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>题材内对比 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>题材内对比</h1>
+  <p class="code-title">concept_constituent_comparison_tdx</p>
+  <p class="lead">查询题材内股票涨幅、财务或市值对比。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>concept_constituent_comparison_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 股票数据 / F10数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>查询题材内股票涨幅、财务或市值对比。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>股票代码：支持 000001、000001.SZ、sz000001；批量可传列表或英文逗号分隔字符串。</td><td></td></tr><tr><td><code>concept_code</code></td><td>string</td><td>是</td><td>题材 ID。</td><td></td></tr><tr><td><code>compare_type</code></td><td>string</td><td>否</td><td>对比类型：return 涨幅，financial 财务；默认 return。</td><td>&quot;return&quot;</td></tr><tr><td><code>sort_by</code></td><td>string</td><td>否</td><td>源端排序字段，默认 zdf；实测不同字段可能仍按源端默认排序。</td><td>&quot;zdf&quot;</td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>return 视图主要返回涨幅字段；financial 视图主要返回财务、市值和报告期字段。</p></div>
+  <div class="note"><strong>参数示例</strong><p># 单个标的
+client.call(&quot;concept_constituent_comparison_tdx&quot;, code=&quot;000001.SZ&quot;, concept_code=&quot;2817&quot;, compare_type=&quot;return&quot;, sort_by=&quot;zdf&quot;)
+
+# 批量请求多个标的
+client.call(&quot;concept_constituent_comparison_tdx&quot;, code=[&quot;000034.SZ&quot;, &quot;000001.SZ&quot;], concept_code=&quot;2817&quot;, compare_type=&quot;return&quot;, sort_by=&quot;zdf&quot;)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>rank</code></td><td>integer</td><td>排名。</td></tr><tr><td><code>market_code</code></td><td>integer</td><td>市场代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>股票代码。</td></tr><tr><td><code>name</code></td><td>string</td><td>股票简称。</td></tr><tr><td><code>report_period</code></td><td>date</td><td>财务数据报告期；compare_type=financial 时返回。</td></tr><tr><td><code>change_pct</code></td><td>number</td><td>涨幅，单位：%。</td></tr><tr><td><code>change_pct_3d</code></td><td>number</td><td>3 日涨幅，单位：%。</td></tr><tr><td><code>change_pct_5d</code></td><td>number</td><td>5 日涨幅，单位：%。</td></tr><tr><td><code>change_pct_20d</code></td><td>number</td><td>20 日涨幅，单位：%。</td></tr><tr><td><code>change_pct_60d</code></td><td>number</td><td>60 日涨幅，单位：%。</td></tr><tr><td><code>total_market_cap</code></td><td>number</td><td>总市值。</td></tr><tr><td><code>float_market_cap</code></td><td>number</td><td>流通市值。</td></tr><tr><td><code>revenue</code></td><td>number</td><td>营业收入。</td></tr><tr><td><code>net_profit</code></td><td>number</td><td>归母净利润。</td></tr><tr><td><code>revenue_yoy_pct</code></td><td>number</td><td>营收同比，单位：%。</td></tr><tr><td><code>net_profit_yoy_pct</code></td><td>number</td><td>归母净利润同比，单位：%。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;concept_constituent_comparison_tdx&quot;,
+    code=&#x27;000001.SZ&#x27;,
+    compare_type=&#x27;return&#x27;,
+    concept_code=&#x27;2945&#x27;,
+    sort_by=&#x27;zdf&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/concept_constituent_comparison_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;000001.SZ&quot;,
+    &quot;concept_code&quot;: &quot;2945&quot;,
+    &quot;compare_type&quot;: &quot;return&quot;,
+    &quot;sort_by&quot;: &quot;zdf&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;000001.SZ&quot;,
+  &quot;concept_code&quot;: &quot;2945&quot;,
+  &quot;compare_type&quot;: &quot;return&quot;,
+  &quot;sort_by&quot;: &quot;zdf&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;rank&quot;: 1,
+    &quot;market_code&quot;: 0,
+    &quot;symbol&quot;: &quot;301171&quot;,
+    &quot;name&quot;: &quot;易点天下&quot;,
+    &quot;report_period&quot;: &quot;20260331&quot;,
+    &quot;change_pct&quot;: 8.23,
+    &quot;change_pct_3d&quot;: 0.42,
+    &quot;change_pct_5d&quot;: -5.71,
+    &quot;change_pct_20d&quot;: -17.31,
+    &quot;change_pct_60d&quot;: 4.11,
+    &quot;total_market_cap&quot;: 12235300000.0,
+    &quot;float_market_cap&quot;: 8932100000.0
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

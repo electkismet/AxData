@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>复权因子 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 通达信</p>
+  <h1>复权因子</h1>
+  <p class="code-title">stock_adj_factor_tdx</p>
+  <p class="lead">用通达信 0x000f 的 category=1 除权除息事件和未复权日 K，重算每日前复权或后复权因子。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_adj_factor_tdx</dd></div><div><dt>Provider</dt><dd>axdata.source.tdx_external</dd></div><div><dt>数据源</dt><dd>通达信 / tdx</dd></div><div><dt>目录</dt><dd>通达信 / 股票数据 / 行情数据</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>是，默认 stock_adj_factor_tdx.snapshot</dd></div></dl>
+  <p>这个接口返回 AxData 基于股本变迁事件计算出的每日复权因子，不返回复权后的 K 线价格；它和通达信自带复权 K 可能存在口径误差。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>code</code></td><td>string</td><td>是</td><td>证券代码：支持 000001、000001.SZ、sz000001；批量可传列表或英文逗号分隔字符串。</td><td></td></tr><tr><td><code>adjust</code></td><td>string</td><td>否</td><td>复权方向：qfq 前复权因子，hfq 后复权因子；默认 qfq。</td><td>&quot;qfq&quot;</td></tr><tr><td><code>anchor_date</code></td><td>string</td><td>否</td><td>可选的前复权锚点日期，格式 YYYYMMDD 或 YYYY-MM-DD；仅 adjust=qfq 时使用。</td><td></td></tr></tbody>
+</table></div>
+  <div class="note"><strong>参数说明</strong><p>不传 adjust 时默认 qfq；anchor_date 只在 qfq 下可传，hfq 不使用锚点。</p></div>
+  <div class="note"><strong>参数示例</strong><p># 普通前复权因子
+client.call(&quot;stock_adj_factor_tdx&quot;, code=&quot;000001.SZ&quot;, adjust=&quot;qfq&quot;)
+
+# 定点前复权因子
+client.call(&quot;stock_adj_factor_tdx&quot;, code=&quot;000001.SZ&quot;, adjust=&quot;qfq&quot;, anchor_date=&quot;2024-12-31&quot;)
+
+# 后复权因子
+client.call(&quot;stock_adj_factor_tdx&quot;, code=&quot;000001.SZ&quot;, adjust=&quot;hfq&quot;)</p></div>
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码，例如 000001.SZ。</td></tr><tr><td><code>ts_code</code></td><td>string</td><td>与 instrument_id 相同，用于兼容 AxData core adj_factor 表字段。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>交易所原始六位代码。</td></tr><tr><td><code>tdx_code</code></td><td>string</td><td>TDX 带市场前缀代码，例如 sz000001。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>AxData 交易所代码：SSE、SZSE 或 BSE。</td></tr><tr><td><code>trade_date</code></td><td>date</td><td>交易日期，YYYYMMDD。</td></tr><tr><td><code>adj_factor</code></td><td>number</td><td>按请求复权口径计算出的复权因子。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_adj_factor_tdx&quot;,
+    adjust=&#x27;qfq&#x27;,
+    code=&#x27;000001.SZ&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_adj_factor_tdx
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;code&quot;: &quot;000001.SZ&quot;,
+    &quot;adjust&quot;: &quot;qfq&quot;
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;code&quot;: &quot;000001.SZ&quot;,
+  &quot;adjust&quot;: &quot;qfq&quot;
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000001.SZ&quot;,
+    &quot;ts_code&quot;: &quot;000001.SZ&quot;,
+    &quot;symbol&quot;: &quot;000001&quot;,
+    &quot;tdx_code&quot;: &quot;sz000001&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;trade_date&quot;: &quot;20240531&quot;,
+    &quot;adj_factor&quot;: 0.825
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

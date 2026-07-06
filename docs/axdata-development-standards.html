@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>开发指南 - AxData 文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="" href="../interfaces/index.html">接口文档</a><a class="active" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">开发文档</a></p>
+  <h1>开发指南</h1>
+</section>
+<article class="markdown-body"><h2>AxData 数据源、采集器、数据集与 UI 开发规范</h2>
+<p>本文说明 AxData 数据源接口、采集器、数据集声明、Parquet/DuckDB 分工和 Web UI 的开发规范。新增接口、采集器、数据集或页面改版时，应先对照本文确认能力边界、命名、页面口径和验证规则。</p>
+<p>最后更新：2026-07-04。</p>
+<h3>一句话边界</h3>
+<ul>
+<li>数据源接口负责临时请求源端，展示参数、字段、真实静态示例，默认不入库。</li>
+<li>采集器负责创建任务、调度运行、写本地数据、记录进度、日志和质量结果。</li>
+<li>数据集声明负责告诉 AxData 采集器会产出什么表、什么字段、什么路径、什么格式；只有真实落盘后，数据页才展示这个 dataset。</li>
+<li>Parquet 是长期数据事实源；DuckDB 是查询引擎和可重建查询缓存，不是 Parquet 的替代品。</li>
+<li>Web UI 必须把接口、采集、数据三条线分清楚，不能让用户误以为临时接口等于采集任务。</li>
+</ul>
+<h3>能力边界</h3>
+<p>当前 AxData 已经形成三类能力：</p>
+<div class="table-wrap"><table><thead><tr><th>能力</th><th>当前入口</th><th>是否请求源端</th><th>是否写数据</th><th>说明</th></tr></thead><tbody><tr><td>数据源接口</td><td>接口页、<code>client.call(...)</code>、<code>POST /v1/request/{interface}</code></td><td>是</td><td>默认否</td><td>展示输入参数、输出字段、静态真实示例；适合临时查询和调试。</td></tr><tr><td>采集器</td><td>采集页、Collector API、Collector CLI</td><td>是</td><td>是</td><td>创建 task、run、写 Parquet、记录 run history 和 quality。</td></tr><tr><td>数据查询</td><td>数据页、<code>client.query(...)</code>、<code>POST /v1/query</code></td><td>否</td><td>否</td><td>只读已入库 Parquet/DuckDB 视图，不临时请求源端；数据页只列已有本地输出的数据集。</td></tr></tbody></table></div>
+<p>当前约束：</p>
+<ul>
+<li>新采集器必须是独立 CollectorSpec / runner entry，不应通过 <code>/v1/request</code>、SDK <code>call</code> 或 ProviderRegistry route 套接口采集。</li>
+<li>交易所保留为数据源接口和基础数据能力，不作为默认采集器展示。</li>
+<li>巨潮、腾讯、东方财富、新浪等 HTTP 源主要是 source_request Provider，默认不提供采集器。</li>
+<li>TDX source Provider 和 TDX collector 是两类能力：禁用 source 影响接口，禁用 collector 影响采集页能力。</li>
+<li><code>data/snapshot/</code>、<code>data/core/</code>、<code>metadata/*.sqlite</code>、<code>logs/</code> 等本地运行数据不是代码，不应随便提交或删除。</li>
+</ul>
+<h3>命名规范</h3>
+<h4>页面与文档名称</h4>
+<ul>
+<li>使用“数据源开发”，不要使用“软件源开发”。“软件源”容易被理解成 pip/apt/npm 安装源。</li>
+<li>使用“采集器开发”，不要把采集器叫成接口插件。</li>
+<li>使用“数据集声明”或“数据声明”，用于描述采集产出的表、schema、路径和查询方式。</li>
+<li>使用“DuckDB 查询缓存”或“DuckDB 查询层”，不要写成“DuckDB 存储格式”来替代 Parquet。</li>
+</ul>
+<h4>代码标识</h4>
+<div class="table-wrap"><table><thead><tr><th>名称</th><th>用途</th><th>示例</th></tr></thead><tbody><tr><td><code>provider_id</code></td><td>数据源 Provider 身份</td><td><code>axdata.source.eastmoney</code></td></tr><tr><td><code>source_code</code></td><td>数据源短代码</td><td><code>eastmoney</code></td></tr><tr><td><code>interface_name</code></td><td>源端接口名</td><td><code>eastmoney_limit_up_pool</code></td></tr><tr><td><code>collector_plugin_id</code></td><td>采集器插件身份</td><td><code>axdata.collector.tdx</code></td></tr><tr><td><code>collector_id</code> / <code>collector_name</code></td><td>采集器能力名</td><td><code>stock_kline_daily_tdx</code></td></tr><tr><td><code>task_id</code></td><td>用户创建的采集任务</td><td><code>daily_refresh</code></td></tr><tr><td><code>dataset_id</code></td><td>采集产出的数据集</td><td><code>daily</code></td></tr><tr><td><code>table</code></td><td>查询层表名</td><td><code>daily</code></td></tr></tbody></table></div>
+<p>原则：</p>
+<ul>
+<li>对用户稳定暴露的名字不要随意改。</li>
+<li>一个名字只表达一类能力：<code>interface_name</code> 不等于 <code>collector_id</code>，<code>collector_id</code> 不等于 <code>dataset_id</code>。</li>
+<li>如果上游口径不同，应新建接口或数据集，不要复用旧名改语义。</li>
+</ul>
+<h3>数据源 Provider 开发规范</h3>
+<p>数据源 Provider 负责把一个上游源接入 AxData 的接口目录。它的核心成果是“可调用接口”，不是本地数据文件。</p>
+<h4>必须声明</h4>
+<p>每个数据源接口必须声明：</p>
+<ul>
+<li><code>name</code> / <code>interface_name</code></li>
+<li>中文名 <code>display_name_zh</code></li>
+<li><code>source_code</code>、<code>source_name_zh</code></li>
+<li>分类 <code>category</code></li>
+<li>完整接口目录 <code>menu_path</code></li>
+<li>输入参数 <code>parameters</code></li>
+<li>输出字段 <code>fields</code></li>
+<li>接口页中文短摘要 <code>summary_zh</code></li>
+<li>接口页中文说明 <code>description_zh</code></li>
+<li>参数区补充说明 <code>params_note_zh</code></li>
+<li>参数区静态调用示例 <code>params_example_zh</code></li>
+<li>调用说明 <code>description</code> / <code>first_stage_strategy</code></li>
+<li>真实静态示例 <code>example</code></li>
+<li>静态参考表 <code>reference_sections</code></li>
+<li>是否支持采集。当前 source_request 默认不支持采集，除非另有独立 CollectorSpec。</li>
+</ul>
+<p>运行时接口目录当前使用单个 <code>example</code>。插件 manifest 协议如果写 <code>examples</code> 数组，必须选择一个主样例同步为运行时 <code>example</code>，避免接口页不知道展示哪份样例。</p>
+<p>Web 左侧接口目录以 Provider manifest / Registry 返回的 <code>menu_path</code> 为事实源。插件必须声明完整路径；Web 不为具体数据源硬编码接口树。小源可以用 <code>[&quot;巨潮&quot;, &quot;公告数据&quot;]</code>，大源应声明完整源内分层，例如 <code>[&quot;通达信&quot;, &quot;股票数据&quot;, &quot;基础数据&quot;]</code>。</p>
+<p>接口页中文内容也以插件 / Provider manifest / Registry 为事实源。Web request 接口页只做通用渲染，不再用旧静态 catalog 为具体接口补标题、说明、参数示例、真实样例或参考表。<code>summary_zh</code>、<code>description_zh</code>、<code>params_note_zh</code>、<code>params_example_zh</code> 负责页面文案；<code>parameters</code>、<code>fields</code>、<code>example.response</code>、<code>reference_sections</code> 负责事实数据。</p>
+<h4>输入参数</h4>
+<p>参数必须写清楚：</p>
+<ul>
+<li>名称</li>
+<li>类型</li>
+<li>是否必填</li>
+<li>默认值</li>
+<li>中文说明</li>
+<li>日期格式</li>
+<li>代码格式</li>
+<li>远程调用时路径类参数指的是 API 服务器上的路径，不是浏览器电脑上的路径。</li>
+</ul>
+<p>示例：</p>
+<pre><code class="language-python">RequestParameter(
+    &quot;trade_date&quot;,
+    &quot;string&quot;,
+    False,
+    &quot;Trade date.&quot;,
+    &quot;交易日期，YYYYMMDD 或 YYYY-MM-DD，默认今天。&quot;,
+)</code></pre>
+<h4>输出字段</h4>
+<p>字段必须写清楚：</p>
+<ul>
+<li>字段名</li>
+<li>类型</li>
+<li>中文含义</li>
+<li>单位</li>
+<li>是否源端口径</li>
+<li>是否可能为空</li>
+</ul>
+<p>特别注意：</p>
+<ul>
+<li>价格、成交额、成交量、百分比必须写单位。</li>
+<li><code>instrument_id</code> 是 AxData 统一证券代码，不能用源端原始代码代替。</li>
+<li>源端原始字段可以保留，但不能冒充 core 层稳定字段。</li>
+</ul>
+<h4>静态真实示例</h4>
+<p>接口页示例必须是“已经真实请求过的静态快照”，页面打开时不应为了展示示例再实时请求源端。</p>
+<p>规范：</p>
+<ul>
+<li>不能编假数据。</li>
+<li>不能把源端 0 条误当成正常示例，除非接口本身就是空结果演示。</li>
+<li>示例参数要尽量选择稳定、可解释的历史日期。</li>
+<li>如果源端只保留近期数据，示例要写明生成日期，并定期刷新静态快照。</li>
+<li>返回字段必须和接口字段声明一致。</li>
+<li>示例最多展示小样本，不能塞全量结果。</li>
+</ul>
+<p>当静态样例生成失败时：</p>
+<ul>
+<li>先判断是参数过期、源端暂时不可用，还是接口事实上没有数据。</li>
+<li>能用真实参数取到数据的，替换静态样例。</li>
+<li>长期没有真实数据、字段也无法验证的接口，应讨论是否删除，而不是保留假接口。</li>
+</ul>
+<h4>本地与远程调用</h4>
+<p>本地 SDK：</p>
+<ul>
+<li><code>AxDataClient()</code> 默认本地模式。</li>
+<li>本地查询读 Parquet/DuckDB。</li>
+<li>本地源端直取由本机 adapter 请求源端。</li>
+<li>本地模式不需要 AxData HTTP token。</li>
+</ul>
+<p>远程 SDK/API：</p>
+<ul>
+<li><code>AxDataClient(api_base=&quot;http://host:8666&quot;)</code> 或 <code>AXDATA_API_BASE</code> 进入远程模式。</li>
+<li>远程调用读的是 API 服务器配置的数据目录。</li>
+<li>如果服务端开启鉴权，需要传 AxData token。</li>
+<li>token 只属于 AxData API，不等于第三方源 token。</li>
+</ul>
+<p>接口页 UI 只应在远程调用说明里提示 token，不要让用户误以为本地 SDK 也必须传 token。</p>
+<h3>采集器开发规范</h3>
+<p>采集器负责把数据生产成本地资产。只要叫采集，就必须有 task/run 元数据、输出文件和质量结果。</p>
+<h4>独立性</h4>
+<p>新采集器必须独立：</p>
+<ul>
+<li>有 CollectorSpec。</li>
+<li>有 runner entry。</li>
+<li>有 dataset/output 声明。</li>
+<li>有资源组和并发策略。</li>
+<li>有质量规则。</li>
+<li>不通过 <code>/v1/request</code> 套接口采集。</li>
+<li>不依赖接口页是否存在同名 <code>interface_name</code>。</li>
+</ul>
+<p>采集器可以复用公共工具库、字段定义和存储 writer，但不能把接口 Provider 当作采集器身份。</p>
+<h4>必须声明</h4>
+<p>每个采集器必须声明：</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td><code>collector_id</code></td><td>采集器能力名。</td></tr><tr><td><code>collector_plugin_id</code></td><td>采集器所属插件。</td></tr><tr><td><code>display_name_zh</code></td><td>用户看到的中文名。</td></tr><tr><td><code>dataset_id</code></td><td>默认产出的数据集。</td></tr><tr><td><code>runner_entry</code></td><td>运行入口。</td></tr><tr><td><code>resource_group</code></td><td>资源组，例如 <code>tdx</code>、<code>http</code>。</td></tr><tr><td><code>params_schema</code></td><td>创建任务时可配置的输入参数。</td></tr><tr><td><code>output</code></td><td>输出层、格式、路径、写入策略。</td></tr><tr><td><code>quality</code></td><td>主键、必填列、日期字段、数值检查等质量规则。</td></tr><tr><td><code>required_datasets</code></td><td>运行前必须存在的基础数据，例如交易日历。</td></tr></tbody></table></div>
+<h4>任务参数</h4>
+<p>采集页应区分三类参数：</p>
+<div class="table-wrap"><table><thead><tr><th>参数区</th><th>作用</th><th>例子</th></tr></thead><tbody><tr><td>基本参数</td><td>任务名、输出格式、路径、并发档位、资源配置</td><td>task name、formats、server_count</td></tr><tr><td>输入参数</td><td>采集范围和源端请求参数</td><td>code、start_date、end_date、period</td></tr><tr><td>输出参数</td><td>字段、写入策略、数据集说明</td><td>fields、dataset_id、write_mode、partition_by</td></tr></tbody></table></div>
+<p>创建任务按钮应位于输入/输出配置之后。用户先配置参数，再创建任务。手动采集和定时采集应在任务列表中操作。</p>
+<h4>调度语义</h4>
+<p>采集器定时任务必须写清楚是自然日还是交易日。</p>
+<p>建议：</p>
+<ul>
+<li>A 股行情、榜单、交易相关采集默认“交易日每天”。</li>
+<li>财报、公告、资讯类可以按自然日，但必须在说明里写清楚。</li>
+<li>使用交易日定时时，必须依赖本地 <code>trade_cal</code>。</li>
+<li>没有交易日历缓存时，应提示去配置或基础数据页更新交易日历缓存，而不是静默失败。</li>
+</ul>
+<h4>并发与长连接</h4>
+<p>并发配置应有默认档位，也支持自定义。</p>
+<p>推荐 UI：</p>
+<ul>
+<li>默认档位：保守、标准、激进、自定义。</li>
+<li>自定义项：服务器数、每服务器长连接数。</li>
+<li>总并发只做展示，公式为：服务器数 × 每服务器长连接数。</li>
+<li>不让用户直接填写“总并发”后再反推服务器和连接数。</li>
+</ul>
+<p>说明：</p>
+<ul>
+<li>多线程连接池对 TDX/TDX_EXT 这类源通常是长连接复用。</li>
+<li>普通 HTTP 源端直取不应默认保活，除非源端和业务明确需要。</li>
+</ul>
+<h4>运行记录</h4>
+<p>采集器 run history 必须展示：</p>
+<ul>
+<li>状态</li>
+<li>开始/结束时间</li>
+<li>写入行数</li>
+<li>输出路径</li>
+<li>进度</li>
+<li>错误摘要</li>
+<li>日志路径或 run detail 入口</li>
+<li>删除单条记录按钮</li>
+</ul>
+<p>删除 run history 只删除历史记录，不删除任务配置和已采集数据。删除数据集才删除对应本地数据目录。</p>
+<h3>数据集声明规范</h3>
+<p>数据集声明是采集器和数据页之间的契约。没有数据集声明，数据页只能靠猜目录和猜字段，采集器变多后会不可控。</p>
+<h4>必须声明的字段</h4>
+<p>每个采集器产出的数据集应声明：</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td><code>dataset_id</code></td><td>稳定数据集 ID，例如 <code>daily</code>。</td></tr><tr><td><code>display_name_zh</code></td><td>中文名。</td></tr><tr><td><code>layer</code></td><td><code>raw</code>、<code>staging</code>、<code>core</code>、<code>factor</code> 或 <code>snapshot</code>。</td></tr><tr><td><code>table</code></td><td>查询表名。</td></tr><tr><td><code>schema</code></td><td>字段名、类型、中文说明、单位。</td></tr><tr><td><code>primary_key</code></td><td>主键字段。</td></tr><tr><td><code>date_field</code></td><td>日期字段。</td></tr><tr><td><code>partition_by</code></td><td>分区字段。</td></tr><tr><td><code>write_mode</code></td><td><code>snapshot</code>、<code>append</code>、<code>overwrite_partition</code>、<code>replace_range</code>、<code>upsert_by_key</code>。</td></tr><tr><td><code>formats</code></td><td>输出格式，<code>parquet</code> 必选。</td></tr><tr><td><code>storage_path</code></td><td>预期输出路径。</td></tr><tr><td><code>queryable</code></td><td>是否允许进入查询层；不能单独决定数据页展示。</td></tr><tr><td><code>duckdb_cache</code></td><td>是否支持 DuckDB 查询缓存。</td></tr></tbody></table></div>
+<p>数据集声明只是“应该怎么产出”的契约，不是“本机已经有数据”的证明。Data Browser / 数据页只能从 <code>CollectorRun.output_paths</code>、写入 metadata、Downloader 日志或真实存在的 Parquet 路径发现 dataset；插件 manifest 或 CollectorSpec 里只声明了 <code>dataset_id</code>、<code>queryable</code>、<code>storage_path</code>，但本地没有输出路径或文件时，不应进入数据页列表，也不应暴露删除 dataset 操作。</p>
+<h4>多表与多文件形态</h4>
+<p>采集器可以产出不同形态的数据：</p>
+<div class="table-wrap"><table><thead><tr><th>形态</th><th>例子</th><th>推荐声明</th></tr></thead><tbody><tr><td>单表单文件</td><td>小型主数据 latest</td><td><code>dataset_id + table + snapshot</code></td></tr><tr><td>一天一个文件</td><td>日线、复权、榜单</td><td><code>partition_by=[&quot;trade_date&quot;]</code>，路径下 <code>YYYYMMDD.parquet</code></td></tr><tr><td>一只股票一个文件</td><td>个股大历史或高频数据</td><td><code>partition_by=[&quot;instrument_id&quot;]</code> 或明确 symbol layout</td></tr><tr><td>多张表</td><td>财务报表、复杂专题</td><td>一个 collector 可以声明多个 dataset outputs</td></tr><tr><td>多格式导出</td><td>Parquet + CSV + DuckDB</td><td>Parquet 是主数据，其他是导出/缓存</td></tr></tbody></table></div>
+<p>标准路径：</p>
+<pre><code class="language-text">data/core/table=daily/parquet/20260703.parquet
+data/core/table=adj_factor/parquet/20260703.parquet
+data/snapshot/table=tdx.stock_codes/parquet/latest.parquet</code></pre>
+<p>当前标准优先采用“格式目录下按天文件”的方式，例如：</p>
+<pre><code class="language-text">data/core/table=adj_factor/parquet/20260703.parquet</code></pre>
+<p>旧式 <code>trade_date=20260703/*.parquet</code> 目录可以继续读取兼容，但新采集器不应优先采用。</p>
+<h4>删除语义</h4>
+<p>删除必须说清楚范围：</p>
+<div class="table-wrap"><table><thead><tr><th>删除动作</th><th>删除什么</th><th>不删除什么</th></tr></thead><tbody><tr><td>删除 run history</td><td>单条运行记录</td><td>任务配置、数据文件</td></tr><tr><td>删除 task</td><td>用户创建的任务配置</td><td>已采集数据、run history 可按产品策略保留或标记</td></tr><tr><td>删除 dataset</td><td>dataset 在 AxData 数据根下的本地数据目录、相关数据索引</td><td>插件代码、接口、采集器定义</td></tr><tr><td>删除缓存</td><td>缓存目录或 DuckDB 查询缓存</td><td>Parquet 正式数据</td></tr></tbody></table></div>
+<p>删除数据集前必须弹窗确认，并显示将删除的根目录。</p>
+<h3>Parquet、CSV、JSON 与 DuckDB</h3>
+<h4>Parquet</h4>
+<p>Parquet 是默认且必须支持的正式数据格式。</p>
+<ul>
+<li>长期保存。</li>
+<li>作为数据事实源。</li>
+<li>适合列式扫描、压缩、跨语言读取。</li>
+<li>数据页默认优先发现和预览 Parquet。</li>
+<li>DuckDB 可以直接读取 Parquet。</li>
+</ul>
+<h4>CSV</h4>
+<p>CSV 是可选导出格式。</p>
+<ul>
+<li>便于人工查看和外部工具导入。</li>
+<li>不作为 AxData 的主数据事实源。</li>
+<li>大数据集不建议默认只存 CSV。</li>
+</ul>
+<h4>JSON / JSONL</h4>
+<p>JSON/JSONL 只作为兼容或调试输出。</p>
+<ul>
+<li>不作为新采集器默认格式。</li>
+<li>如果保留，必须标明是调试/兼容用途。</li>
+</ul>
+<h4>DuckDB</h4>
+<p>DuckDB 不是 Parquet 的备份，也不是另一种必须保存的数据格式。</p>
+<p>DuckDB 在 AxData 里的角色：</p>
+<ul>
+<li>查询执行引擎。</li>
+<li>可以直接读 Parquet。</li>
+<li>可以保存视图、临时表、索引式缓存和查询缓存。</li>
+<li>可以重建。</li>
+</ul>
+<p>如果页面展示 DuckDB，应命名为：</p>
+<pre><code class="language-text">DuckDB 查询缓存</code></pre>
+<p>展示规则：</p>
+<ul>
+<li>如果采集器声明支持 DuckDB 查询缓存，则可选。</li>
+<li>如果未声明支持，也可以显示但禁用，并标注“采集器未声明”。</li>
+<li>DuckDB 不应强制选中。</li>
+<li>强制默认选中的只有 Parquet。</li>
+</ul>
+<p>核心说明：</p>
+<ul>
+<li>Parquet 是正式文件。</li>
+<li>DuckDB 是用来查这些文件的工具。</li>
+<li><code>.duckdb</code> 文件坏了可以重建。</li>
+<li>删除 DuckDB 查询缓存不应删除 Parquet 正式数据。</li>
+</ul>
+<h3>数据页规范</h3>
+<p>数据页回答的是：“本机已经有什么数据，可以怎么查？”</p>
+<p>数据页不应请求源端，不应创建采集任务。</p>
+<p>数据页列表只展示已经有本地数据实例的 dataset。所谓“本地数据实例”至少应能定位到 AxData 数据根下的输出路径、写入 metadata、run/downloader output 记录或真实 Parquet 文件；单纯的插件声明、CollectorSpec 输出契约或 <code>queryable=true</code> 不能让一个空 dataset 出现在数据页。</p>
+<h4>Dataset 列表</h4>
+<p>必须展示：</p>
+<ul>
+<li>数据集中文名</li>
+<li><code>dataset_id</code></li>
+<li>来源采集器或数据源</li>
+<li>层级</li>
+<li>行数</li>
+<li>日期范围</li>
+<li>最近更新时间</li>
+<li>质量状态</li>
+<li>支持格式</li>
+</ul>
+<h4>Dataset 详情</h4>
+<p>必须展示：</p>
+<ul>
+<li>数据路径</li>
+<li>当前预览读取的是哪份文件</li>
+<li>Parquet 路径</li>
+<li>CSV 路径，如果有</li>
+<li>DuckDB 查询缓存路径，如果有</li>
+<li>schema</li>
+<li>主键</li>
+<li>日期字段</li>
+<li>分区方式</li>
+<li>写入策略</li>
+<li>最近 run</li>
+<li>质量规则和告警</li>
+</ul>
+<h4>预览</h4>
+<p>预览必须说明：</p>
+<ul>
+<li>预览来自已入库数据，不请求源端。</li>
+<li>默认读取 Parquet。</li>
+<li>如果用户选择日期范围，应尽量裁剪到对应日期文件。</li>
+<li>单次预览必须有限制，例如最多 100 行。</li>
+</ul>
+<h3>接口页 UI 规范</h3>
+<p>接口页回答的是：“这个源端接口怎么临时调用，返回什么？”</p>
+<p>必须包含：</p>
+<ul>
+<li>接口名称和数据源。</li>
+<li>输入参数。</li>
+<li>输出字段。</li>
+<li>真实静态样例。</li>
+<li>默认只展示 curl 调用示例，其他 SDK 示例可折叠。</li>
+<li>远程模式 token 说明。</li>
+</ul>
+<p>输入参数：</p>
+<ul>
+<li>使用表单或紧凑参数表。</li>
+<li>不要把说明文案写得像功能介绍卡片。</li>
+<li>参数字段必须和后端 catalog 对齐。</li>
+</ul>
+<p>输出字段：</p>
+<ul>
+<li>字段表必须有中文含义。</li>
+<li>单位必须清楚。</li>
+<li>源端口径字段必须标明。</li>
+</ul>
+<p>真实样例：</p>
+<ul>
+<li>页面打开不实时请求源端。</li>
+<li>样例来自插件 manifest / Registry 的静态 <code>example.response</code>。</li>
+<li>类别码、枚举映射、字段口径对照等参考表来自插件 <code>reference_sections</code>。</li>
+<li>中文摘要、正文说明、参数提示和参数示例来自插件 / Registry 的 <code>summary_zh</code>、<code>description_zh</code>、<code>params_note_zh</code>、<code>params_example_zh</code>。</li>
+<li>Web request 接口页不维护具体接口的静态页面副本；特殊非 request 页面必须单独说明原因。</li>
+<li>样例数据必须和字段声明对齐。</li>
+<li>如果样例为空，必须有可解释原因，不能默认为“正常”。</li>
+</ul>
+<p>远程 token：</p>
+<ul>
+<li>只在远程 SDK/API 示例旁边提示。</li>
+<li>文案要明确“不影响本地 SDK 调用”。</li>
+</ul>
+<h3>采集页 UI 规范</h3>
+<p>采集页回答的是：“如何把数据保存到本机，并管理任务？”</p>
+<p>页面结构：</p>
+<ol>
+<li>基本参数。</li>
+<li>输入参数。</li>
+<li>输出参数。</li>
+<li>创建任务。</li>
+<li>任务列表。</li>
+<li>运行进度。</li>
+<li>最近记录。</li>
+<li>日志/诊断。</li>
+</ol>
+<h4>基本参数</h4>
+<p>包含：</p>
+<ul>
+<li>任务名称。</li>
+<li>输出格式，多选，Parquet 默认选中且不可取消。</li>
+<li>存储路径，只显示目录，不把文件名混在目录字段里。</li>
+<li>文件名规则，如果需要展示，单独一行。</li>
+<li>并发档位。</li>
+<li>自定义服务器数和长连接数。</li>
+</ul>
+<h4>输入参数</h4>
+<p>输入参数默认展开。</p>
+<ul>
+<li>用户应在输入框或选择器里填写参数。</li>
+<li>复选、多选、日期范围、代码列表使用合适控件。</li>
+<li>不要只展示静态文字。</li>
+<li>输入参数说明优先来自 CollectorRegistry 返回的 CollectorSpec。采集器声明了关联接口时，可以复用 runtime interface catalog 的 <code>parameters</code> / <code>params_note_zh</code>，但不能回查历史 Web 静态 catalog。</li>
+</ul>
+<h4>输出参数</h4>
+<p>输出参数可以默认展开，尤其是页面视觉上需要和输入参数平衡时。</p>
+<p>包含：</p>
+<ul>
+<li>dataset_id</li>
+<li>输出字段</li>
+<li>写入策略</li>
+<li>分区方式</li>
+<li>质量规则</li>
+<li>支持格式</li>
+<li>DuckDB 查询缓存是否支持</li>
+</ul>
+<p>输出字段说明优先来自 CollectorSpec 的 <code>output</code> / <code>quality</code> / 数据集声明。采集器声明了关联接口时，可以复用 runtime interface catalog 的 <code>fields</code>，但不能由 Web 为某个采集器硬编码字段口径。</p>
+<h4>创建任务</h4>
+<ul>
+<li>创建任务按钮放在输出参数下面。</li>
+<li>创建后任务进入任务列表。</li>
+<li>不在顶部重复放一组“采集操作”造成语义混乱。</li>
+</ul>
+<h4>任务列表</h4>
+<p>任务列表应是紧凑的一行式表格或列表，不应堆很多无意义卡片。</p>
+<p>每行必须包含：</p>
+<ul>
+<li>任务名。</li>
+<li>输出路径摘要。</li>
+<li>手动采集按钮。</li>
+<li>定时采集类型。</li>
+<li>定时时间。</li>
+<li>定时开关。</li>
+<li>最近状态。</li>
+<li>删除任务按钮。</li>
+</ul>
+<p>文案：</p>
+<ul>
+<li>使用“手动采集”，不要用有歧义的“采集一次”。</li>
+<li>如果选择定时采集，应先设置定时时间。</li>
+<li>A 股行情默认使用“交易日每天”。</li>
+</ul>
+<h4>运行进度</h4>
+<p>采集进度适合放在任务列表下方或最近记录上方。</p>
+<p>必须展示：</p>
+<ul>
+<li>当前运行状态。</li>
+<li>阶段。</li>
+<li>已处理行数或日期。</li>
+<li>进度条。</li>
+<li>错误摘要。</li>
+<li>日志入口。</li>
+</ul>
+<h4>最近记录</h4>
+<p>默认展示最近 3 条即可。</p>
+<p>每条记录应支持单独删除。删除前需要确认。删除 run history 不删除数据文件。</p>
+<h3>插件页 UI 规范</h3>
+<p>插件页回答的是：“当前安装了哪些能力，它们提供什么接口和采集器？”</p>
+<p>必须区分：</p>
+<ul>
+<li>Provider 数据源能力。</li>
+<li>Collector 采集能力。</li>
+<li>DownloaderProfile 兼容能力。</li>
+<li>预装、AXP、pip、editable 等安装来源。</li>
+</ul>
+<p>插件卡片的“导出 AXP”只导出插件安装包。导出内容不得包含已采集数据、metadata 数据库、任务历史、run history、日志、缓存、AxData API token 或第三方数据源凭据；导入后仍按 manifest 的 Provider / Collector 能力声明进入对应 Registry。</p>
+<p>所有诊断项都要有中文解释。不能只显示英文 key。</p>
+<p>删除插件时必须弹窗说明：</p>
+<ul>
+<li>会隐藏/移除哪些接口或采集器。</li>
+<li>不会删除哪些数据。</li>
+<li>如果是预装插件，是逻辑卸载还是物理删除。</li>
+</ul>
+<h3>开始页规范</h3>
+<p>开始页是开发文档入口，不是营销页。</p>
+<p>建议栏目：</p>
+<ul>
+<li>快速开始。</li>
+<li>数据源开发。</li>
+<li>采集器开发。</li>
+<li>数据集声明与 DuckDB。</li>
+<li>UI 规范。</li>
+<li>打包安装。</li>
+<li>插件排错。</li>
+<li>架构说明。</li>
+<li>服务器使用。</li>
+<li>Python SDK 主入口。</li>
+</ul>
+<p>每个栏目要短，但能点进详细文档。长内容放下方或 Markdown 文档，不挤在左侧导航。</p>
+<p>开始页术语必须和项目一致：</p>
+<ul>
+<li>数据源，不叫软件源。</li>
+<li>采集器，不叫下载器。</li>
+<li>DuckDB 查询缓存，不叫数据备份。</li>
+<li>接口页，不叫采集页。</li>
+</ul>
+<h3>验证规范</h3>
+<p>改动不同层级后，应至少执行对应检查。</p>
+<h4>文档和 UI 文案</h4>
+<pre><code class="language-powershell">npm run build:web</code></pre>
+<h4>Python 契约、API、采集和存储</h4>
+<pre><code class="language-powershell">.venv\Scripts\python.exe -m compileall -q libs\axdata_core apps\api packages\axdata-sdk services scripts tests</code></pre>
+<h4>重点测试</h4>
+<pre><code class="language-powershell">.venv\Scripts\python.exe -m pytest tests\test_external_sources.py tests\test_builtin_providers.py tests\test_provider_catalog.py -q</code></pre>
+<p>如果已有历史测试因为未同步的旧断言失败，应在最终说明中明确失败原因，不能假装全绿。</p>
+<h4>手动验证</h4>
+<pre><code class="language-powershell">npm run dev:api
+npm run dev:web
+curl http://127.0.0.1:8666/health
+curl http://127.0.0.1:8666/v1/config
+curl http://127.0.0.1:8666/v1/request/interfaces
+curl http://127.0.0.1:8666/v1/plugins/collectors
+curl http://127.0.0.1:8666/v1/data/datasets</code></pre>
+<h3>维护流程</h3>
+<p>开发规范用于约束已经进入 AxData 的产品能力。新增或调整功能时，按下面流程维护文档、页面和测试：</p>
+<ol>
+<li>明确改动属于数据源接口、采集器、数据集、插件管理、数据浏览或 UI 文案中的哪一类。</li>
+<li>更新对应专题文档，并保持开始页入口、接口页、采集页和插件页的术语一致。</li>
+<li>接口变更需要同步参数、字段、中文说明、真实样例、SDK 示例和 source_request 路由测试。</li>
+<li>采集器变更需要同步 CollectorSpec、runner_entry、任务参数、输出 dataset、质量规则和运行状态展示。</li>
+<li>数据集变更需要说明 schema、Parquet 路径、DuckDB 查询缓存、预览来源和删除范围。</li>
+<li>UI 变更需要检查中文文案、空状态、错误状态、加载状态和移动/桌面布局。</li>
+<li>完成后运行本页列出的相关验证命令，并在进度文档中记录结果。</li>
+</ol>
+<p>开发规范不是任务清单；它只描述 AxData 已采用的边界、命名、页面口径和验证规则。</p></article>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

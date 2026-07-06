@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>高管持股变动明细 - AxData 接口文档</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="../index.html">AxData</a>
+    <nav><a class="" href="../index.html">首页</a><a class="active" href="../interfaces/index.html">接口文档</a><a class="" href="../docs/index.html">开发文档</a></nav>
+  </header>
+  <main>
+<section class="page-head">
+  <p class="breadcrumb"><a href="index.html">接口文档</a> / 巨潮</p>
+  <h1>高管持股变动明细</h1>
+  <p class="code-title">stock_hold_management_detail_cninfo</p>
+  <p class="lead">临时获取巨潮高管持股变动明细数据，默认不入库。</p>
+</section>
+<section>
+  <h2>接口信息</h2>
+  <dl class="definition-grid"><div><dt>接口名</dt><dd>stock_hold_management_detail_cninfo</dd></div><div><dt>Provider</dt><dd>axdata.source.cninfo</dd></div><div><dt>数据源</dt><dd>巨潮 / cninfo</dd></div><div><dt>目录</dt><dd>巨潮 / 股本股东</dd></div><div><dt>资产类型</dt><dd>stock</dd></div><div><dt>请求模式</dt><dd>source_request</dd></div><div><dt>采集支持</dt><dd>否</dd></div></dl>
+  <p>临时请求巨潮高管持股变动明细，按变动类型和公告区间返回，默认不入库。</p>
+</section>
+<section>
+  <h2>参数</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>参数</th><th>类型</th><th>必填</th><th>说明</th><th>默认值</th></tr></thead>
+  <tbody><tr><td><code>change_type</code></td><td>string</td><td>否</td><td>变动类型：增持、减持；默认 增持。</td><td>&quot;增持&quot;</td></tr><tr><td><code>start_date</code></td><td>string</td><td>否</td><td>公告开始日期，YYYYMMDD 或 YYYY-MM-DD；默认 20240101。</td><td>&quot;20240101&quot;</td></tr><tr><td><code>end_date</code></td><td>string</td><td>否</td><td>公告结束日期，YYYYMMDD 或 YYYY-MM-DD；默认 20241231。</td><td>&quot;20241231&quot;</td></tr><tr><td><code>limit</code></td><td>integer</td><td>否</td><td>最多返回行数，默认 100，最大 1000。</td><td>100</td></tr></tbody>
+</table></div>
+  
+  
+</section>
+<section>
+  <h2>返回字段</h2>
+  
+<div class="table-wrap"><table>
+  <thead><tr><th>字段</th><th>类型</th><th>说明</th></tr></thead>
+  <tbody><tr><td><code>instrument_id</code></td><td>string</td><td>AxData 统一证券代码。</td></tr><tr><td><code>symbol</code></td><td>string</td><td>六位证券代码。</td></tr><tr><td><code>exchange</code></td><td>string</td><td>交易所代码：SSE、SZSE、BSE。</td></tr><tr><td><code>name</code></td><td>string</td><td>证券简称。</td></tr><tr><td><code>change_type</code></td><td>string</td><td>变动类型：增持、减持。</td></tr><tr><td><code>end_date</code></td><td>date</td><td>截止日期，格式 YYYYMMDD。</td></tr><tr><td><code>announcement_date</code></td><td>date</td><td>公告日期，格式 YYYYMMDD。</td></tr><tr><td><code>executive_name</code></td><td>string</td><td>高管姓名。</td></tr><tr><td><code>director_supervisor_senior_name</code></td><td>string</td><td>董监高姓名。</td></tr><tr><td><code>director_supervisor_senior_position</code></td><td>string</td><td>董监高职务。</td></tr><tr><td><code>changer_relation</code></td><td>string</td><td>变动人与董监高关系。</td></tr><tr><td><code>beginning_holding_shares</code></td><td>number</td><td>期初持股数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>ending_holding_shares</code></td><td>number</td><td>期末持股数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>change_shares</code></td><td>number</td><td>变动数量，单位/口径沿用巨潮源端。</td></tr><tr><td><code>change_ratio</code></td><td>number</td><td>变动比例，源端百分比数值口径。</td></tr><tr><td><code>average_price</code></td><td>number</td><td>成交均价，单位：元。</td></tr><tr><td><code>ending_market_value</code></td><td>number</td><td>期末市值，金额单位/口径沿用巨潮源端。</td></tr><tr><td><code>change_reason</code></td><td>string</td><td>持股变动原因。</td></tr><tr><td><code>data_source</code></td><td>string</td><td>数据来源。</td></tr></tbody>
+</table></div>
+</section>
+<section>
+  <h2>调用示例</h2>
+  <h3>Python SDK</h3>
+  <pre><code class="language-python">import axdata as ax
+
+client = ax.AxDataClient()
+rows = client.call(
+    &quot;stock_hold_management_detail_cninfo&quot;,
+    change_type=&#x27;增持&#x27;,
+    end_date=&#x27;20241231&#x27;,
+    limit=1,
+    start_date=&#x27;20240101&#x27;,
+)</code></pre>
+  <h3>HTTP API</h3>
+  <pre><code class="language-http">POST /v1/request/stock_hold_management_detail_cninfo
+Content-Type: application/json
+
+{
+  &quot;params&quot;: {
+    &quot;change_type&quot;: &quot;增持&quot;,
+    &quot;start_date&quot;: &quot;20240101&quot;,
+    &quot;end_date&quot;: &quot;20241231&quot;,
+    &quot;limit&quot;: 1
+  }
+}</code></pre>
+</section>
+<section>
+  <h2>真实样例快照</h2>
+  <h3>请求参数</h3>
+  <pre><code class="language-json">{
+  &quot;change_type&quot;: &quot;增持&quot;,
+  &quot;start_date&quot;: &quot;20240101&quot;,
+  &quot;end_date&quot;: &quot;20241231&quot;,
+  &quot;limit&quot;: 1
+}</code></pre>
+  <h3>响应样例</h3>
+  <pre><code class="language-json">[
+  {
+    &quot;instrument_id&quot;: &quot;000034.SZ&quot;,
+    &quot;symbol&quot;: &quot;000034&quot;,
+    &quot;exchange&quot;: &quot;SZSE&quot;,
+    &quot;name&quot;: &quot;神州数码&quot;,
+    &quot;change_type&quot;: &quot;增持&quot;,
+    &quot;end_date&quot;: &quot;20240630&quot;,
+    &quot;announcement_date&quot;: &quot;20240831&quot;,
+    &quot;executive_name&quot;: &quot;李岩&quot;,
+    &quot;director_supervisor_senior_name&quot;: &quot;李岩&quot;,
+    &quot;director_supervisor_senior_position&quot;: null,
+    &quot;changer_relation&quot;: null,
+    &quot;beginning_holding_shares&quot;: 16.88,
+    &quot;ending_holding_shares&quot;: 18.38,
+    &quot;change_shares&quot;: 15000.0,
+    &quot;change_ratio&quot;: null,
+    &quot;average_price&quot;: null,
+    &quot;ending_market_value&quot;: null,
+    &quot;change_reason&quot;: null,
+    &quot;data_source&quot;: &quot;定期报告&quot;
+  }
+]</code></pre>
+</section>
+
+<p class="build-note">生成时间：2026-07-06T13:10:01+00:00</p>
+</main>
+  <footer>AxData is an open-source quantitative database framework for personal learning, protocol research and non-commercial research.</footer>
+</body>
+</html>

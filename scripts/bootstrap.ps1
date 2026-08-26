@@ -33,6 +33,11 @@ try {
         & $VenvPython -m pip install -e $PackagePath
     }
 
+    # 采集器插件包(axdata-collector-*),含共享 runner 支撑包
+    Get-ChildItem -Directory (Join-Path $RepoRoot "packages") |
+        Where-Object { $_.Name -like "axdata-collector-*" } |
+        ForEach-Object { & $VenvPython -m pip install -e $_.FullName }
+
     if (-not $SkipNpm) {
         if (-not (Get-Command npm -ErrorAction SilentlyContinue)) {
             throw "npm was not found. Install Node.js first, or rerun with -SkipNpm to skip Web dependencies."

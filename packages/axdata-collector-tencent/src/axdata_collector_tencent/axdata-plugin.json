@@ -1,0 +1,1118 @@
+{
+  "manifest_version": "1.0",
+  "plugin_api_version": "1.0",
+  "plugin": {
+    "plugin_id": "axdata.collector.tencent",
+    "name_zh": "腾讯财经采集器",
+    "version": "0.1.0",
+    "description": "腾讯财经采集器插件:按接口目录自动生成独立采集器。"
+  },
+  "provider": null,
+  "interfaces": [],
+  "downloaders": [],
+  "collectors": [
+    {
+      "collector_id": "tencent.get_tx_start_year.snapshot",
+      "name": "tencent.get_tx_start_year.snapshot",
+      "display_name_zh": "腾讯历史起始日期采集",
+      "description": "独立腾讯财经采集器插件:采集腾讯历史起始日期并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.tencent",
+      "dataset_id": "tencent.get_tx_start_year",
+      "category": "历史行情",
+      "resource_group": "tencent.http",
+      "runner_entry": "axdata_collector_tencent.collectors:run_collector",
+      "interfaces": [
+        "get_tx_start_year"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "000001.SH"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=tencent.get_tx_start_year"
+        ],
+        "default_dir_name": "tencent.get_tx_start_year",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "snapshot",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "tencent.get_tx_start_year",
+            "table": "tencent_get_tx_start_year",
+            "display_name_zh": "腾讯历史起始日期",
+            "description": "临时查询单个证券或指数在腾讯日线接口中的最早可用日期，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "snapshot",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券或指数代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "asset_type",
+                "type": "string",
+                "description": "资产类型：stock、index 或 etf，按代码规则推断。"
+              },
+              {
+                "name": "start_date",
+                "type": "date",
+                "description": "腾讯源端最早可用日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "source_value",
+                "type": "number",
+                "description": "源端首条趋势值；指数为点位，股票为价格。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=tencent.get_tx_start_year"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=tencent.get_tx_start_year"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "tencent.stock_zh_a_hist_tx.snapshot",
+      "name": "tencent.stock_zh_a_hist_tx.snapshot",
+      "display_name_zh": "A股历史日线采集",
+      "description": "独立腾讯财经采集器插件:采集A股历史日线并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.tencent",
+      "dataset_id": "tencent.stock_zh_a_hist_tx",
+      "category": "历史行情",
+      "resource_group": "tencent.http",
+      "runner_entry": "axdata_collector_tencent.collectors:run_collector",
+      "interfaces": [
+        "stock_zh_a_hist_tx"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "15:50",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "code": "000001.SZ",
+        "start_date": "20240102",
+        "end_date": "20240102",
+        "adjust": "none"
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=tencent_stock_zh_a_hist_tx"
+        ],
+        "default_dir_name": "tencent.stock_zh_a_hist_tx",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "tencent.stock_zh_a_hist_tx",
+            "table": "tencent_stock_zh_a_hist_tx",
+            "display_name_zh": "A股历史日线",
+            "description": "临时请求单只 A 股日线小窗口，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "asset_type",
+                "type": "string",
+                "description": "资产类型，固定为 stock。"
+              },
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "adjust",
+                "type": "string",
+                "description": "复权类型：none、qfq、hfq。"
+              },
+              {
+                "name": "open",
+                "type": "number",
+                "description": "开盘价，单位：元。"
+              },
+              {
+                "name": "close",
+                "type": "number",
+                "description": "收盘价，单位：元。"
+              },
+              {
+                "name": "high",
+                "type": "number",
+                "description": "最高价，单位：元。"
+              },
+              {
+                "name": "low",
+                "type": "number",
+                "description": "最低价，单位：元。"
+              },
+              {
+                "name": "volume",
+                "type": "number",
+                "description": "成交量，沿用腾讯源端日线口径。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额，沿用腾讯源端日线口径。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "trade_date",
+              "volume",
+              "amount"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=tencent_stock_zh_a_hist_tx"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=tencent_stock_zh_a_hist_tx"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "tencent.stock_zh_a_spot_tx.snapshot",
+      "name": "tencent.stock_zh_a_spot_tx.snapshot",
+      "display_name_zh": "A股实时行情列表采集",
+      "description": "独立腾讯财经采集器插件:采集A股实时行情列表并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.tencent",
+      "dataset_id": "tencent.stock_zh_a_spot_tx",
+      "category": "行情数据",
+      "resource_group": "tencent.http",
+      "runner_entry": "axdata_collector_tencent.collectors:run_collector",
+      "interfaces": [
+        "stock_zh_a_spot_tx"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "sort_type": "price",
+        "direction": "down",
+        "offset": 0
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=tencent.stock_zh_a_spot_tx"
+        ],
+        "default_dir_name": "tencent.stock_zh_a_spot_tx",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "snapshot",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "tencent.stock_zh_a_spot_tx",
+            "table": "tencent_stock_zh_a_spot_tx",
+            "display_name_zh": "A股实时行情列表",
+            "description": "临时请求腾讯财经 A 股行情排行列表，默认低页数小样本，不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "snapshot",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "asset_type",
+                "type": "string",
+                "description": "资产类型，固定为 stock。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "last_price",
+                "type": "number",
+                "description": "最新价，单位：元。"
+              },
+              {
+                "name": "change",
+                "type": "number",
+                "description": "涨跌额，单位：元。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，百分比数值。"
+              },
+              {
+                "name": "amplitude",
+                "type": "number",
+                "description": "振幅，百分比数值。"
+              },
+              {
+                "name": "volume",
+                "type": "number",
+                "description": "成交量，沿用腾讯源端口径。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额，沿用腾讯源端口径。"
+              },
+              {
+                "name": "turnover_rate",
+                "type": "number",
+                "description": "换手率，百分比数值。"
+              },
+              {
+                "name": "pe_ttm",
+                "type": "number",
+                "description": "滚动市盈率。"
+              },
+              {
+                "name": "total_market_value",
+                "type": "number",
+                "description": "总市值，沿用腾讯源端口径。"
+              },
+              {
+                "name": "float_market_value",
+                "type": "number",
+                "description": "流通市值，沿用腾讯源端口径。"
+              },
+              {
+                "name": "quote_state",
+                "type": "string",
+                "description": "源端行情状态。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name",
+              "last_price",
+              "change_pct",
+              "volume",
+              "amount",
+              "turnover_rate"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=tencent.stock_zh_a_spot_tx"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=tencent.stock_zh_a_spot_tx"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "tencent.stock_zh_a_tick_tx_js.snapshot",
+      "name": "tencent.stock_zh_a_tick_tx_js.snapshot",
+      "display_name_zh": "A股逐笔成交采集",
+      "description": "独立腾讯财经采集器插件:采集A股逐笔成交并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.tencent",
+      "dataset_id": "tencent.stock_zh_a_tick_tx_js",
+      "category": "逐笔数据",
+      "resource_group": "tencent.http",
+      "runner_entry": "axdata_collector_tencent.collectors:run_collector",
+      "interfaces": [
+        "stock_zh_a_tick_tx_js"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "000001.SZ"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=tencent.stock_zh_a_tick_tx_js"
+        ],
+        "default_dir_name": "tencent.stock_zh_a_tick_tx_js",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "snapshot",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "tencent.stock_zh_a_tick_tx_js",
+            "table": "tencent_stock_zh_a_tick_tx_js",
+            "display_name_zh": "A股逐笔成交",
+            "description": "临时请求单只股票逐笔成交单页小样本，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "snapshot",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "sequence",
+                "type": "integer",
+                "description": "源端逐笔序号。"
+              },
+              {
+                "name": "trade_time",
+                "type": "string",
+                "description": "成交时间，源端日内时间 HH:MM:SS。"
+              },
+              {
+                "name": "price",
+                "type": "number",
+                "description": "成交价格，单位：元。"
+              },
+              {
+                "name": "change",
+                "type": "number",
+                "description": "价格变动，单位：元。"
+              },
+              {
+                "name": "volume",
+                "type": "number",
+                "description": "成交量，沿用腾讯源端逐笔口径。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交金额，单位：元。"
+              },
+              {
+                "name": "trade_side",
+                "type": "string",
+                "description": "成交性质：buy 买盘、sell 卖盘、neutral 中性盘。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "volume",
+              "amount"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=tencent.stock_zh_a_tick_tx_js"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=tencent.stock_zh_a_tick_tx_js"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "tencent.stock_zh_index_daily_tx.snapshot",
+      "name": "tencent.stock_zh_index_daily_tx.snapshot",
+      "display_name_zh": "指数历史日线采集",
+      "description": "独立腾讯财经采集器插件:采集指数历史日线并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.tencent",
+      "dataset_id": "tencent.stock_zh_index_daily_tx",
+      "category": "指数数据",
+      "resource_group": "tencent.http",
+      "runner_entry": "axdata_collector_tencent.collectors:run_collector",
+      "interfaces": [
+        "stock_zh_index_daily_tx"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "15:50",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "code": "000001.SH",
+        "start_date": "20240102",
+        "end_date": "20240102",
+        "adjust": "qfq"
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=tencent_stock_zh_index_daily_tx"
+        ],
+        "default_dir_name": "tencent.stock_zh_index_daily_tx",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "tencent.stock_zh_index_daily_tx",
+            "table": "tencent_stock_zh_index_daily_tx",
+            "display_name_zh": "指数历史日线",
+            "description": "临时请求单只指数日线小窗口，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一指数代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位指数代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE。"
+              },
+              {
+                "name": "asset_type",
+                "type": "string",
+                "description": "资产类型，固定为 index。"
+              },
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "adjust",
+                "type": "string",
+                "description": "复权或源端复权标记：none、qfq、hfq。"
+              },
+              {
+                "name": "open",
+                "type": "number",
+                "description": "开盘点位。"
+              },
+              {
+                "name": "close",
+                "type": "number",
+                "description": "收盘点位。"
+              },
+              {
+                "name": "high",
+                "type": "number",
+                "description": "最高点位。"
+              },
+              {
+                "name": "low",
+                "type": "number",
+                "description": "最低点位。"
+              },
+              {
+                "name": "volume",
+                "type": "number",
+                "description": "成交量，沿用腾讯源端指数日线口径。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额，沿用腾讯源端指数日线口径。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "trade_date",
+              "volume",
+              "amount"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=tencent_stock_zh_index_daily_tx"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=tencent_stock_zh_index_daily_tx"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "index"
+    },
+    {
+      "collector_id": "tencent.realtime_snapshot.snapshot",
+      "name": "tencent.realtime_snapshot.snapshot",
+      "display_name_zh": "实时快照采集",
+      "description": "独立腾讯财经采集器插件:采集实时快照并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.tencent",
+      "dataset_id": "tencent.realtime_snapshot",
+      "category": "行情数据",
+      "resource_group": "tencent.http",
+      "runner_entry": "axdata_collector_tencent.collectors:run_collector",
+      "interfaces": [
+        "tencent_realtime_snapshot"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": [
+          "000001.SZ",
+          "600000.SH"
+        ]
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=tencent.realtime_snapshot"
+        ],
+        "default_dir_name": "tencent.realtime_snapshot",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "snapshot",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "tencent.realtime_snapshot",
+            "table": "tencent_realtime_snapshot",
+            "display_name_zh": "实时快照",
+            "description": "这个接口返回源端快照时间；价格单位为元或指数点，比例字段是百分比数值。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "snapshot",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "asset_type",
+                "type": "string",
+                "description": "资产类型：stock、index、etf。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "quote_time",
+                "type": "datetime",
+                "description": "源端行情时间，格式 YYYYMMDDHHMMSS。"
+              },
+              {
+                "name": "last_price",
+                "type": "number",
+                "description": "最新价，单位：元或指数点。"
+              },
+              {
+                "name": "pre_close",
+                "type": "number",
+                "description": "昨收价，单位：元或指数点。"
+              },
+              {
+                "name": "open",
+                "type": "number",
+                "description": "开盘价，单位：元或指数点。"
+              },
+              {
+                "name": "high",
+                "type": "number",
+                "description": "最高价，单位：元或指数点。"
+              },
+              {
+                "name": "low",
+                "type": "number",
+                "description": "最低价，单位：元或指数点。"
+              },
+              {
+                "name": "change",
+                "type": "number",
+                "description": "涨跌额，单位：元或指数点。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，百分比数值。"
+              },
+              {
+                "name": "volume",
+                "type": "number",
+                "description": "成交量，沿用源端口径。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额，单位：元。"
+              },
+              {
+                "name": "turnover_rate",
+                "type": "number",
+                "description": "换手率，百分比数值；指数可能为空。"
+              },
+              {
+                "name": "pe_dynamic",
+                "type": "number",
+                "description": "动态市盈率；不适用时为空。"
+              },
+              {
+                "name": "pb",
+                "type": "number",
+                "description": "市净率；不适用时为空。"
+              },
+              {
+                "name": "total_market_value",
+                "type": "number",
+                "description": "总市值，源端确认口径为亿元。"
+              },
+              {
+                "name": "float_market_value",
+                "type": "number",
+                "description": "流通市值，源端确认口径为亿元。"
+              },
+              {
+                "name": "limit_up_price",
+                "type": "number",
+                "description": "涨停价；不适用时为空。"
+              },
+              {
+                "name": "limit_down_price",
+                "type": "number",
+                "description": "跌停价；不适用时为空。"
+              },
+              {
+                "name": "currency",
+                "type": "string",
+                "description": "币种。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name",
+              "last_price",
+              "change_pct",
+              "volume",
+              "amount",
+              "turnover_rate"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=tencent.realtime_snapshot"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=tencent.realtime_snapshot"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    }
+  ],
+  "dependencies": [],
+  "config_schema": {},
+  "required_config": [],
+  "resources": {},
+  "build": {}
+}

@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "axdata-collector-tencent"
+version = "0.1.0"
+description = "腾讯财经采集器 collector plugin for AxData"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "axdata-core>=0.1.0",
+  "axdata-collector-support>=0.1.0",
+]
+authors = [
+  { name = "AxData" },
+]
+license = "Apache-2.0"
+
+[project.entry-points."axdata.plugins"]
+tencent = "axdata_collector_tencent.plugin:plugin"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+axdata_collector_tencent = ["axdata-plugin.json"]

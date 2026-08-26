@@ -1,0 +1,2574 @@
+{
+  "manifest_version": "1.0",
+  "plugin_api_version": "1.0",
+  "plugin": {
+    "plugin_id": "axdata.collector.eastmoney",
+    "name_zh": "东方财富采集器",
+    "version": "0.1.0",
+    "description": "东方财富采集器插件:按接口目录自动生成独立采集器。"
+  },
+  "provider": null,
+  "interfaces": [],
+  "downloaders": [],
+  "collectors": [
+    {
+      "collector_id": "eastmoney.dragon_tiger_daily.snapshot",
+      "name": "eastmoney.dragon_tiger_daily.snapshot",
+      "display_name_zh": "龙虎榜每日汇总采集",
+      "description": "独立东方财富采集器插件:采集龙虎榜每日汇总并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.eastmoney",
+      "dataset_id": "eastmoney.dragon_tiger_daily",
+      "category": "龙虎榜数据",
+      "resource_group": "eastmoney.http",
+      "runner_entry": "axdata_collector_eastmoney.collectors:run_collector",
+      "interfaces": [
+        "eastmoney_dragon_tiger_daily"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "15:30",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "trade_date": "20240102"
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=eastmoney_dragon_tiger_daily"
+        ],
+        "default_dir_name": "eastmoney.dragon_tiger_daily",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "eastmoney.dragon_tiger_daily",
+            "table": "eastmoney_dragon_tiger_daily",
+            "display_name_zh": "龙虎榜每日汇总",
+            "description": "这个接口只保留已确认字段；金额字段单位为元，遇到源端空结果返回空表。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "reason",
+                "type": "string",
+                "description": "上榜原因。"
+              },
+              {
+                "name": "close_price",
+                "type": "number",
+                "description": "收盘价，单位：元。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，百分比数值。"
+              },
+              {
+                "name": "turnover_rate",
+                "type": "number",
+                "description": "换手率，百分比数值。"
+              },
+              {
+                "name": "buy_amount",
+                "type": "number",
+                "description": "龙虎榜买入额，单位：元。"
+              },
+              {
+                "name": "sell_amount",
+                "type": "number",
+                "description": "龙虎榜卖出额，单位：元。"
+              },
+              {
+                "name": "net_buy_amount",
+                "type": "number",
+                "description": "龙虎榜净买入额，单位：元。"
+              },
+              {
+                "name": "total_amount",
+                "type": "number",
+                "description": "龙虎榜成交额，单位：元。"
+              },
+              {
+                "name": "market",
+                "type": "string",
+                "description": "交易市场标签。"
+              }
+            ],
+            "default_query_fields": [
+              "trade_date",
+              "instrument_id",
+              "symbol",
+              "name",
+              "close_price",
+              "change_pct",
+              "turnover_rate"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=eastmoney_dragon_tiger_daily"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=eastmoney_dragon_tiger_daily"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "eastmoney.limit_down_pool.snapshot",
+      "name": "eastmoney.limit_down_pool.snapshot",
+      "display_name_zh": "跌停池采集",
+      "description": "独立东方财富采集器插件:采集跌停池并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.eastmoney",
+      "dataset_id": "eastmoney.limit_down_pool",
+      "category": "短线数据",
+      "resource_group": "eastmoney.http",
+      "runner_entry": "axdata_collector_eastmoney.collectors:run_collector",
+      "interfaces": [
+        "eastmoney_limit_down_pool"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "15:30",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "trade_date": ""
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=eastmoney_limit_down_pool"
+        ],
+        "default_dir_name": "eastmoney.limit_down_pool",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "eastmoney.limit_down_pool",
+            "table": "eastmoney_limit_down_pool",
+            "display_name_zh": "跌停池",
+            "description": "请求东方财富跌停池，支持指定交易日，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "market_code",
+                "type": "string",
+                "description": "东方财富市场代码。"
+              },
+              {
+                "name": "last_price",
+                "type": "number",
+                "description": "最新价，单位：元。"
+              },
+              {
+                "name": "limit_price",
+                "type": "number",
+                "description": "涨停/跌停价，单位：元。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，百分比数值。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额，单位：元。"
+              },
+              {
+                "name": "float_market_value",
+                "type": "number",
+                "description": "流通市值，单位：元。"
+              },
+              {
+                "name": "turnover_rate",
+                "type": "number",
+                "description": "换手率，百分比数值。"
+              },
+              {
+                "name": "first_limit_time",
+                "type": "string",
+                "description": "首次涨停时间。"
+              },
+              {
+                "name": "last_limit_time",
+                "type": "string",
+                "description": "最后涨停/跌停时间。"
+              },
+              {
+                "name": "continuous_count",
+                "type": "integer",
+                "description": "连板/连续跌停次数。"
+              },
+              {
+                "name": "open_times",
+                "type": "integer",
+                "description": "炸板/开板次数。"
+              },
+              {
+                "name": "main_inflow",
+                "type": "number",
+                "description": "主力净流入，单位：元。"
+              },
+              {
+                "name": "sector",
+                "type": "string",
+                "description": "所属行业/板块。"
+              }
+            ],
+            "default_query_fields": [
+              "trade_date",
+              "instrument_id",
+              "symbol",
+              "name",
+              "last_price",
+              "change_pct",
+              "amount",
+              "turnover_rate",
+              "continuous_count",
+              "main_inflow"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=eastmoney_limit_down_pool"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=eastmoney_limit_down_pool"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "eastmoney.limit_up_pool.snapshot",
+      "name": "eastmoney.limit_up_pool.snapshot",
+      "display_name_zh": "涨停池采集",
+      "description": "独立东方财富采集器插件:采集涨停池并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.eastmoney",
+      "dataset_id": "eastmoney.limit_up_pool",
+      "category": "短线数据",
+      "resource_group": "eastmoney.http",
+      "runner_entry": "axdata_collector_eastmoney.collectors:run_collector",
+      "interfaces": [
+        "eastmoney_limit_up_pool"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "15:30",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "trade_date": ""
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=eastmoney_limit_up_pool"
+        ],
+        "default_dir_name": "eastmoney.limit_up_pool",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "eastmoney.limit_up_pool",
+            "table": "eastmoney_limit_up_pool",
+            "display_name_zh": "涨停池",
+            "description": "请求东方财富涨停池，支持指定交易日，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "market_code",
+                "type": "string",
+                "description": "东方财富市场代码。"
+              },
+              {
+                "name": "last_price",
+                "type": "number",
+                "description": "最新价，单位：元。"
+              },
+              {
+                "name": "limit_price",
+                "type": "number",
+                "description": "涨停/跌停价，单位：元。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，百分比数值。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额，单位：元。"
+              },
+              {
+                "name": "float_market_value",
+                "type": "number",
+                "description": "流通市值，单位：元。"
+              },
+              {
+                "name": "turnover_rate",
+                "type": "number",
+                "description": "换手率，百分比数值。"
+              },
+              {
+                "name": "first_limit_time",
+                "type": "string",
+                "description": "首次涨停时间。"
+              },
+              {
+                "name": "last_limit_time",
+                "type": "string",
+                "description": "最后涨停/跌停时间。"
+              },
+              {
+                "name": "continuous_count",
+                "type": "integer",
+                "description": "连板/连续跌停次数。"
+              },
+              {
+                "name": "open_times",
+                "type": "integer",
+                "description": "炸板/开板次数。"
+              },
+              {
+                "name": "main_inflow",
+                "type": "number",
+                "description": "主力净流入，单位：元。"
+              },
+              {
+                "name": "sector",
+                "type": "string",
+                "description": "所属行业/板块。"
+              }
+            ],
+            "default_query_fields": [
+              "trade_date",
+              "instrument_id",
+              "symbol",
+              "name",
+              "last_price",
+              "change_pct",
+              "amount",
+              "turnover_rate",
+              "continuous_count",
+              "main_inflow"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=eastmoney_limit_up_pool"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=eastmoney_limit_up_pool"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "eastmoney.margin_trading.snapshot",
+      "name": "eastmoney.margin_trading.snapshot",
+      "display_name_zh": "融资融券明细采集",
+      "description": "独立东方财富采集器插件:采集融资融券明细并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.eastmoney",
+      "dataset_id": "eastmoney.margin_trading",
+      "category": "融资融券数据",
+      "resource_group": "eastmoney.http",
+      "runner_entry": "axdata_collector_eastmoney.collectors:run_collector",
+      "interfaces": [
+        "eastmoney_margin_trading"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "15:30",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "code": "000001.SZ",
+        "start_date": "20240102",
+        "end_date": "20240105"
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=eastmoney_margin_trading"
+        ],
+        "default_dir_name": "eastmoney.margin_trading",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "eastmoney.margin_trading",
+            "table": "eastmoney_margin_trading",
+            "display_name_zh": "融资融券明细",
+            "description": "这个接口只保留已确认字段；金额字段单位为元，遇到源端空结果返回空表。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "market",
+                "type": "string",
+                "description": "交易市场标签。"
+              },
+              {
+                "name": "close_price",
+                "type": "number",
+                "description": "收盘价，单位：元。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，百分比数值。"
+              },
+              {
+                "name": "margin_balance",
+                "type": "number",
+                "description": "融资余额，单位：元。"
+              },
+              {
+                "name": "margin_buy_amount",
+                "type": "number",
+                "description": "融资买入额，单位：元。"
+              },
+              {
+                "name": "margin_repay_amount",
+                "type": "number",
+                "description": "融资偿还额，单位：元。"
+              },
+              {
+                "name": "margin_net_buy_amount",
+                "type": "number",
+                "description": "融资净买入额，单位：元。"
+              },
+              {
+                "name": "short_balance",
+                "type": "number",
+                "description": "融券余额，单位：元。"
+              },
+              {
+                "name": "short_sell_volume",
+                "type": "number",
+                "description": "融券卖出量，单位：股。"
+              },
+              {
+                "name": "short_repay_volume",
+                "type": "number",
+                "description": "融券偿还量，单位：股。"
+              },
+              {
+                "name": "short_net_sell_volume",
+                "type": "number",
+                "description": "融券净卖出量，单位：股。"
+              },
+              {
+                "name": "total_balance",
+                "type": "number",
+                "description": "融资融券余额，单位：元。"
+              },
+              {
+                "name": "market_value",
+                "type": "number",
+                "description": "总市值，单位：元。"
+              }
+            ],
+            "default_query_fields": [
+              "trade_date",
+              "instrument_id",
+              "symbol",
+              "name",
+              "close_price",
+              "change_pct"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=eastmoney_margin_trading"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=eastmoney_margin_trading"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "eastmoney.market_index_realtime.snapshot",
+      "name": "eastmoney.market_index_realtime.snapshot",
+      "display_name_zh": "大盘指数实时行情采集",
+      "description": "独立东方财富采集器插件:采集大盘指数实时行情并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.eastmoney",
+      "dataset_id": "eastmoney.market_index_realtime",
+      "category": "指数数据",
+      "resource_group": "eastmoney.http",
+      "runner_entry": "axdata_collector_eastmoney.collectors:run_collector",
+      "interfaces": [
+        "eastmoney_market_index_realtime"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "scope": "default"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=eastmoney.market_index_realtime"
+        ],
+        "default_dir_name": "eastmoney.market_index_realtime",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "snapshot",
+        "primary_key": [
+          "index_code"
+        ],
+        "required_columns": [
+          "index_code"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "eastmoney.market_index_realtime",
+            "table": "eastmoney_market_index_realtime",
+            "display_name_zh": "大盘指数实时行情",
+            "description": "请求东方财富指数实时行情，默认只返回常用指数，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "index_code"
+            ],
+            "write_mode": "snapshot",
+            "fields": [
+              {
+                "name": "index_code",
+                "type": "string",
+                "description": "指数代码。"
+              },
+              {
+                "name": "index_name",
+                "type": "string",
+                "description": "指数名称。"
+              },
+              {
+                "name": "last_price",
+                "type": "number",
+                "description": "最新价。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，百分比数值。"
+              },
+              {
+                "name": "change",
+                "type": "number",
+                "description": "涨跌额。"
+              },
+              {
+                "name": "volume",
+                "type": "number",
+                "description": "成交量，源端口径。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额，单位：元。"
+              },
+              {
+                "name": "high",
+                "type": "number",
+                "description": "最高价。"
+              },
+              {
+                "name": "low",
+                "type": "number",
+                "description": "最低价。"
+              },
+              {
+                "name": "open",
+                "type": "number",
+                "description": "开盘价。"
+              },
+              {
+                "name": "pre_close",
+                "type": "number",
+                "description": "昨收价。"
+              }
+            ],
+            "default_query_fields": [
+              "index_code",
+              "index_name",
+              "last_price",
+              "change_pct",
+              "volume",
+              "amount"
+            ],
+            "default_filter_fields": [
+              "index_code"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "index_code"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=eastmoney.market_index_realtime"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=eastmoney.market_index_realtime"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "index_code"
+        ],
+        "primary_key": [
+          "index_code"
+        ]
+      },
+      "asset_class": "index"
+    },
+    {
+      "collector_id": "eastmoney.research_reports.snapshot",
+      "name": "eastmoney.research_reports.snapshot",
+      "display_name_zh": "个股研报列表采集",
+      "description": "独立东方财富采集器插件:采集个股研报列表并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.eastmoney",
+      "dataset_id": "eastmoney.research_reports",
+      "category": "研报数据",
+      "resource_group": "eastmoney.http",
+      "runner_entry": "axdata_collector_eastmoney.collectors:run_collector",
+      "interfaces": [
+        "eastmoney_research_reports"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "000001.SZ",
+        "start_date": "20240101",
+        "end_date": "20241231"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=eastmoney.research_reports"
+        ],
+        "default_dir_name": "eastmoney.research_reports",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "snapshot",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "eastmoney.research_reports",
+            "table": "eastmoney_research_reports",
+            "display_name_zh": "个股研报列表",
+            "description": "这个接口只保留已确认字段；金额字段单位为元，遇到源端空结果返回空表。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "snapshot",
+            "fields": [
+              {
+                "name": "report_id",
+                "type": "string",
+                "description": "研报 ID。"
+              },
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "title",
+                "type": "string",
+                "description": "研报标题。"
+              },
+              {
+                "name": "publish_date",
+                "type": "date",
+                "description": "发布日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "org_name",
+                "type": "string",
+                "description": "研究机构。"
+              },
+              {
+                "name": "rating",
+                "type": "string",
+                "description": "评级。"
+              },
+              {
+                "name": "rating_change",
+                "type": "string",
+                "description": "评级变动源端值。"
+              },
+              {
+                "name": "researcher",
+                "type": "string",
+                "description": "研究员。"
+              },
+              {
+                "name": "eps_forecast_this_year",
+                "type": "number",
+                "description": "本年度 EPS 预测，单位：元/股。"
+              },
+              {
+                "name": "pe_forecast_this_year",
+                "type": "number",
+                "description": "本年度 PE 预测，倍。"
+              },
+              {
+                "name": "file_size_kb",
+                "type": "number",
+                "description": "附件大小，单位：KB。"
+              },
+              {
+                "name": "page_count",
+                "type": "integer",
+                "description": "附件页数。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name",
+              "title",
+              "publish_date",
+              "org_name",
+              "rating"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=eastmoney.research_reports"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=eastmoney.research_reports"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "eastmoney.sector_constituents.snapshot",
+      "name": "eastmoney.sector_constituents.snapshot",
+      "display_name_zh": "板块成分股采集",
+      "description": "独立东方财富采集器插件:采集板块成分股并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.eastmoney",
+      "dataset_id": "eastmoney.sector_constituents",
+      "category": "板块数据",
+      "resource_group": "eastmoney.http",
+      "runner_entry": "axdata_collector_eastmoney.collectors:run_collector",
+      "interfaces": [
+        "eastmoney_sector_constituents"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "sector_code": "BK1033"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=eastmoney.sector_constituents"
+        ],
+        "default_dir_name": "eastmoney.sector_constituents",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "snapshot",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "eastmoney.sector_constituents",
+            "table": "eastmoney_sector_constituents",
+            "display_name_zh": "板块成分股",
+            "description": "按东方财富板块代码请求成分股，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "snapshot",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "last_price",
+                "type": "number",
+                "description": "最新价，单位：元。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，百分比数值。"
+              },
+              {
+                "name": "change",
+                "type": "number",
+                "description": "涨跌额，单位：元。"
+              },
+              {
+                "name": "volume",
+                "type": "number",
+                "description": "成交量，源端口径。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额，单位：元。"
+              },
+              {
+                "name": "amplitude",
+                "type": "number",
+                "description": "振幅，百分比数值。"
+              },
+              {
+                "name": "turnover_rate",
+                "type": "number",
+                "description": "换手率，百分比数值。"
+              },
+              {
+                "name": "pe_ttm",
+                "type": "number",
+                "description": "市盈率 TTM。"
+              },
+              {
+                "name": "volume_ratio",
+                "type": "number",
+                "description": "量比。"
+              },
+              {
+                "name": "high",
+                "type": "number",
+                "description": "最高价，单位：元。"
+              },
+              {
+                "name": "low",
+                "type": "number",
+                "description": "最低价，单位：元。"
+              },
+              {
+                "name": "open",
+                "type": "number",
+                "description": "开盘价，单位：元。"
+              },
+              {
+                "name": "pre_close",
+                "type": "number",
+                "description": "昨收价，单位：元。"
+              },
+              {
+                "name": "total_market_value",
+                "type": "number",
+                "description": "总市值，单位：元。"
+              },
+              {
+                "name": "float_market_value",
+                "type": "number",
+                "description": "流通市值，单位：元。"
+              },
+              {
+                "name": "pb",
+                "type": "number",
+                "description": "市净率。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name",
+              "last_price",
+              "change_pct",
+              "volume",
+              "amount",
+              "turnover_rate"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=eastmoney.sector_constituents"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=eastmoney.sector_constituents"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "eastmoney.sector_realtime.snapshot",
+      "name": "eastmoney.sector_realtime.snapshot",
+      "display_name_zh": "板块实时行情采集",
+      "description": "独立东方财富采集器插件:采集板块实时行情并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.eastmoney",
+      "dataset_id": "eastmoney.sector_realtime",
+      "category": "板块数据",
+      "resource_group": "eastmoney.http",
+      "runner_entry": "axdata_collector_eastmoney.collectors:run_collector",
+      "interfaces": [
+        "eastmoney_sector_realtime"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "sector_type": "industry"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=eastmoney.sector_realtime"
+        ],
+        "default_dir_name": "eastmoney.sector_realtime",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "snapshot",
+        "primary_key": [
+          "sector_code"
+        ],
+        "required_columns": [
+          "sector_code"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "eastmoney.sector_realtime",
+            "table": "eastmoney_sector_realtime",
+            "display_name_zh": "板块实时行情",
+            "description": "请求东方财富行业/概念板块行情，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "sector_code"
+            ],
+            "write_mode": "snapshot",
+            "fields": [
+              {
+                "name": "sector_code",
+                "type": "string",
+                "description": "板块代码。"
+              },
+              {
+                "name": "sector_name",
+                "type": "string",
+                "description": "板块名称。"
+              },
+              {
+                "name": "sector_type",
+                "type": "string",
+                "description": "板块类型。"
+              },
+              {
+                "name": "last_price",
+                "type": "number",
+                "description": "板块最新价。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，百分比数值。"
+              },
+              {
+                "name": "change",
+                "type": "number",
+                "description": "涨跌额。"
+              },
+              {
+                "name": "volume",
+                "type": "number",
+                "description": "成交量，源端口径。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额，单位：元。"
+              },
+              {
+                "name": "amplitude",
+                "type": "number",
+                "description": "振幅，百分比数值。"
+              },
+              {
+                "name": "turnover_rate",
+                "type": "number",
+                "description": "换手率，百分比数值。"
+              },
+              {
+                "name": "total_market_value",
+                "type": "number",
+                "description": "总市值，单位：元。"
+              },
+              {
+                "name": "main_inflow",
+                "type": "number",
+                "description": "主力净流入，单位：元。"
+              },
+              {
+                "name": "lead_stock_name",
+                "type": "string",
+                "description": "领涨股名称。"
+              },
+              {
+                "name": "lead_stock_symbol",
+                "type": "string",
+                "description": "领涨股六位代码。"
+              },
+              {
+                "name": "lead_stock_change_pct",
+                "type": "number",
+                "description": "领涨股涨跌幅。"
+              },
+              {
+                "name": "up_count",
+                "type": "integer",
+                "description": "上涨家数。"
+              },
+              {
+                "name": "down_count",
+                "type": "integer",
+                "description": "下跌家数。"
+              }
+            ],
+            "default_query_fields": [
+              "sector_code",
+              "sector_name",
+              "last_price",
+              "change_pct",
+              "volume",
+              "amount",
+              "turnover_rate",
+              "main_inflow"
+            ],
+            "default_filter_fields": [
+              "sector_code"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "sector_code"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=eastmoney.sector_realtime"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=eastmoney.sector_realtime"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "sector_code"
+        ],
+        "primary_key": [
+          "sector_code"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "eastmoney.stock_change_detail.snapshot",
+      "name": "eastmoney.stock_change_detail.snapshot",
+      "display_name_zh": "个股盘口异动明细采集",
+      "description": "独立东方财富采集器插件:采集个股盘口异动明细并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.eastmoney",
+      "dataset_id": "eastmoney.stock_change_detail",
+      "category": "短线数据",
+      "resource_group": "eastmoney.http",
+      "runner_entry": "axdata_collector_eastmoney.collectors:run_collector",
+      "interfaces": [
+        "eastmoney_stock_change_detail"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "15:30",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "code": "301520.SZ",
+        "trade_date": ""
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=eastmoney_stock_change_detail"
+        ],
+        "default_dir_name": "eastmoney.stock_change_detail",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "eastmoney.stock_change_detail",
+            "table": "eastmoney_stock_change_detail",
+            "display_name_zh": "个股盘口异动明细",
+            "description": "请求单只股票盘口异动明细，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期。"
+              },
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "market_code",
+                "type": "string",
+                "description": "东方财富市场代码。"
+              },
+              {
+                "name": "change_time",
+                "type": "string",
+                "description": "异动时间，HHMMSS。"
+              },
+              {
+                "name": "change_type",
+                "type": "string",
+                "description": "异动类型编码。"
+              },
+              {
+                "name": "change_type_name",
+                "type": "string",
+                "description": "异动类型名称。"
+              },
+              {
+                "name": "price",
+                "type": "number",
+                "description": "价格，单位：元。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，百分比数值。"
+              },
+              {
+                "name": "volume",
+                "type": "number",
+                "description": "成交量，源端口径。"
+              }
+            ],
+            "default_query_fields": [
+              "trade_date",
+              "instrument_id",
+              "symbol",
+              "name",
+              "change_pct",
+              "volume"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=eastmoney_stock_change_detail"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=eastmoney_stock_change_detail"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "eastmoney.stock_changes.snapshot",
+      "name": "eastmoney.stock_changes.snapshot",
+      "display_name_zh": "盘口异动列表采集",
+      "description": "独立东方财富采集器插件:采集盘口异动列表并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.eastmoney",
+      "dataset_id": "eastmoney.stock_changes",
+      "category": "短线数据",
+      "resource_group": "eastmoney.http",
+      "runner_entry": "axdata_collector_eastmoney.collectors:run_collector",
+      "interfaces": [
+        "eastmoney_stock_changes"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "change_type": "8201"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=eastmoney.stock_changes"
+        ],
+        "default_dir_name": "eastmoney.stock_changes",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "snapshot",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "eastmoney.stock_changes",
+            "table": "eastmoney_stock_changes",
+            "display_name_zh": "盘口异动列表",
+            "description": "请求东方财富盘口异动列表，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "snapshot",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "market_code",
+                "type": "string",
+                "description": "东方财富市场代码。"
+              },
+              {
+                "name": "change_time",
+                "type": "string",
+                "description": "异动时间，HHMMSS。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，百分比数值。"
+              },
+              {
+                "name": "change_type",
+                "type": "string",
+                "description": "异动类型编码。"
+              },
+              {
+                "name": "change_type_name",
+                "type": "string",
+                "description": "异动类型名称。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name",
+              "change_pct"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=eastmoney.stock_changes"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=eastmoney.stock_changes"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "eastmoney.stock_realtime_snapshot.snapshot",
+      "name": "eastmoney.stock_realtime_snapshot.snapshot",
+      "display_name_zh": "A股实时行情快照采集",
+      "description": "独立东方财富采集器插件:采集A股实时行情快照并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.eastmoney",
+      "dataset_id": "eastmoney.stock_realtime_snapshot",
+      "category": "实时数据",
+      "resource_group": "eastmoney.http",
+      "runner_entry": "axdata_collector_eastmoney.collectors:run_collector",
+      "interfaces": [
+        "eastmoney_stock_realtime_snapshot"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "000001.SZ"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=eastmoney.stock_realtime_snapshot"
+        ],
+        "default_dir_name": "eastmoney.stock_realtime_snapshot",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "snapshot",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "eastmoney.stock_realtime_snapshot",
+            "table": "eastmoney_stock_realtime_snapshot",
+            "display_name_zh": "A股实时行情快照",
+            "description": "请求东方财富 A 股实时行情；传 code 查指定股票，不传 code 按页返回小样本，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "snapshot",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "last_price",
+                "type": "number",
+                "description": "最新价，单位：元。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，百分比数值。"
+              },
+              {
+                "name": "change",
+                "type": "number",
+                "description": "涨跌额，单位：元。"
+              },
+              {
+                "name": "volume",
+                "type": "number",
+                "description": "成交量，源端口径。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额，单位：元。"
+              },
+              {
+                "name": "amplitude",
+                "type": "number",
+                "description": "振幅，百分比数值。"
+              },
+              {
+                "name": "turnover_rate",
+                "type": "number",
+                "description": "换手率，百分比数值。"
+              },
+              {
+                "name": "pe_ttm",
+                "type": "number",
+                "description": "市盈率 TTM。"
+              },
+              {
+                "name": "volume_ratio",
+                "type": "number",
+                "description": "量比。"
+              },
+              {
+                "name": "high",
+                "type": "number",
+                "description": "最高价，单位：元。"
+              },
+              {
+                "name": "low",
+                "type": "number",
+                "description": "最低价，单位：元。"
+              },
+              {
+                "name": "open",
+                "type": "number",
+                "description": "开盘价，单位：元。"
+              },
+              {
+                "name": "pre_close",
+                "type": "number",
+                "description": "昨收价，单位：元。"
+              },
+              {
+                "name": "total_market_value",
+                "type": "number",
+                "description": "总市值，单位：元。"
+              },
+              {
+                "name": "float_market_value",
+                "type": "number",
+                "description": "流通市值，单位：元。"
+              },
+              {
+                "name": "pb",
+                "type": "number",
+                "description": "市净率。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name",
+              "last_price",
+              "change_pct",
+              "volume",
+              "amount",
+              "turnover_rate"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=eastmoney.stock_realtime_snapshot"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=eastmoney.stock_realtime_snapshot"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "eastmoney.stock_sector_belong.snapshot",
+      "name": "eastmoney.stock_sector_belong.snapshot",
+      "display_name_zh": "个股所属板块采集",
+      "description": "独立东方财富采集器插件:采集个股所属板块并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.eastmoney",
+      "dataset_id": "eastmoney.stock_sector_belong",
+      "category": "板块数据",
+      "resource_group": "eastmoney.http",
+      "runner_entry": "axdata_collector_eastmoney.collectors:run_collector",
+      "interfaces": [
+        "eastmoney_stock_sector_belong"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "000001.SZ"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=eastmoney.stock_sector_belong"
+        ],
+        "default_dir_name": "eastmoney.stock_sector_belong",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "snapshot",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "eastmoney.stock_sector_belong",
+            "table": "eastmoney_stock_sector_belong",
+            "display_name_zh": "个股所属板块",
+            "description": "批量查询股票所属行业板块，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "snapshot",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "sector_name",
+                "type": "string",
+                "description": "所属行业板块。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name",
+              "sector_name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=eastmoney.stock_sector_belong"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=eastmoney.stock_sector_belong"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "eastmoney.yesterday_limit_up_pool.snapshot",
+      "name": "eastmoney.yesterday_limit_up_pool.snapshot",
+      "display_name_zh": "昨日涨停今日表现采集",
+      "description": "独立东方财富采集器插件:采集昨日涨停今日表现并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.eastmoney",
+      "dataset_id": "eastmoney.yesterday_limit_up_pool",
+      "category": "短线数据",
+      "resource_group": "eastmoney.http",
+      "runner_entry": "axdata_collector_eastmoney.collectors:run_collector",
+      "interfaces": [
+        "eastmoney_yesterday_limit_up_pool"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "15:30",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "trade_date": ""
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=eastmoney_yesterday_limit_up_pool"
+        ],
+        "default_dir_name": "eastmoney.yesterday_limit_up_pool",
+        "file_name_template": "{dataset_id}_{run_time}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "eastmoney.yesterday_limit_up_pool",
+            "table": "eastmoney_yesterday_limit_up_pool",
+            "display_name_zh": "昨日涨停今日表现",
+            "description": "请求东方财富昨日涨停今日表现，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "market_code",
+                "type": "string",
+                "description": "东方财富市场代码。"
+              },
+              {
+                "name": "last_price",
+                "type": "number",
+                "description": "最新价，单位：元。"
+              },
+              {
+                "name": "limit_price",
+                "type": "number",
+                "description": "涨停/跌停价，单位：元。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，百分比数值。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额，单位：元。"
+              },
+              {
+                "name": "float_market_value",
+                "type": "number",
+                "description": "流通市值，单位：元。"
+              },
+              {
+                "name": "turnover_rate",
+                "type": "number",
+                "description": "换手率，百分比数值。"
+              },
+              {
+                "name": "first_limit_time",
+                "type": "string",
+                "description": "首次涨停时间。"
+              },
+              {
+                "name": "last_limit_time",
+                "type": "string",
+                "description": "最后涨停/跌停时间。"
+              },
+              {
+                "name": "continuous_count",
+                "type": "integer",
+                "description": "连板/连续跌停次数。"
+              },
+              {
+                "name": "open_times",
+                "type": "integer",
+                "description": "炸板/开板次数。"
+              },
+              {
+                "name": "main_inflow",
+                "type": "number",
+                "description": "主力净流入，单位：元。"
+              },
+              {
+                "name": "sector",
+                "type": "string",
+                "description": "所属行业/板块。"
+              },
+              {
+                "name": "amplitude",
+                "type": "number",
+                "description": "振幅，百分比数值。"
+              },
+              {
+                "name": "open_ratio",
+                "type": "number",
+                "description": "高开比，百分比数值。"
+              },
+              {
+                "name": "yesterday_limit_time",
+                "type": "string",
+                "description": "昨日涨停时间。"
+              },
+              {
+                "name": "yesterday_continuous_count",
+                "type": "integer",
+                "description": "昨日连板数。"
+              }
+            ],
+            "default_query_fields": [
+              "trade_date",
+              "instrument_id",
+              "symbol",
+              "name",
+              "last_price",
+              "change_pct",
+              "amount",
+              "turnover_rate",
+              "continuous_count",
+              "main_inflow"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=eastmoney_yesterday_limit_up_pool"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=eastmoney_yesterday_limit_up_pool"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    }
+  ],
+  "dependencies": [],
+  "config_schema": {},
+  "required_config": [],
+  "resources": {},
+  "build": {}
+}

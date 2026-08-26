@@ -1244,7 +1244,7 @@ function collectorCatalogId(collector: CollectorStatus) {
 
 function isCollectorTaskBuilderEnabled(collector: CollectorStatus) {
   const collectorName = collectorCatalogId(collector);
-  return collectorName.startsWith("tdx.") && collectorName.endsWith(".snapshot");
+  return Boolean(collector.runner_entry) && collectorName.endsWith(".snapshot");
 }
 
 function CollectorParamEditor({
@@ -8107,6 +8107,7 @@ function CollectorTasksPanel({
           activeRunByTask={activeRunByTask}
           busyTaskId={busyTaskId}
           latestRuns={schedulerStatus?.latest_runs ?? {}}
+          onBackfill={onBackfill}
           onDelete={onDelete}
           onDailyTimeChange={onDailyTimeChange}
           onEnableChange={onEnableChange}
@@ -8351,6 +8352,7 @@ function CollectorCompactTaskList({
   activeRunByTask,
   busyTaskId,
   latestRuns,
+  onBackfill,
   onDelete,
   onDailyTimeChange,
   onEnableChange,
@@ -8361,6 +8363,7 @@ function CollectorCompactTaskList({
   activeRunByTask: Map<string, CollectorRunStatus>;
   busyTaskId: string | null;
   latestRuns: Record<string, CollectorRunStatus>;
+  onBackfill: (task: CollectorTaskStatus, request: { start: string; end: string; symbol?: string; limit?: number }) => void;
   onDelete: (task: CollectorTaskStatus) => void;
   onDailyTimeChange: (task: CollectorTaskStatus, dailyTime: string) => void;
   onEnableChange: (task: CollectorTaskStatus, enabled: boolean) => void;
@@ -8464,6 +8467,11 @@ function CollectorCompactTaskList({
             >
               {isDeleting ? <Loader2 className="spin" size={14} /> : <Trash2 size={14} />}
             </button>
+            <CollectorBackfillForm
+              busy={busyTaskId === `backfill:${task.task_id}`}
+              disabled={busyTaskId !== null || Boolean(activeRun) || !task.enabled || task.can_run_now === false}
+              onBackfill={(request) => onBackfill(task, request)}
+            />
           </div>
         );
       })}

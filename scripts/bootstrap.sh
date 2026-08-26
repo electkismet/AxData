@@ -70,6 +70,12 @@ for package_path in "${editable_packages[@]}"; do
   "$venv_python" -m pip install -e "$package_path"
 done
 
+# 采集器插件包(axdata-collector-*),含共享 runner 支撑包
+for collector_dir in "$repo_root"/packages/axdata-collector-*/; do
+  [[ -d "$collector_dir" ]] || continue
+  "$venv_python" -m pip install -e "$collector_dir"
+done
+
 if [[ "$skip_npm" -eq 0 ]]; then
   if ! command -v npm >/dev/null 2>&1; then
     echo "npm was not found. Install Node.js first, or rerun with --skip-npm to skip Web dependencies." >&2

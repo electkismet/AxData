@@ -168,7 +168,7 @@ INTERFACES: dict[str, SourceRequestInterface] = {
         first_stage_strategy="请求近 N 日每日涨幅靠前板块，默认不入库。",
         source_ability="CLS sector rotation",
         description="Return flattened CLS sector rotation rows.",
-        parameters=(P("days", "integer", False, "查询天数，默认 4。", 4),),
+        parameters=(P("days", "integer", False, "查询天数，默认 4；上游实测仅支持 4。", 4),),
         fields=(F("trade_date", "date/string", "交易日期。"), F("plate_code", "string", "板块代码。"), F("plate_name", "string", "板块名称。"), F("change_pct", "float64", "涨跌幅。"), F("rank", "integer", "当日排名。")),
         example=RequestExample(request={"params": {"days": 4}, "persist": False}, response=({"trade_date": "20260522", "plate_name": "MLCC", "rank": 1},)),
     ),

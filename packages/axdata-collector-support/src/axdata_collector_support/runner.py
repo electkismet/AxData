@@ -107,6 +107,15 @@ def make_runner(source_code: str):
 
         if fields is not None:
             wanted = list(fields)
+            # 主键与日期列必须保留:任务字段清单可能早于 manifest 升级,缺了会导致写盘主键校验失败
+            output_info = collector_info.get("output") or {}
+            required = list(output_info.get("primary_key") or [])
+            date_field = (collector_info.get("quality") or {}).get("date_field")
+            if date_field:
+                required.append(date_field)
+            for extra in required:
+                if extra and extra not in wanted:
+                    wanted.append(extra)
             records = [{key: row.get(key) for key in wanted} for row in records]
 
         meta: dict[str, Any] = {

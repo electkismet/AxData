@@ -1,0 +1,560 @@
+{
+  "manifest_version": "1.0",
+  "plugin_api_version": "1.0",
+  "plugin": {
+    "plugin_id": "axdata.collector.exchange",
+    "name_zh": "交易所采集器",
+    "version": "0.1.0",
+    "description": "交易所采集器插件:按接口目录自动生成独立采集器。"
+  },
+  "provider": null,
+  "interfaces": [],
+  "downloaders": [],
+  "collectors": [
+    {
+      "collector_id": "exchange.stock_basic_info_exchange.snapshot",
+      "name": "exchange.stock_basic_info_exchange.snapshot",
+      "display_name_zh": "股票基础信息采集",
+      "description": "独立交易所采集器插件:采集股票基础信息并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.exchange",
+      "dataset_id": "exchange.stock_basic_info_exchange",
+      "category": "基础数据",
+      "resource_group": "exchange.http",
+      "runner_entry": "axdata_collector_exchange.collectors:run_collector",
+      "interfaces": [
+        "stock_basic_info_exchange"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "000001.SZ"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=exchange.stock_basic_info_exchange"
+        ],
+        "default_dir_name": "exchange.stock_basic_info_exchange",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "exchange.stock_basic_info_exchange",
+            "table": "exchange_stock_basic_info_exchange",
+            "display_name_zh": "股票基础信息",
+            "description": "用于查看交易所官方当前股票基础资料，例如名称、板块、行业、地区、上市日期和股本信息；这是当前列表口径，不表示历史某天状态。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码，例如 000001.SZ、600000.SH、430047.BJ。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "证券代码，不带交易所后缀，例如 000001。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码，建议值为 SSE、SZSE、BSE。"
+              },
+              {
+                "name": "asset_type",
+                "type": "string",
+                "description": "资产类型，本接口固定为 stock。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "security_full_name",
+                "type": "string",
+                "description": "证券全称；上交所通常提供，其他交易所可能为空。"
+              },
+              {
+                "name": "market_code",
+                "type": "string",
+                "description": "市场板块代码；上交所、北交所可能提供，没有时为空。"
+              },
+              {
+                "name": "market",
+                "type": "string",
+                "description": "市场板块名称，例如主板、创业板、科创板、北交所。"
+              },
+              {
+                "name": "industry_code",
+                "type": "string",
+                "description": "行业代码；上交所通常提供，其他交易所可能为空。"
+              },
+              {
+                "name": "industry",
+                "type": "string",
+                "description": "行业名称；各交易所口径不同，源端提供时返回。"
+              },
+              {
+                "name": "region_code",
+                "type": "string",
+                "description": "地区代码；上交所通常提供，其他交易所可能为空。"
+              },
+              {
+                "name": "region",
+                "type": "string",
+                "description": "地区名称；上交所、北交所可能提供，没有时为空。"
+              },
+              {
+                "name": "company_code",
+                "type": "string",
+                "description": "公司代码；上交所通常提供，其他交易所可能为空。"
+              },
+              {
+                "name": "company_short_name",
+                "type": "string",
+                "description": "公司简称；上交所通常提供，其他交易所可能为空。"
+              },
+              {
+                "name": "company_full_name",
+                "type": "string",
+                "description": "公司法定全称；上交所通常提供，其他交易所可能为空。"
+              },
+              {
+                "name": "company_short_name_en",
+                "type": "string",
+                "description": "公司英文简称；上交所、北交所可能提供，没有时为空。"
+              },
+              {
+                "name": "company_full_name_en",
+                "type": "string",
+                "description": "公司英文全称；上交所通常提供，其他交易所可能为空。"
+              },
+              {
+                "name": "listing_status",
+                "type": "string",
+                "description": "AxData 上市状态，建议值 listed、delisted、suspended、unknown。"
+              },
+              {
+                "name": "list_date",
+                "type": "string",
+                "description": "上市日期，格式为 YYYYMMDD。"
+              },
+              {
+                "name": "delist_date",
+                "type": "string",
+                "description": "退市日期，格式为 YYYYMMDD；未退市为空。"
+              },
+              {
+                "name": "total_share",
+                "type": "number",
+                "description": "总股本，单位：亿股；深交所、北交所通常提供，上交所当前列表可能为空。"
+              },
+              {
+                "name": "float_share",
+                "type": "number",
+                "description": "流通股本，单位：亿股；深交所、北交所通常提供，上交所当前列表可能为空。"
+              },
+              {
+                "name": "is_profit",
+                "type": "string",
+                "description": "是否尚未盈利；深交所可能提供，没有时为空。"
+              },
+              {
+                "name": "is_vie",
+                "type": "string",
+                "description": "是否具有协议控制架构；深交所可能提供，没有时为空。"
+              },
+              {
+                "name": "has_weighted_voting_rights",
+                "type": "string",
+                "description": "是否具有表决权差异安排；深交所可能提供，没有时为空。"
+              },
+              {
+                "name": "sponsor",
+                "type": "string",
+                "description": "保荐机构或主办券商；北交所通常提供，其他交易所可能为空。"
+              },
+              {
+                "name": "share_report_date",
+                "type": "string",
+                "description": "股本数据报告日期，格式 YYYYMMDD；北交所通常提供，其他交易所可能为空。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=exchange.stock_basic_info_exchange"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=exchange.stock_basic_info_exchange"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "exchange.stock_historical_list_exchange.snapshot",
+      "name": "exchange.stock_historical_list_exchange.snapshot",
+      "display_name_zh": "历史股票列表采集",
+      "description": "独立交易所采集器插件:采集历史股票列表并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.exchange",
+      "dataset_id": "exchange.stock_historical_list_exchange",
+      "category": "基础数据",
+      "resource_group": "exchange.http",
+      "runner_entry": "axdata_collector_exchange.collectors:run_collector",
+      "interfaces": [
+        "stock_historical_list_exchange"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "18:00",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "trade_date": "",
+        "exchange": "SZSE"
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=exchange_stock_historical_list_exchange"
+        ],
+        "default_dir_name": "exchange.stock_historical_list_exchange",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "exchange.stock_historical_list_exchange",
+            "table": "exchange_stock_historical_list_exchange",
+            "display_name_zh": "历史股票列表",
+            "description": "传 trade_date 返回单日或多个指定日期的股票池；传 start_date/end_date 返回连续日期范围；可用 exchange 限定 SSE、SZSE 或 BSE。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "本行对应的目标日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码，例如 000001.SZ、600000.SH、430047.BJ。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "交易所原始证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "market",
+                "type": "string",
+                "description": "市场板块，例如主板、创业板、科创板、北交所。"
+              },
+              {
+                "name": "list_date",
+                "type": "date",
+                "description": "上市日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "delist_date",
+                "type": "date",
+                "description": "退市日期；未退市为空。"
+              },
+              {
+                "name": "listing_status",
+                "type": "string",
+                "description": "上市状态：listed 或 delisted。"
+              }
+            ],
+            "default_query_fields": [
+              "trade_date",
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=exchange_stock_historical_list_exchange"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=exchange_stock_historical_list_exchange"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "exchange.stock_trade_calendar_exchange.snapshot",
+      "name": "exchange.stock_trade_calendar_exchange.snapshot",
+      "display_name_zh": "交易日历采集",
+      "description": "独立交易所采集器插件:采集交易日历并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.exchange",
+      "dataset_id": "exchange.stock_trade_calendar_exchange",
+      "category": "基础数据",
+      "resource_group": "exchange.http",
+      "runner_entry": "axdata_collector_exchange.collectors:run_collector",
+      "interfaces": [
+        "stock_trade_calendar_exchange"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=exchange.stock_trade_calendar_exchange"
+        ],
+        "default_dir_name": "exchange.stock_trade_calendar_exchange",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "cal_date"
+        ],
+        "required_columns": [
+          "cal_date"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "exchange.stock_trade_calendar_exchange",
+            "table": "exchange_stock_trade_calendar_exchange",
+            "display_name_zh": "交易日历",
+            "description": "不传日期时默认返回当前自然年；传 year 返回全年；传 start_date/end_date 返回指定范围。",
+            "layer": "snapshot",
+            "primary_key": [
+              "cal_date"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "cal_date",
+                "type": "date",
+                "description": "自然日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "is_open",
+                "type": "boolean",
+                "description": "是否交易日。"
+              },
+              {
+                "name": "pretrade_date",
+                "type": "date",
+                "description": "上一个交易日；非交易日也返回最近上一交易日。"
+              },
+              {
+                "name": "next_trade_date",
+                "type": "date",
+                "description": "下一个交易日；非交易日也返回最近下一交易日。"
+              }
+            ],
+            "default_query_fields": [
+              "cal_date"
+            ],
+            "default_filter_fields": [
+              "cal_date"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "cal_date"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=exchange.stock_trade_calendar_exchange"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=exchange.stock_trade_calendar_exchange"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "cal_date"
+        ],
+        "primary_key": [
+          "cal_date"
+        ]
+      },
+      "asset_class": "stock"
+    }
+  ],
+  "dependencies": [],
+  "config_schema": {},
+  "required_config": [],
+  "resources": {},
+  "build": {}
+}

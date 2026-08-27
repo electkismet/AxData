@@ -866,8 +866,8 @@ class SinaRequestAdapter:
         if currency_code not in set(SINA_BOC_CURRENCY_CODES.values()):
             raise SourceRequestValidationError("symbol must be a supported currency Chinese name or ISO code")
         currency_name = _sina_gb_display_name(SINA_BOC_CURRENCY_CODES, currency_code) or requested_symbol
-        start_date = _normalize_query_date(params.get("start_date") or "20230304", "start_date", required=True)
-        end_date = _normalize_query_date(params.get("end_date") or "20230310", "end_date", required=True)
+        start_date = _normalize_query_date(params.get("start_date") or _recent_window_start(), "start_date", required=True)
+        end_date = _normalize_query_date(params.get("end_date") or _today_yyyymmdd(), "end_date", required=True)
         if start_date > end_date:
             raise SourceRequestValidationError("start_date must be before or equal to end_date")
         page = _parse_positive_int(params.get("page"), default=1, name="page")
@@ -1132,7 +1132,7 @@ class SinaRequestAdapter:
         contract = str(params.get("contract") or "OI2501").strip().upper()
         if not re.fullmatch(r"[A-Z]{1,4}\d{3,4}", contract):
             raise SourceRequestValidationError("contract must be a futures contract such as OI2501")
-        trade_date = _normalize_query_date(params.get("date") or "20241016", "date", required=True)
+        trade_date = _normalize_query_date(params.get("date") or _today_yyyymmdd(), "date", required=True)
         limit = min(_parse_positive_int(params.get("limit"), default=20, name="limit"), 100)
         url = _url_with_query(SINA_FUTURES_HOLD_POS_URL, {"t_breed": contract, "t_date": _hyphen_date(trade_date)})
         html = self._fetch_text(
@@ -1172,8 +1172,8 @@ class SinaRequestAdapter:
         source_symbol = str(params.get("symbol") or "CF0").strip().upper()
         if not re.fullmatch(r"[A-Z]{1,4}0", source_symbol):
             raise SourceRequestValidationError("symbol must be a Sina main-continuous futures symbol such as CF0")
-        start_date = _normalize_query_date(params.get("start_date") or "20240124", "start_date", required=True)
-        end_date = _normalize_query_date(params.get("end_date") or "20240301", "end_date", required=True)
+        start_date = _normalize_query_date(params.get("start_date") or _recent_window_start(), "start_date", required=True)
+        end_date = _normalize_query_date(params.get("end_date") or _today_yyyymmdd(), "end_date", required=True)
         if start_date and end_date and start_date > end_date:
             raise SourceRequestValidationError("start_date must be before or equal to end_date")
         limit = min(_parse_positive_int(params.get("limit"), default=100, name="limit"), 10000)
@@ -1225,8 +1225,8 @@ class SinaRequestAdapter:
         source_symbol = str(params.get("symbol") or "RB0").strip().upper()
         if not re.fullmatch(r"[A-Z]{1,4}\d{1,4}", source_symbol):
             raise SourceRequestValidationError("symbol must be a Sina futures symbol such as RB0 or RB2410")
-        start_date = _normalize_query_date(params.get("start_date") or "20240102", "start_date", required=True)
-        end_date = _normalize_query_date(params.get("end_date") or "20240105", "end_date", required=True)
+        start_date = _normalize_query_date(params.get("start_date") or _recent_window_start(), "start_date", required=True)
+        end_date = _normalize_query_date(params.get("end_date") or _today_yyyymmdd(), "end_date", required=True)
         if start_date and end_date and start_date > end_date:
             raise SourceRequestValidationError("start_date must be before or equal to end_date")
         limit = min(_parse_positive_int(params.get("limit"), default=100, name="limit"), 10000)
@@ -1435,22 +1435,32 @@ class SinaRequestAdapter:
         if unknown_keys:
             unknown = ", ".join(unknown_keys)
             raise SourceRequestValidationError(f"Unknown param(s) for stock_lhb_detail_daily_sina: {unknown}")
-        trade_date = _normalize_query_date(params.get("date") or "20240222", "date", required=True)
+        requested = _normalize_query_date(params.get("date"), "date", required=False)
+        if requested is not None and requested >= _today_yyyymmdd():
+            raise SourceRequestValidationError("date must be earlier than today for this Sina historical interface")
         limit = min(_parse_positive_int(params.get("limit"), default=200, name="limit"), 5000)
-        url = _url_with_query(SINA_LHB_DETAIL_DAILY_URL, {"tradedate": f"{trade_date[:4]}-{trade_date[4:6]}-{trade_date[6:]}"})
-        html = self._fetch_text(
-            url,
-            context="Sina dragon tiger daily detail",
-            headers={
-                "Accept": "text/html,*/*",
-                "Referer": "https://vip.stock.finance.sina.com.cn/",
-            },
-            fallback_encoding="gb18030",
-        )
-        rows = _parse_lhb_detail_daily_html(html, trade_date=trade_date, limit=limit)
+        trade_date = requested or _today_yyyymmdd()
+        rows: list[dict[str, Any]] = []
+        # 未指定日期时从今天起回溯到最新有数据的交易日(当日榜单收盘后才发布)
+        for _ in range(1 if requested is not None else 12):
+            url = _url_with_query(SINA_LHB_DETAIL_DAILY_URL, {"tradedate": f"{trade_date[:4]}-{trade_date[4:6]}-{trade_date[6:]}"})
+            html = self._fetch_text(
+                url,
+                context="Sina dragon tiger daily detail",
+                headers={
+                    "Accept": "text/html,*/*",
+                    "Referer": "https://vip.stock.finance.sina.com.cn/",
+                },
+                fallback_encoding="gb18030",
+            )
+            rows = _parse_lhb_detail_daily_html(html, trade_date=trade_date, limit=limit)
+            if rows or requested is not None:
+                break
+            previous = Date(int(trade_date[:4]), int(trade_date[4:6]), int(trade_date[6:])) - timedelta(days=1)
+            trade_date = previous.strftime("%Y%m%d")
         self.last_meta = {
             "source_name": "新浪龙虎榜",
-            "source_url": url,
+            "source_url": SINA_LHB_DETAIL_DAILY_URL,
             "trade_date": trade_date,
             "limit": limit,
             "count": len(rows),
@@ -1601,13 +1611,13 @@ class SinaRequestAdapter:
             },
         )
         trade_dates = _decode_sina_trade_dates(payload)
-        rows: list[dict[str, Any]] = []
+        matched: list[dict[str, Any]] = []
         for trade_date in trade_dates:
             if start_date and trade_date < start_date:
                 continue
             if end_date and trade_date > end_date:
                 continue
-            rows.append(
+            matched.append(
                 {
                     "trade_date": trade_date,
                     "exchange": "SSE",
@@ -1615,8 +1625,9 @@ class SinaRequestAdapter:
                     "source_calendar": "Sina KLC_TD_SH",
                 }
             )
-            if len(rows) >= limit:
-                break
+        # 有起始日期时从头截断(增量语义);无起始日期时取最新 limit 个交易日,
+        # 避免默认拿到 1990 年起的最旧 100 天
+        rows = matched[:limit] if start_date else matched[-limit:]
         self.last_meta = {
             "source_name": "新浪财经",
             "source_url": SINA_TRADE_DATE_HIST_URL,
@@ -2041,7 +2052,7 @@ class SinaRequestAdapter:
         code_info = _sina_stock_symbol(str(params.get("symbol") or "sz000001"))
         if code_info is None:
             raise SourceRequestValidationError("symbol must be a Sina A-share symbol such as sz000001 or 000001.SZ")
-        trade_date = _normalize_query_date(params.get("date") or "20260703", "date", required=True)
+        trade_date = _normalize_query_date(params.get("date") or _today_yyyymmdd(), "date", required=True)
         page = _parse_positive_int(params.get("page"), default=1, name="page")
         limit = min(_parse_positive_int(params.get("limit"), default=60, name="limit"), 60)
         source_day = f"{trade_date[:4]}-{trade_date[4:6]}-{trade_date[6:]}"
@@ -5153,3 +5164,11 @@ def _parse_int(value: Any) -> int | None:
     if parsed is None:
         return None
     return int(parsed)
+
+def _today_yyyymmdd() -> str:
+    return Date.today().strftime("%Y%m%d")
+
+
+def _recent_window_start(days: int = 30) -> str:
+    """区间类接口无日期时的统一默认:最近 30 天窗口起点。"""
+    return (Date.today() - timedelta(days=days - 1)).strftime("%Y%m%d")

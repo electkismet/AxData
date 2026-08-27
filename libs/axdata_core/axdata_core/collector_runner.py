@@ -15,7 +15,7 @@ from importlib import import_module
 from inspect import Parameter, signature
 from pathlib import Path
 from time import perf_counter
-from typing import Any, Callable, Mapping
+from typing import Any, Callable, Mapping, Sequence
 from uuid import uuid4
 
 import pandas as pd
@@ -128,6 +128,7 @@ class _IndependentCollectorProfile:
     numeric_positive_columns: list[str]
     field_mappings: dict[str, str]
     calendar_check: bool
+    field_types: dict[str, str] = field(default_factory=dict)
 
 
 LOCAL_TIMEZONE = timezone(timedelta(hours=8), name="Asia/Shanghai")
@@ -405,7 +406,8 @@ def _run_independent_collector(
     _emit_progress(progress_callback, 70, "整理采集器返回数据")
     transform_started_perf = perf_counter()
     frame, runner_meta = _frame_and_meta_from_runner_result(raw_result)
-    if plan.fields is not None:
+    # 空结果不校验字段:0 行时 DataFrame 无列,字段缺失属正常(如午夜采当日电报)
+    if plan.fields is not None and not frame.empty:
         missing = [field for field in plan.fields if field not in frame.columns]
         if missing:
             raise CollectorError(
@@ -430,6 +432,9 @@ def _run_independent_collector(
         output_root=output_root,
         output_dir=output_dir,
     )
+    # 写前防丢守卫:主键粒度过粗(大批行折叠到极少数键)直接拒绝写入,
+    # 避免像 [trade_date, trade_date] 这类退化主键把全天数据压成一行
+    _guard_primary_key_granularity(profile, frame)
     write_started_perf = perf_counter()
     try:
         write_result = _write_outputs_with_metadata(
@@ -467,6 +472,12 @@ def _run_independent_collector(
         ),
     )
     quality.update(_quality_write_metadata(write_metadata))
+    quality["row_reconciliation"] = _reconcile_row_counts(
+        frame,
+        key_fields=_normalized_key_fields(profile.primary_key),
+        write_metadata=write_metadata,
+        output_paths=output_paths,
+    )
     quality_ms = _elapsed_ms(quality_started_perf)
     _emit_progress(progress_callback, 100, "采集完成")
 
@@ -477,6 +488,7 @@ def _run_independent_collector(
         "interface_name": profile.interface_name,
         "collector_id": plan.collector_id,
         "collector_plugin_id": plan.collector_plugin_id,
+        "provider_id": plan.provider_id,
         "dataset_id": plan.dataset_id,
         "runner_entry": plan.runner_entry,
         "status": "success",
@@ -686,7 +698,120 @@ def _profile_from_plan(plan: CollectorRunPlan) -> _IndependentCollectorProfile:
         ),
         field_mappings=_string_mapping(quality.get("field_mappings") or output.get("field_mappings") or {}),
         calendar_check=_truthy(quality.get("calendar_check") or output.get("calendar_check") or False),
+        field_types=_declared_field_types(output),
     )
+
+
+def _normalized_key_fields(primary_key: Any) -> list[str]:
+    if primary_key is None:
+        return []
+    if isinstance(primary_key, str):
+        primary_key = (primary_key,)
+    return [str(item) for item in primary_key if str(item).strip()]
+
+
+def _frame_distinct_keys(frame: "pd.DataFrame", key_fields: list[str]) -> int | None:
+    usable = [field for field in key_fields if field in frame.columns]
+    if not usable or frame.empty:
+        return None
+    return int(frame.drop_duplicates(subset=usable).shape[0])
+
+
+def _guard_primary_key_granularity(profile: _IndependentCollectorProfile, frame: "pd.DataFrame") -> None:
+    """写前防丢守卫:主键粒度过粗(过半行折叠到重复键)时拒绝写入。
+
+    典型场景是推断出的退化主键(如 [trade_date, trade_date]),
+    会让 upsert 把全天多行数据压成一行,数据静默丢失。
+    """
+    key_fields = _normalized_key_fields(profile.primary_key)
+    if not key_fields or frame.empty:
+        return
+    total = int(len(frame))
+    distinct = _frame_distinct_keys(frame, key_fields)
+    if distinct is None or distinct * 2 > total:
+        return
+    raise CollectorError(
+        f"Primary key granularity guard: {total} collected rows collapse to only "
+        f"{distinct} distinct key(s) on ({', '.join(key_fields)}); refusing to write "
+        "because upsert would silently drop rows. Check the collector primary_key."
+    )
+
+
+def _reconcile_row_counts(
+    frame: "pd.DataFrame",
+    *,
+    key_fields: list[str],
+    write_metadata: dict[str, Any],
+    output_paths: dict[str, Any],
+) -> dict[str, Any]:
+    """行数对账:采集行数 / 写入行数 / 落盘行数三点必须一致。"""
+    collected = int(len(frame))
+    distinct = _frame_distinct_keys(frame, key_fields) if key_fields else None
+    rows_written = _optional_int(write_metadata.get("rows_written"))
+    rows_after = _optional_int(write_metadata.get("rows_after"))
+    dropped = _optional_int(write_metadata.get("duplicate_rows_dropped")) or 0
+    stored = _parquet_metadata_row_count(output_paths.get("parquet")) if output_paths.get("parquet") else None
+
+    problems: list[str] = []
+    if rows_written is not None and rows_written != collected:
+        problems.append(f"rows_written={rows_written} != collected_rows={collected}")
+    if stored is not None and rows_after is not None and stored != rows_after:
+        problems.append(f"stored_rows={stored} != rows_after={rows_after}")
+    if rows_after is not None and distinct is not None and rows_after < distinct:
+        problems.append(f"rows_after={rows_after} < distinct_primary_keys={distinct}")
+    reconciliation: dict[str, Any] = {
+        "collected_rows": collected,
+        "distinct_primary_keys": distinct,
+        "rows_written": rows_written,
+        "rows_after": rows_after,
+        "stored_rows": stored,
+        "duplicate_rows_dropped": dropped,
+        "status": "error" if problems else "ok",
+    }
+    if problems:
+        reconciliation["message"] = "; ".join(problems)
+    return reconciliation
+
+
+def _optional_int(value: Any) -> int | None:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _parquet_metadata_row_count(path: Any) -> int | None:
+    """仅读 parquet 文件元数据统计行数,不加载数据本体。"""
+    try:
+        import pyarrow.parquet as pq
+
+        target = Path(path)
+        files = [target] if target.is_file() else sorted(target.rglob("*.parquet"))
+        if not files:
+            return None
+        return int(sum(pq.read_metadata(file).num_rows for file in files))
+    except Exception:
+        return None
+
+
+def _declared_field_types(output: dict[str, Any]) -> dict[str, str]:
+    """从 datasets 字段声明提取列名到类型的映射,写盘前统一列类型。"""
+
+    declared: dict[str, str] = {}
+    datasets = output.get("datasets") or []
+    if isinstance(datasets, Mapping):
+        datasets = [datasets]
+    for dataset in datasets if isinstance(datasets, Sequence) else []:
+        if not isinstance(dataset, Mapping):
+            continue
+        for field_decl in dataset.get("fields") or []:
+            if not isinstance(field_decl, Mapping):
+                continue
+            name = str(field_decl.get("name") or "").strip()
+            dtype = str(field_decl.get("type") or field_decl.get("dtype") or "").strip()
+            if name and dtype:
+                declared.setdefault(name, dtype)
+    return declared
 
 
 def _elapsed_ms(started_perf: float) -> int:

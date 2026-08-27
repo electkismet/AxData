@@ -186,6 +186,7 @@ class DownloadWriter:
         write_mode: str | None = None,
         replace_range_start: str | None = None,
         replace_range_end: str | None = None,
+        field_types: Mapping[str, str] | None = None,
     ) -> WriteOutputsResult:
         output_paths: dict[str, Path] = {}
         format_metadata: dict[str, dict[str, Any]] = {}
@@ -193,6 +194,7 @@ class DownloadWriter:
         primary_key = _primary_key_tuple(getattr(profile, "primary_key", ()))
         partition_by = tuple(str(item) for item in getattr(profile, "partition_by", ()) or ())
         date_field = _date_field(profile)
+        field_types = dict(field_types or getattr(profile, "field_types", {}) or {})
         total = len(formats)
         representative: WriteStrategyMetadata | None = None
 
@@ -208,9 +210,15 @@ class DownloadWriter:
             )
             output_path = output_dir / output_format / f"{file_stem}.{output_format}"
             format_write_mode = selected_write_mode if output_format == "parquet" else "snapshot"
+            # 与 write_parquet_with_result 的降级规则一致:分区列缺失时按普通文件路由
+            effective_partition_by = (
+                tuple(field_name for field_name in partition_by if field_name in frame.columns)
+                if output_format == "parquet" and format_write_mode == "upsert_by_key"
+                else partition_by
+            )
             if output_format == "parquet" and (
                 format_write_mode in {"overwrite_partition", "replace_range"}
-                or (format_write_mode == "upsert_by_key" and partition_by)
+                or (format_write_mode == "upsert_by_key" and effective_partition_by)
             ):
                 output_path = output_dir / output_format
             output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -224,6 +232,7 @@ class DownloadWriter:
                     date_field=date_field,
                     replace_range_start=replace_range_start,
                     replace_range_end=replace_range_end,
+                    field_types=field_types,
                 )
                 output_path = parquet_result.output_path
                 metadata = parquet_result.metadata
@@ -339,12 +348,20 @@ class DownloadWriter:
         date_field: str | None = None,
         replace_range_start: str | None = None,
         replace_range_end: str | None = None,
+        field_types: Mapping[str, str] | None = None,
     ) -> WriteParquetResult:
         mode = self.normalize_write_mode(write_mode)
         key_fields = _primary_key_tuple(primary_key)
         partition_fields = tuple(str(item) for item in partition_by or () if str(item).strip())
+        # 数据帧缺失的分区字段自动降级为普通单文件写出:
+        # 避免统一 upsert_by_key 后,不含分区列的数据(如只有 trade_time 的 K 线)崩溃
+        if mode == "upsert_by_key":
+            partition_fields = tuple(field_name for field_name in partition_fields if field_name in frame.columns)
         field = str(date_field).strip() if date_field else None
         rows_written = int(len(frame))
+        # 按声明字段类型统一列类型:避免全空列写成 arrow null 类型,
+        # 与其他日期有值的分区形成混合模式后,目录级读取/合并抛 cast 错误
+        frame = _coerce_frame_dtypes(frame, field_types)
 
         if mode == "upsert_by_key" and not key_fields:
             raise WriteStrategyError("upsert_by_key requires primary_key.")
@@ -372,6 +389,19 @@ class DownloadWriter:
             )
 
         if mode == "upsert_by_key":
+            if frame.empty:
+                # 空结果不写盘也不校验主键:0 行 DataFrame 无列属正常
+                # (如盘中采集当日尚未发布的复盘数据),与采集器空结果语义一致
+                return WriteParquetResult(
+                    output_path=output_path,
+                    metadata=WriteStrategyMetadata(
+                        write_mode=mode,
+                        partition_by=partition_fields,
+                        primary_key=key_fields,
+                        date_field=field,
+                        rows_written=0,
+                    ),
+                )
             self._ensure_columns(frame, key_fields, "primary_key")
             existing = self._read_existing_parquet(output_path)
             rows_before = int(len(existing)) if existing is not None else 0
@@ -379,20 +409,19 @@ class DownloadWriter:
                 partition_fields and existing is not None and not existing.empty
             ) else ()
             if existing is None or existing.empty:
-                combined = self._normalize_key_columns(frame.copy(), key_fields)
-                duplicate_rows_dropped = int(combined.duplicated(subset=list(key_fields), keep="last").sum())
+                combined = frame.copy()
             else:
                 self._ensure_columns(existing, key_fields, "existing primary_key")
-                combined = pd.concat(
-                    [
-                        self._normalize_key_columns(existing, key_fields),
-                        self._normalize_key_columns(frame.copy(), key_fields),
-                    ],
-                    ignore_index=True,
-                    sort=False,
-                )
-                duplicate_rows_dropped = int(combined.duplicated(subset=list(key_fields), keep="last").sum())
-            merged = combined.drop_duplicates(subset=list(key_fields), keep="last")
+                combined = pd.concat([existing, frame.copy()], ignore_index=True, sort=False)
+            # 键归一化只用于去重比较,不回写数据:
+            # 时间戳类键字段(如 trade_time)不能被压缩成日期,否则丢时间分量并造成键碰撞
+            comparison_keys = self._normalize_key_columns(
+                combined.loc[:, list(key_fields)].copy(), key_fields
+            )
+            keep_mask = ~comparison_keys.duplicated(keep="last")
+            duplicate_rows_dropped = int((~keep_mask).sum())
+            merged = combined.loc[keep_mask].reset_index(drop=True)
+            merged = _coerce_frame_dtypes(merged, field_types)
             self._remove_stale_partitions(
                 output_path,
                 partition_fields,
@@ -493,6 +522,21 @@ class DownloadWriter:
         if not output_path.exists():
             return None
         try:
+            if output_path.is_dir():
+                # 按文件读取后在 pandas 层合并:历史分区可能存在 null 类型与
+                # 有值类型的混合模式,数据集级读取会触发 arrow cast 错误。
+                # Hive 分区目录(key=value)隐含的列需手动恢复
+                files = sorted(output_path.rglob("*.parquet"))
+                if not files:
+                    return None
+                frames = []
+                for path in files:
+                    frame = pd.read_parquet(path, engine="pyarrow")
+                    for key, value in _partition_values_from_path(path, output_path).items():
+                        if key not in frame.columns:
+                            frame[key] = value
+                    frames.append(frame)
+                return pd.concat(frames, ignore_index=True, sort=False)
             return pd.read_parquet(output_path, engine="pyarrow")
         except (FileNotFoundError, OSError):
             return None
@@ -1424,10 +1468,46 @@ def _flat_date_partition_file_from_label(
     return target_dir / f"{normalized}.parquet"
 
 
+def _partition_values_from_path(file_path: Path, partition_root: Path) -> dict[str, str]:
+    values: dict[str, str] = {}
+    try:
+        relative_parts = file_path.relative_to(partition_root).parts[:-1]
+    except ValueError:
+        return values
+    for part in relative_parts:
+        if "=" not in part:
+            continue
+        key, value = part.split("=", 1)
+        if key:
+            values[key] = value
+    return values
+
+
+def _coerce_frame_dtypes(frame: pd.DataFrame, field_types: Mapping[str, str] | None) -> pd.DataFrame:
+    """按声明字段类型统一列类型,保证跨日期分区模式一致。
+
+    全空列若按 arrow null 类型落盘,与其他日期有值的分区会形成混合模式,
+    数据集级读取(浏览/合并)会抛 "Unsupported cast" 错误。
+    """
+    if not field_types:
+        return frame
+    for column, type_name in field_types.items():
+        if column not in frame.columns:
+            continue
+        target = str(type_name).strip().lower()
+        try:
+            if "int" in target:
+                frame[column] = pd.to_numeric(frame[column], errors="coerce").astype("Int64")
+            elif "float" in target or "number" in target:
+                frame[column] = pd.to_numeric(frame[column], errors="coerce")
+            elif "str" in target:
+                frame[column] = frame[column].astype("string")
+        except (ValueError, TypeError):
+            continue
+    return frame
+
+
 def _key_value_text(value: Any) -> str | None:
-    normalized = _normalize_date_text(value)
-    if normalized is not None:
-        return normalized
     if value is None:
         return None
     try:
@@ -1435,7 +1515,15 @@ def _key_value_text(value: Any) -> str | None:
             return None
     except (TypeError, ValueError):
         pass
-    return str(value)
+    text = str(value).strip()
+    if not text:
+        return None
+    digits = "".join(ch for ch in text if ch.isdigit())
+    # 恰好 8 位数字视为纯日期表示,归一化为 YYYYMMDD 便于跨格式比较;
+    # 带时间分量的值保留原文,避免不同时刻被压缩成同一天的日期造成键碰撞
+    if len(digits) == 8:
+        return digits
+    return text
 
 
 def _partition_labels(frame: pd.DataFrame, partition_by: Sequence[str]) -> tuple[str, ...]:

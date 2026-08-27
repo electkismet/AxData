@@ -758,7 +758,7 @@ export function ToolsPage({
     try {
       const task = await createCollectorTask(apiBase, {
         collectorName: collectorName,
-        enabled: false,
+        enabled: true,
         fields: collectorBuilderReference.fields.map(([field]) => field),
         formats: collectorStorageFormats,
         name: taskName,
@@ -1244,7 +1244,7 @@ function collectorCatalogId(collector: CollectorStatus) {
 
 function isCollectorTaskBuilderEnabled(collector: CollectorStatus) {
   const collectorName = collectorCatalogId(collector);
-  return collectorName.startsWith("tdx.") && collectorName.endsWith(".snapshot");
+  return Boolean(collector.runner_entry) && collectorName.endsWith(".snapshot");
 }
 
 function CollectorParamEditor({
@@ -8107,6 +8107,7 @@ function CollectorTasksPanel({
           activeRunByTask={activeRunByTask}
           busyTaskId={busyTaskId}
           latestRuns={schedulerStatus?.latest_runs ?? {}}
+          onBackfill={onBackfill}
           onDelete={onDelete}
           onDailyTimeChange={onDailyTimeChange}
           onEnableChange={onEnableChange}
@@ -8270,7 +8271,7 @@ function CollectorTasksPanel({
                 <div className="provider-status-actions">
                   <button
                     className="primary-action compact"
-                    disabled={busyTaskId !== null || Boolean(activeRun) || !task.enabled || task.can_run_now === false}
+                    disabled={busyTaskId !== null || Boolean(activeRun) || !canRunTaskManually(task)}
                     onClick={() => onRun(task)}
                     type="button"
                   >
@@ -8301,7 +8302,7 @@ function CollectorTasksPanel({
                 </div>
                 <CollectorBackfillForm
                   busy={busyTaskId === `backfill:${task.task_id}`}
-                  disabled={busyTaskId !== null || Boolean(activeRun) || !task.enabled || task.can_run_now === false}
+                  disabled={busyTaskId !== null || Boolean(activeRun) || !canRunTaskManually(task)}
                   onBackfill={(request) => onBackfill(task, request)}
                 />
               </div>
@@ -8351,6 +8352,7 @@ function CollectorCompactTaskList({
   activeRunByTask,
   busyTaskId,
   latestRuns,
+  onBackfill,
   onDelete,
   onDailyTimeChange,
   onEnableChange,
@@ -8361,6 +8363,7 @@ function CollectorCompactTaskList({
   activeRunByTask: Map<string, CollectorRunStatus>;
   busyTaskId: string | null;
   latestRuns: Record<string, CollectorRunStatus>;
+  onBackfill: (task: CollectorTaskStatus, request: { start: string; end: string; symbol?: string; limit?: number }) => void;
   onDelete: (task: CollectorTaskStatus) => void;
   onDailyTimeChange: (task: CollectorTaskStatus, dailyTime: string) => void;
   onEnableChange: (task: CollectorTaskStatus, enabled: boolean) => void;
@@ -8433,14 +8436,14 @@ function CollectorCompactTaskList({
             ) : (
               <span className="collector-task-time-empty">未设置</span>
             )}
-            <label className={`collector-task-switch ${isTimed && task.enabled ? "on" : ""} ${isTimed ? "" : "disabled"}`}>
+            <label className={`collector-task-switch ${task.enabled ? "on" : ""}`}>
               <input
-                checked={isTimed && task.enabled}
-                disabled={busyTaskId !== null || !isTimed}
+                checked={task.enabled}
+                disabled={busyTaskId !== null}
                 onChange={(event) => onEnableChange(task, event.target.checked)}
                 type="checkbox"
               />
-              <span>{isTimed && task.enabled ? "开" : "关"}</span>
+              <span>{task.enabled ? "开" : "关"}</span>
             </label>
             <span className={`provider-status-badge ${collectorStatusClass(status)}`}>
               {formatCollectorRunStatus(status)}
@@ -8464,6 +8467,11 @@ function CollectorCompactTaskList({
             >
               {isDeleting ? <Loader2 className="spin" size={14} /> : <Trash2 size={14} />}
             </button>
+            <CollectorBackfillForm
+              busy={busyTaskId === `backfill:${task.task_id}`}
+              disabled={busyTaskId !== null || Boolean(activeRun) || !canRunTaskManually(task)}
+              onBackfill={(request) => onBackfill(task, request)}
+            />
           </div>
         );
       })}

@@ -38,6 +38,7 @@ metadata/collector/
 cache/**
 logs/**
 plugins/**
+output/
 
 !.gitkeep
 !data/raw/.gitkeep

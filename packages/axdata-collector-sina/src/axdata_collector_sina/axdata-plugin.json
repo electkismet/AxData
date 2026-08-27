@@ -1,0 +1,1360 @@
+{
+  "manifest_version": "1.0",
+  "plugin_api_version": "1.0",
+  "plugin": {
+    "plugin_id": "axdata.collector.sina",
+    "name_zh": "新浪财经采集器",
+    "version": "0.1.0",
+    "description": "新浪财经采集器插件:按接口目录自动生成独立采集器。"
+  },
+  "provider": null,
+  "interfaces": [],
+  "downloaders": [],
+  "collectors": [
+    {
+      "collector_id": "sina.stock_lhb_detail_daily_sina.snapshot",
+      "name": "sina.stock_lhb_detail_daily_sina.snapshot",
+      "display_name_zh": "龙虎榜每日详情采集",
+      "description": "独立新浪财经采集器插件:采集龙虎榜每日详情并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.sina",
+      "dataset_id": "sina.stock_lhb_detail_daily_sina",
+      "category": "龙虎榜",
+      "resource_group": "sina.http",
+      "runner_entry": "axdata_collector_sina.collectors:run_collector",
+      "interfaces": [
+        "stock_lhb_detail_daily_sina"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "16:00",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "date": ""
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=sina_stock_lhb_detail_daily_sina"
+        ],
+        "default_dir_name": "sina.stock_lhb_detail_daily_sina",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "sina.stock_lhb_detail_daily_sina",
+            "table": "sina_stock_lhb_detail_daily_sina",
+            "display_name_zh": "龙虎榜每日详情",
+            "description": "临时请求新浪龙虎榜每日详情页面并解析汇总表，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "rank",
+                "type": "integer",
+                "description": "源端表内序号。"
+              },
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位股票代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "股票名称。"
+              },
+              {
+                "name": "close",
+                "type": "number",
+                "description": "收盘价，单位：元。"
+              },
+              {
+                "name": "metric_value",
+                "type": "number",
+                "description": "对应值，源端百分比或指标数值口径。"
+              },
+              {
+                "name": "volume_10k_shares",
+                "type": "number",
+                "description": "成交量，单位：万股。"
+              },
+              {
+                "name": "amount_10k_yuan",
+                "type": "number",
+                "description": "成交额，单位：万元。"
+              },
+              {
+                "name": "indicator",
+                "type": "string",
+                "description": "龙虎榜上榜指标/原因。"
+              }
+            ],
+            "default_query_fields": [
+              "trade_date",
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=sina_stock_lhb_detail_daily_sina"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=sina_stock_lhb_detail_daily_sina"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "sina.stock_lhb_ggtj_sina.snapshot",
+      "name": "sina.stock_lhb_ggtj_sina.snapshot",
+      "display_name_zh": "龙虎榜个股上榜统计采集",
+      "description": "独立新浪财经采集器插件:采集龙虎榜个股上榜统计并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.sina",
+      "dataset_id": "sina.stock_lhb_ggtj_sina",
+      "category": "龙虎榜",
+      "resource_group": "sina.http",
+      "runner_entry": "axdata_collector_sina.collectors:run_collector",
+      "interfaces": [
+        "stock_lhb_ggtj_sina"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "symbol": "5"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=sina.stock_lhb_ggtj_sina"
+        ],
+        "default_dir_name": "sina.stock_lhb_ggtj_sina",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "sina.stock_lhb_ggtj_sina",
+            "table": "sina_stock_lhb_ggtj_sina",
+            "display_name_zh": "龙虎榜个股上榜统计",
+            "description": "临时请求新浪龙虎榜个股统计单页，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "recent_days",
+                "type": "integer",
+                "description": "统计窗口天数：5、10、30、60。"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "源端页码。"
+              },
+              {
+                "name": "rank",
+                "type": "integer",
+                "description": "当前页内序号，从 1 开始。"
+              },
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位股票代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "股票名称。"
+              },
+              {
+                "name": "list_count",
+                "type": "integer",
+                "description": "上榜次数。"
+              },
+              {
+                "name": "buy_amount_10k_yuan",
+                "type": "number",
+                "description": "累积购买额，单位：万元。"
+              },
+              {
+                "name": "sell_amount_10k_yuan",
+                "type": "number",
+                "description": "累积卖出额，单位：万元。"
+              },
+              {
+                "name": "net_amount_10k_yuan",
+                "type": "number",
+                "description": "净额，单位：万元。"
+              },
+              {
+                "name": "buy_seat_count",
+                "type": "integer",
+                "description": "买入席位数。"
+              },
+              {
+                "name": "sell_seat_count",
+                "type": "integer",
+                "description": "卖出席位数。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=sina.stock_lhb_ggtj_sina"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=sina.stock_lhb_ggtj_sina"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "sina.stock_lhb_jgmx_sina.snapshot",
+      "name": "sina.stock_lhb_jgmx_sina.snapshot",
+      "display_name_zh": "龙虎榜机构席位明细采集",
+      "description": "独立新浪财经采集器插件:采集龙虎榜机构席位明细并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.sina",
+      "dataset_id": "sina.stock_lhb_jgmx_sina",
+      "category": "龙虎榜",
+      "resource_group": "sina.http",
+      "runner_entry": "axdata_collector_sina.collectors:run_collector",
+      "interfaces": [
+        "stock_lhb_jgmx_sina"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "16:00",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {},
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=sina_stock_lhb_jgmx_sina"
+        ],
+        "default_dir_name": "sina.stock_lhb_jgmx_sina",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "sina.stock_lhb_jgmx_sina",
+            "table": "sina_stock_lhb_jgmx_sina",
+            "display_name_zh": "龙虎榜机构席位明细",
+            "description": "临时请求新浪龙虎榜机构席位明细单页，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "源端页码。"
+              },
+              {
+                "name": "rank",
+                "type": "integer",
+                "description": "当前页内序号，从 1 开始。"
+              },
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位股票代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "股票名称。"
+              },
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "institution_buy_amount_10k_yuan",
+                "type": "number",
+                "description": "机构席位买入额，单位：万元。"
+              },
+              {
+                "name": "institution_sell_amount_10k_yuan",
+                "type": "number",
+                "description": "机构席位卖出额，单位：万元。"
+              },
+              {
+                "name": "trade_type",
+                "type": "string",
+                "description": "上榜类型，源端中文口径；为空时返回 null。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name",
+              "trade_date"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=sina_stock_lhb_jgmx_sina"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=sina_stock_lhb_jgmx_sina"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "sina.stock_lhb_jgzz_sina.snapshot",
+      "name": "sina.stock_lhb_jgzz_sina.snapshot",
+      "display_name_zh": "龙虎榜机构席位追踪采集",
+      "description": "独立新浪财经采集器插件:采集龙虎榜机构席位追踪并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.sina",
+      "dataset_id": "sina.stock_lhb_jgzz_sina",
+      "category": "龙虎榜",
+      "resource_group": "sina.http",
+      "runner_entry": "axdata_collector_sina.collectors:run_collector",
+      "interfaces": [
+        "stock_lhb_jgzz_sina"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "symbol": "5"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=sina.stock_lhb_jgzz_sina"
+        ],
+        "default_dir_name": "sina.stock_lhb_jgzz_sina",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "sina.stock_lhb_jgzz_sina",
+            "table": "sina_stock_lhb_jgzz_sina",
+            "display_name_zh": "龙虎榜机构席位追踪",
+            "description": "临时请求新浪龙虎榜机构席位追踪单页，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "recent_days",
+                "type": "integer",
+                "description": "统计窗口天数：5、10、30、60。"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "源端页码。"
+              },
+              {
+                "name": "rank",
+                "type": "integer",
+                "description": "当前页内序号，从 1 开始。"
+              },
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位股票代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "股票名称。"
+              },
+              {
+                "name": "buy_amount_10k_yuan",
+                "type": "number",
+                "description": "机构累积买入额，单位：万元。"
+              },
+              {
+                "name": "buy_count",
+                "type": "integer",
+                "description": "机构买入次数。"
+              },
+              {
+                "name": "sell_amount_10k_yuan",
+                "type": "number",
+                "description": "机构累积卖出额，单位：万元。"
+              },
+              {
+                "name": "sell_count",
+                "type": "integer",
+                "description": "机构卖出次数。"
+              },
+              {
+                "name": "net_amount_10k_yuan",
+                "type": "number",
+                "description": "机构净额，单位：万元。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=sina.stock_lhb_jgzz_sina"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=sina.stock_lhb_jgzz_sina"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "sina.stock_lhb_yytj_sina.snapshot",
+      "name": "sina.stock_lhb_yytj_sina.snapshot",
+      "display_name_zh": "龙虎榜营业部上榜统计采集",
+      "description": "独立新浪财经采集器插件:采集龙虎榜营业部上榜统计并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.sina",
+      "dataset_id": "sina.stock_lhb_yytj_sina",
+      "category": "龙虎榜",
+      "resource_group": "sina.http",
+      "runner_entry": "axdata_collector_sina.collectors:run_collector",
+      "interfaces": [
+        "stock_lhb_yytj_sina"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "symbol": "5"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=sina.stock_lhb_yytj_sina"
+        ],
+        "default_dir_name": "sina.stock_lhb_yytj_sina",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "recent_days"
+        ],
+        "required_columns": [
+          "recent_days"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "sina.stock_lhb_yytj_sina",
+            "table": "sina_stock_lhb_yytj_sina",
+            "display_name_zh": "龙虎榜营业部上榜统计",
+            "description": "临时请求新浪龙虎榜营业部统计单页，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "recent_days"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "recent_days",
+                "type": "integer",
+                "description": "统计窗口天数：5、10、30、60。"
+              },
+              {
+                "name": "page",
+                "type": "integer",
+                "description": "源端页码。"
+              },
+              {
+                "name": "rank",
+                "type": "integer",
+                "description": "当前页内序号，从 1 开始。"
+              },
+              {
+                "name": "brokerage_name",
+                "type": "string",
+                "description": "营业部名称。"
+              },
+              {
+                "name": "list_count",
+                "type": "integer",
+                "description": "上榜次数。"
+              },
+              {
+                "name": "buy_amount_10k_yuan",
+                "type": "number",
+                "description": "累积购买额，单位：万元。"
+              },
+              {
+                "name": "buy_seat_count",
+                "type": "integer",
+                "description": "买入席位数。"
+              },
+              {
+                "name": "sell_amount_10k_yuan",
+                "type": "number",
+                "description": "累积卖出额，单位：万元。"
+              },
+              {
+                "name": "sell_seat_count",
+                "type": "integer",
+                "description": "卖出席位数。"
+              },
+              {
+                "name": "top_buy_stocks",
+                "type": "string",
+                "description": "买入前三股票，源端逗号分隔文本。"
+              }
+            ],
+            "default_query_fields": [
+              "recent_days"
+            ],
+            "default_filter_fields": [
+              "recent_days"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "recent_days"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=sina.stock_lhb_yytj_sina"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=sina.stock_lhb_yytj_sina"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "recent_days"
+        ],
+        "primary_key": [
+          "recent_days"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "sina.stock_restricted_release_queue_sina.snapshot",
+      "name": "sina.stock_restricted_release_queue_sina.snapshot",
+      "display_name_zh": "新浪限售解禁批次采集",
+      "description": "独立新浪财经采集器插件:采集新浪限售解禁批次并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.sina",
+      "dataset_id": "sina.stock_restricted_release_queue_sina",
+      "category": "发行分配",
+      "resource_group": "sina.http",
+      "runner_entry": "axdata_collector_sina.collectors:run_collector",
+      "interfaces": [
+        "stock_restricted_release_queue_sina"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "symbol": "sh600000"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=sina.stock_restricted_release_queue_sina"
+        ],
+        "default_dir_name": "sina.stock_restricted_release_queue_sina",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "sina.stock_restricted_release_queue_sina",
+            "table": "sina_stock_restricted_release_queue_sina",
+            "display_name_zh": "新浪限售解禁批次",
+            "description": "临时请求新浪单证券限售解禁表，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位股票代码。"
+              },
+              {
+                "name": "sina_symbol",
+                "type": "string",
+                "description": "新浪带市场前缀代码，例如 sh600000。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "股票名称。"
+              },
+              {
+                "name": "release_date",
+                "type": "date",
+                "description": "解禁日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "release_shares_10k",
+                "type": "number",
+                "description": "解禁数量，单位：万股。"
+              },
+              {
+                "name": "release_market_value_100m_yuan",
+                "type": "number",
+                "description": "解禁股流通市值，单位：亿元。"
+              },
+              {
+                "name": "batch_no",
+                "type": "integer",
+                "description": "上市批次。"
+              },
+              {
+                "name": "announcement_date",
+                "type": "date",
+                "description": "公告日期，格式 YYYYMMDD。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=sina.stock_restricted_release_queue_sina"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=sina.stock_restricted_release_queue_sina"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "sina.stock_zh_index_spot_sina.snapshot",
+      "name": "sina.stock_zh_index_spot_sina.snapshot",
+      "display_name_zh": "A 股指数实时行情采集",
+      "description": "独立新浪财经采集器插件:采集A 股指数实时行情并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.sina",
+      "dataset_id": "sina.stock_zh_index_spot_sina",
+      "category": "指数数据",
+      "resource_group": "sina.http",
+      "runner_entry": "axdata_collector_sina.collectors:run_collector",
+      "interfaces": [
+        "stock_zh_index_spot_sina"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {},
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=sina.stock_zh_index_spot_sina"
+        ],
+        "default_dir_name": "sina.stock_zh_index_spot_sina",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "sina.stock_zh_index_spot_sina",
+            "table": "sina_stock_zh_index_spot_sina",
+            "display_name_zh": "A 股指数实时行情",
+            "description": "临时请求新浪行情中心 A 股指数单页，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一指数代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位指数代码。"
+              },
+              {
+                "name": "sina_symbol",
+                "type": "string",
+                "description": "新浪带市场前缀代码，例如 sh000001。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE。"
+              },
+              {
+                "name": "asset_type",
+                "type": "string",
+                "description": "资产类型，固定为 index。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "指数名称。"
+              },
+              {
+                "name": "latest_price",
+                "type": "number",
+                "description": "最新点位。"
+              },
+              {
+                "name": "change",
+                "type": "number",
+                "description": "涨跌额。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅，源端百分比数值口径。"
+              },
+              {
+                "name": "bid",
+                "type": "number",
+                "description": "买入价，指数通常为 0。"
+              },
+              {
+                "name": "ask",
+                "type": "number",
+                "description": "卖出价，指数通常为 0。"
+              },
+              {
+                "name": "prev_close",
+                "type": "number",
+                "description": "昨收点位。"
+              },
+              {
+                "name": "open",
+                "type": "number",
+                "description": "今开点位。"
+              },
+              {
+                "name": "high",
+                "type": "number",
+                "description": "最高点位。"
+              },
+              {
+                "name": "low",
+                "type": "number",
+                "description": "最低点位。"
+              },
+              {
+                "name": "volume",
+                "type": "number",
+                "description": "成交量，沿用新浪源端指数口径。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额，沿用新浪源端指数口径。"
+              },
+              {
+                "name": "tick_time",
+                "type": "string",
+                "description": "源端行情时间。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name",
+              "change_pct",
+              "volume",
+              "amount"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=sina.stock_zh_index_spot_sina"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=sina.stock_zh_index_spot_sina"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "index"
+    },
+    {
+      "collector_id": "sina.tool_trade_date_hist_sina.snapshot",
+      "name": "sina.tool_trade_date_hist_sina.snapshot",
+      "display_name_zh": "新浪交易日历采集",
+      "description": "独立新浪财经采集器插件:采集新浪交易日历并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.sina",
+      "dataset_id": "sina.tool_trade_date_hist_sina",
+      "category": "交易日历",
+      "resource_group": "sina.http",
+      "runner_entry": "axdata_collector_sina.collectors:run_collector",
+      "interfaces": [
+        "tool_trade_date_hist_sina"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "16:00",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "start_date": ""
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=sina_tool_trade_date_hist_sina"
+        ],
+        "default_dir_name": "sina.tool_trade_date_hist_sina",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date"
+        ],
+        "required_columns": [
+          "trade_date"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "sina.tool_trade_date_hist_sina",
+            "table": "sina_tool_trade_date_hist_sina",
+            "display_name_zh": "新浪交易日历",
+            "description": "临时请求新浪 KLC_TD_SH 交易日历文本并用纯 Python 解码，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码；新浪源端为上交所交易日历，固定 SSE。"
+              },
+              {
+                "name": "is_open",
+                "type": "boolean",
+                "description": "是否交易日；该接口仅返回交易日，固定 true。"
+              },
+              {
+                "name": "source_calendar",
+                "type": "string",
+                "description": "源端日历标识。"
+              }
+            ],
+            "default_query_fields": [
+              "trade_date"
+            ],
+            "default_filter_fields": [
+              "trade_date"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=sina_tool_trade_date_hist_sina"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=sina_tool_trade_date_hist_sina"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date"
+        ],
+        "primary_key": [
+          "trade_date"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    }
+  ],
+  "dependencies": [],
+  "config_schema": {},
+  "required_config": [],
+  "resources": {},
+  "build": {}
+}

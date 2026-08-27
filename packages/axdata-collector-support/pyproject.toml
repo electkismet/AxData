@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "axdata-collector-support"
+version = "0.1.0"
+description = "Shared generic runner for AxData builtin web-source collector plugins"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "axdata-core>=0.1.0",
+]
+authors = [
+  { name = "AxData" },
+]
+license = "Apache-2.0"
+
+[tool.setuptools.packages.find]
+where = ["src"]

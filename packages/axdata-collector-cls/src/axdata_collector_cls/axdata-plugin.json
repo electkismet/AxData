@@ -1,0 +1,1881 @@
+{
+  "manifest_version": "1.0",
+  "plugin_api_version": "1.0",
+  "plugin": {
+    "plugin_id": "axdata.collector.cls",
+    "name_zh": "财联社采集器",
+    "version": "0.1.0",
+    "description": "财联社采集器插件:按接口目录自动生成独立采集器。"
+  },
+  "provider": null,
+  "interfaces": [],
+  "downloaders": [],
+  "collectors": [
+    {
+      "collector_id": "cls.limit_up_pool.snapshot",
+      "name": "cls.limit_up_pool.snapshot",
+      "display_name_zh": "涨停池含原因采集",
+      "description": "独立财联社采集器插件:采集涨停池含原因并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cls",
+      "dataset_id": "cls.limit_up_pool",
+      "category": "短线数据",
+      "resource_group": "cls.http",
+      "runner_entry": "axdata_collector_cls.collectors:run_collector",
+      "interfaces": [
+        "cls_limit_up_pool"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {},
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=cls_limit_up_pool"
+        ],
+        "default_dir_name": "cls.limit_up_pool",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cls.limit_up_pool",
+            "table": "cls_limit_up_pool",
+            "display_name_zh": "涨停池含原因",
+            "description": "请求财联社当日涨停池，包含涨停原因，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "采集日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "secu_code",
+                "type": "string",
+                "description": "财联社证券代码，例如 sh600000。"
+              },
+              {
+                "name": "secu_name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "last_price",
+                "type": "number",
+                "description": "最新价。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅。"
+              },
+              {
+                "name": "up_reason",
+                "type": "string",
+                "description": "涨停原因。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "last_price",
+              "change_pct"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=cls_limit_up_pool"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=cls_limit_up_pool"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "partition_by": [
+              "trade_date"
+            ],
+            "date_field": "trade_date"
+          }
+        ],
+        "partition_by": [
+          "trade_date"
+        ],
+        "date_field": "trade_date"
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cls.market_emotion.snapshot",
+      "name": "cls.market_emotion.snapshot",
+      "display_name_zh": "市场情绪采集",
+      "description": "独立财联社采集器插件:采集市场情绪并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cls",
+      "dataset_id": "cls.market_emotion",
+      "category": "情绪数据",
+      "resource_group": "cls.http",
+      "runner_entry": "axdata_collector_cls.collectors:run_collector",
+      "interfaces": [
+        "cls_market_emotion"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {},
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cls.market_emotion"
+        ],
+        "default_dir_name": "cls.market_emotion",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "market_degree"
+        ],
+        "required_columns": [
+          "market_degree"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cls.market_emotion",
+            "table": "cls_market_emotion",
+            "display_name_zh": "市场情绪",
+            "description": "请求财联社市场情绪快照，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "market_degree"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "market_degree",
+                "type": "number",
+                "description": "市场热度。"
+              },
+              {
+                "name": "shsz_balance",
+                "type": "string",
+                "description": "两市成交额文字。"
+              },
+              {
+                "name": "preview_balance",
+                "type": "string",
+                "description": "预测量能文字。"
+              },
+              {
+                "name": "up_ratio",
+                "type": "string",
+                "description": "封板率文字。"
+              },
+              {
+                "name": "up_ratio_num",
+                "type": "integer",
+                "description": "封板数量。"
+              },
+              {
+                "name": "up_open_num",
+                "type": "integer",
+                "description": "触及涨停数量。"
+              },
+              {
+                "name": "performance",
+                "type": "string",
+                "description": "昨日涨停今日表现。"
+              },
+              {
+                "name": "rise_num",
+                "type": "integer",
+                "description": "上涨家数。"
+              },
+              {
+                "name": "fall_num",
+                "type": "integer",
+                "description": "下跌家数。"
+              },
+              {
+                "name": "flat_num",
+                "type": "integer",
+                "description": "平盘家数。"
+              },
+              {
+                "name": "up_num",
+                "type": "integer",
+                "description": "涨停家数。"
+              },
+              {
+                "name": "down_num",
+                "type": "integer",
+                "description": "跌停家数。"
+              },
+              {
+                "name": "raw_up_down_dis",
+                "type": "string",
+                "description": "涨跌分布原始摘要。"
+              },
+              {
+                "name": "raw_limit_up_board",
+                "type": "string",
+                "description": "连板分布原始摘要。"
+              }
+            ],
+            "default_query_fields": [
+              "market_degree"
+            ],
+            "default_filter_fields": [
+              "market_degree"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "market_degree"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cls.market_emotion"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cls.market_emotion"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "market_degree"
+        ],
+        "primary_key": [
+          "market_degree"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cls.market_mainline.snapshot",
+      "name": "cls.market_mainline.snapshot",
+      "display_name_zh": "今日主线机会采集",
+      "description": "独立财联社采集器插件:采集今日主线机会并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cls",
+      "dataset_id": "cls.market_mainline",
+      "category": "题材数据",
+      "resource_group": "cls.http",
+      "runner_entry": "axdata_collector_cls.collectors:run_collector",
+      "interfaces": [
+        "cls_market_mainline"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {},
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cls.market_mainline"
+        ],
+        "default_dir_name": "cls.market_mainline",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "block_key"
+        ],
+        "required_columns": [
+          "block_key"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cls.market_mainline",
+            "table": "cls_market_mainline",
+            "display_name_zh": "今日主线机会",
+            "description": "请求财联社今日主线机会，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "block_key"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "block_key",
+                "type": "string",
+                "description": "主线块键名。"
+              },
+              {
+                "name": "title",
+                "type": "string",
+                "description": "标题。"
+              },
+              {
+                "name": "summary",
+                "type": "string",
+                "description": "摘要。"
+              },
+              {
+                "name": "raw_item",
+                "type": "string",
+                "description": "原始块摘要。"
+              }
+            ],
+            "default_query_fields": [
+              "block_key",
+              "title"
+            ],
+            "default_filter_fields": [
+              "block_key"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "block_key"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cls.market_mainline"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cls.market_mainline"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "block_key"
+        ],
+        "primary_key": [
+          "block_key"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cls.market_wind.snapshot",
+      "name": "cls.market_wind.snapshot",
+      "display_name_zh": "今日风口板块采集",
+      "description": "独立财联社采集器插件:采集今日风口板块并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cls",
+      "dataset_id": "cls.market_wind",
+      "category": "题材数据",
+      "resource_group": "cls.http",
+      "runner_entry": "axdata_collector_cls.collectors:run_collector",
+      "interfaces": [
+        "cls_market_wind"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {},
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cls.market_wind"
+        ],
+        "default_dir_name": "cls.market_wind",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "plate_code"
+        ],
+        "required_columns": [
+          "plate_code"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cls.market_wind",
+            "table": "cls_market_wind",
+            "display_name_zh": "今日风口板块",
+            "description": "请求财联社今日风口板块，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "plate_code"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "plate_code",
+                "type": "string",
+                "description": "板块代码。"
+              },
+              {
+                "name": "plate_name",
+                "type": "string",
+                "description": "板块名称。"
+              },
+              {
+                "name": "catalyst",
+                "type": "string",
+                "description": "催化剂/解读。"
+              }
+            ],
+            "default_query_fields": [
+              "plate_code"
+            ],
+            "default_filter_fields": [
+              "plate_code"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "plate_code"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cls.market_wind"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cls.market_wind"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "plate_code"
+        ],
+        "primary_key": [
+          "plate_code"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cls.market_wind_stocks.snapshot",
+      "name": "cls.market_wind_stocks.snapshot",
+      "display_name_zh": "风口板块龙头股采集",
+      "description": "独立财联社采集器插件:采集风口板块龙头股并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cls",
+      "dataset_id": "cls.market_wind_stocks",
+      "category": "题材数据",
+      "resource_group": "cls.http",
+      "runner_entry": "axdata_collector_cls.collectors:run_collector",
+      "interfaces": [
+        "cls_market_wind_stocks"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "plate_code": "cls80198"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cls.market_wind_stocks"
+        ],
+        "default_dir_name": "cls.market_wind_stocks",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cls.market_wind_stocks",
+            "table": "cls_market_wind_stocks",
+            "display_name_zh": "风口板块龙头股",
+            "description": "按财联社板块代码请求风口龙头股，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "secu_code",
+                "type": "string",
+                "description": "财联社证券代码，例如 sh600000。"
+              },
+              {
+                "name": "secu_name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "last_price",
+                "type": "number",
+                "description": "最新价。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅。"
+              },
+              {
+                "name": "continuous_count",
+                "type": "integer",
+                "description": "连板数。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "last_price",
+              "change_pct",
+              "continuous_count"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cls.market_wind_stocks"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cls.market_wind_stocks"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cls.news_telegraph.snapshot",
+      "name": "cls.news_telegraph.snapshot",
+      "display_name_zh": "电报快讯采集",
+      "description": "独立财联社采集器插件:采集电报快讯并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cls",
+      "dataset_id": "cls.news_telegraph",
+      "category": "资讯数据",
+      "resource_group": "cls.http",
+      "runner_entry": "axdata_collector_cls.collectors:run_collector",
+      "interfaces": [
+        "cls_news_telegraph"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "date": "",
+        "category": "important"
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=cls_news_telegraph"
+        ],
+        "default_dir_name": "cls.news_telegraph",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "news_id"
+        ],
+        "required_columns": [
+          "news_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cls.news_telegraph",
+            "table": "cls_news_telegraph",
+            "display_name_zh": "电报快讯",
+            "description": "请求财联社电报快讯，支持日期和分类，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "news_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "date",
+                "type": "date",
+                "description": "发布日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "news_id",
+                "type": "string",
+                "description": "电报 ID。"
+              },
+              {
+                "name": "title",
+                "type": "string",
+                "description": "标题。"
+              },
+              {
+                "name": "content",
+                "type": "string",
+                "description": "正文。"
+              },
+              {
+                "name": "publish_time",
+                "type": "datetime",
+                "description": "发布时间。"
+              },
+              {
+                "name": "ctime",
+                "type": "integer",
+                "description": "发布时间戳。"
+              },
+              {
+                "name": "category",
+                "type": "string",
+                "description": "分类。"
+              }
+            ],
+            "default_query_fields": [
+              "news_id",
+              "title"
+            ],
+            "default_filter_fields": [
+              "news_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "news_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=cls_news_telegraph"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=cls_news_telegraph"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "partition_by": [
+              "date"
+            ],
+            "date_field": "date"
+          }
+        ],
+        "partition_by": [
+          "date"
+        ],
+        "date_field": "date"
+      },
+      "quality": {
+        "required_columns": [
+          "news_id"
+        ],
+        "primary_key": [
+          "news_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cls.sector_heat.snapshot",
+      "name": "cls.sector_heat.snapshot",
+      "display_name_zh": "板块热度排行采集",
+      "description": "独立财联社采集器插件:采集板块热度排行并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cls",
+      "dataset_id": "cls.sector_heat",
+      "category": "板块数据",
+      "resource_group": "cls.http",
+      "runner_entry": "axdata_collector_cls.collectors:run_collector",
+      "interfaces": [
+        "cls_sector_heat"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {},
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cls.sector_heat"
+        ],
+        "default_dir_name": "cls.sector_heat",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "plate_code"
+        ],
+        "required_columns": [
+          "plate_code"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cls.sector_heat",
+            "table": "cls_sector_heat",
+            "display_name_zh": "板块热度排行",
+            "description": "请求财联社板块热度排行，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "plate_code"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "plate_code",
+                "type": "string",
+                "description": "板块代码。"
+              },
+              {
+                "name": "plate_name",
+                "type": "string",
+                "description": "板块名称。"
+              },
+              {
+                "name": "rank",
+                "type": "integer",
+                "description": "当前排名。"
+              },
+              {
+                "name": "cur_heat",
+                "type": "number",
+                "description": "当前热度。"
+              },
+              {
+                "name": "rank_change",
+                "type": "integer",
+                "description": "排名变化。"
+              },
+              {
+                "name": "is_new",
+                "type": "boolean",
+                "description": "是否新上榜。"
+              }
+            ],
+            "default_query_fields": [
+              "plate_code"
+            ],
+            "default_filter_fields": [
+              "plate_code"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "plate_code"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cls.sector_heat"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cls.sector_heat"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "plate_code"
+        ],
+        "primary_key": [
+          "plate_code"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cls.sector_industry.snapshot",
+      "name": "cls.sector_industry.snapshot",
+      "display_name_zh": "行业板块实时行情采集",
+      "description": "独立财联社采集器插件:采集行业板块实时行情并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cls",
+      "dataset_id": "cls.sector_industry",
+      "category": "板块数据",
+      "resource_group": "cls.http",
+      "runner_entry": "axdata_collector_cls.collectors:run_collector",
+      "interfaces": [
+        "cls_sector_industry"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {},
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cls.sector_industry"
+        ],
+        "default_dir_name": "cls.sector_industry",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "plate_code"
+        ],
+        "required_columns": [
+          "plate_code"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cls.sector_industry",
+            "table": "cls_sector_industry",
+            "display_name_zh": "行业板块实时行情",
+            "description": "请求财联社行业板块实时行情，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "plate_code"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "plate_code",
+                "type": "string",
+                "description": "板块代码。"
+              },
+              {
+                "name": "plate_name",
+                "type": "string",
+                "description": "板块名称。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅。"
+              },
+              {
+                "name": "main_fund_diff",
+                "type": "number",
+                "description": "主力净流入。"
+              },
+              {
+                "name": "rise_count",
+                "type": "integer",
+                "description": "上涨家数。"
+              },
+              {
+                "name": "fall_count",
+                "type": "integer",
+                "description": "下跌家数。"
+              },
+              {
+                "name": "limit_up_count",
+                "type": "integer",
+                "description": "涨停家数。"
+              },
+              {
+                "name": "limit_down_count",
+                "type": "integer",
+                "description": "跌停家数。"
+              },
+              {
+                "name": "trade_status",
+                "type": "string",
+                "description": "交易状态。"
+              },
+              {
+                "name": "raw_first_stock",
+                "type": "string",
+                "description": "领涨股原始摘要。"
+              }
+            ],
+            "default_query_fields": [
+              "plate_code",
+              "change_pct"
+            ],
+            "default_filter_fields": [
+              "plate_code"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "plate_code"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cls.sector_industry"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cls.sector_industry"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "plate_code"
+        ],
+        "primary_key": [
+          "plate_code"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cls.sector_popular_stocks.snapshot",
+      "name": "cls.sector_popular_stocks.snapshot",
+      "display_name_zh": "板块热门股采集",
+      "description": "独立财联社采集器插件:采集板块热门股并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cls",
+      "dataset_id": "cls.sector_popular_stocks",
+      "category": "板块数据",
+      "resource_group": "cls.http",
+      "runner_entry": "axdata_collector_cls.collectors:run_collector",
+      "interfaces": [
+        "cls_sector_popular_stocks"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "plate_code": "cls80025"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cls.sector_popular_stocks"
+        ],
+        "default_dir_name": "cls.sector_popular_stocks",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cls.sector_popular_stocks",
+            "table": "cls_sector_popular_stocks",
+            "display_name_zh": "板块热门股",
+            "description": "按财联社板块代码请求近期热门股，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "secu_code",
+                "type": "string",
+                "description": "财联社证券代码，例如 sh600000。"
+              },
+              {
+                "name": "secu_name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "change_text",
+                "type": "string",
+                "description": "涨跌幅文字。"
+              },
+              {
+                "name": "change",
+                "type": "number",
+                "description": "涨跌幅数值。"
+              },
+              {
+                "name": "change_px",
+                "type": "number",
+                "description": "涨跌额。"
+              },
+              {
+                "name": "board_tag",
+                "type": "string",
+                "description": "连板/强势标签。"
+              },
+              {
+                "name": "head_rank",
+                "type": "integer",
+                "description": "龙头排名。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cls.sector_popular_stocks"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cls.sector_popular_stocks"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cls.sector_rotation.snapshot",
+      "name": "cls.sector_rotation.snapshot",
+      "display_name_zh": "板块轮动采集",
+      "description": "独立财联社采集器插件:采集板块轮动并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.cls",
+      "dataset_id": "cls.sector_rotation",
+      "category": "板块数据",
+      "resource_group": "cls.http",
+      "runner_entry": "axdata_collector_cls.collectors:run_collector",
+      "interfaces": [
+        "cls_sector_rotation"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "16:30",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "days": 4
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=cls_sector_rotation"
+        ],
+        "default_dir_name": "cls.sector_rotation",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "plate_code"
+        ],
+        "required_columns": [
+          "trade_date",
+          "plate_code"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cls.sector_rotation",
+            "table": "cls_sector_rotation",
+            "display_name_zh": "板块轮动",
+            "description": "请求近 N 日每日涨幅靠前板块，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "plate_code"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期。"
+              },
+              {
+                "name": "plate_code",
+                "type": "string",
+                "description": "板块代码。"
+              },
+              {
+                "name": "plate_name",
+                "type": "string",
+                "description": "板块名称。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅。"
+              },
+              {
+                "name": "rank",
+                "type": "integer",
+                "description": "当日排名。"
+              }
+            ],
+            "default_query_fields": [
+              "trade_date",
+              "change_pct"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "plate_code"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "plate_code"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=cls_sector_rotation"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=cls_sector_rotation"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "plate_code"
+        ],
+        "primary_key": [
+          "trade_date",
+          "plate_code"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cls.stock_kline.snapshot",
+      "name": "cls.stock_kline.snapshot",
+      "display_name_zh": "个股K线采集",
+      "description": "独立财联社采集器插件:采集个股K线并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.cls",
+      "dataset_id": "cls.stock_kline",
+      "category": "行情数据",
+      "resource_group": "cls.http",
+      "runner_entry": "axdata_collector_cls.collectors:run_collector",
+      "interfaces": [
+        "cls_stock_kline"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "16:30",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "code": "002664.SZ"
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=cls_stock_kline"
+        ],
+        "default_dir_name": "cls.stock_kline",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cls.stock_kline",
+            "table": "cls_stock_kline",
+            "display_name_zh": "个股K线",
+            "description": "请求单只股票 K 线，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "secu_code",
+                "type": "string",
+                "description": "财联社证券代码，例如 sh600000。"
+              },
+              {
+                "name": "secu_name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期。"
+              },
+              {
+                "name": "open",
+                "type": "number",
+                "description": "开盘价。"
+              },
+              {
+                "name": "high",
+                "type": "number",
+                "description": "最高价。"
+              },
+              {
+                "name": "low",
+                "type": "number",
+                "description": "最低价。"
+              },
+              {
+                "name": "close",
+                "type": "number",
+                "description": "收盘价。"
+              },
+              {
+                "name": "volume",
+                "type": "number",
+                "description": "成交量。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额。"
+              },
+              {
+                "name": "change",
+                "type": "number",
+                "description": "涨跌额。"
+              },
+              {
+                "name": "change_pct",
+                "type": "number",
+                "description": "涨跌幅。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "trade_date",
+              "volume",
+              "amount",
+              "change_pct"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=cls_stock_kline"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=cls_stock_kline"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cls.stock_timeline.snapshot",
+      "name": "cls.stock_timeline.snapshot",
+      "display_name_zh": "个股分时采集",
+      "description": "独立财联社采集器插件:采集个股分时并写入本地core 层按交易日 Parquet。",
+      "collector_plugin_id": "axdata.collector.cls",
+      "dataset_id": "cls.stock_timeline",
+      "category": "实时数据",
+      "resource_group": "cls.http",
+      "runner_entry": "axdata_collector_cls.collectors:run_collector",
+      "interfaces": [
+        "cls_stock_timeline"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "trading_day",
+        "time": "16:30",
+        "timezone": "Asia/Shanghai"
+      },
+      "default_params": {
+        "code": "002664.SZ"
+      },
+      "output": {
+        "layer": "core",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "core",
+          "table=cls_stock_timeline"
+        ],
+        "default_dir_name": "cls.stock_timeline",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "date_field": "trade_date",
+        "partition_by": [
+          "trade_date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cls.stock_timeline",
+            "table": "cls_stock_timeline",
+            "display_name_zh": "个股分时",
+            "description": "请求单只股票当日分时，默认不入库。",
+            "layer": "core",
+            "primary_key": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "secu_code",
+                "type": "string",
+                "description": "财联社证券代码，例如 sh600000。"
+              },
+              {
+                "name": "secu_name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "交易日期。"
+              },
+              {
+                "name": "minute",
+                "type": "string",
+                "description": "分钟。"
+              },
+              {
+                "name": "last_price",
+                "type": "number",
+                "description": "最新价。"
+              },
+              {
+                "name": "amount",
+                "type": "number",
+                "description": "成交额。"
+              },
+              {
+                "name": "volume",
+                "type": "number",
+                "description": "成交量。"
+              },
+              {
+                "name": "open",
+                "type": "number",
+                "description": "开盘价。"
+              },
+              {
+                "name": "pre_close",
+                "type": "number",
+                "description": "昨收价。"
+              },
+              {
+                "name": "avg_price",
+                "type": "number",
+                "description": "均价。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "trade_date",
+              "last_price",
+              "amount",
+              "volume"
+            ],
+            "default_filter_fields": [
+              "trade_date",
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "trade_date",
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "daily_file",
+              "path_parts": [
+                "core",
+                "table=cls_stock_timeline"
+              ]
+            },
+            "default_output_path_parts": [
+              "core",
+              "table=cls_stock_timeline"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ],
+            "date_field": "trade_date",
+            "partition_by": [
+              "trade_date"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "primary_key": [
+          "trade_date",
+          "instrument_id"
+        ],
+        "date_field": "trade_date"
+      },
+      "asset_class": "stock"
+    }
+  ],
+  "dependencies": [],
+  "config_schema": {},
+  "required_config": [],
+  "resources": {},
+  "build": {}
+}

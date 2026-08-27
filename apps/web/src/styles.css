@@ -3440,6 +3440,10 @@ pre code {
   padding: 0 10px;
 }
 
+.collector-task-table-row .collector-backfill-panel {
+  grid-column: 1 / -1;
+}
+
 .collector-task-switch {
   display: inline-flex;
   width: fit-content;

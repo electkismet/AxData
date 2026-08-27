@@ -51,6 +51,25 @@ LIMIT_HISTORY_FIELDS = (
     F("industry_limit_up_count", "integer", "同行业涨停数。"),
 )
 
+LIMIT_DOWN_HISTORY_FIELDS = (
+    F("trade_date", "date/string", "交易日期，格式 YYYYMMDD。"),
+    *STOCK_FIELDS,
+    F("limit_time", "integer", "跌停时间戳。"),
+    F("open_time", "integer", "开板时间戳，0 表示未开。"),
+    F("seal_amount", "float64", "封单量。"),
+    F("seal_money", "float64", "封单金额，单位：元。"),
+    F("limit_tag", "string", "连续跌停标签，开盘红跌停数据通常为空。"),
+    F("limit_count", "integer", "连续跌停天数，开盘红跌停数据通常为空。"),
+    F("themes", "string", "题材。"),
+    F("reason", "string", "跌停原因，开盘红跌停列表多为“无”。"),
+    F("net_inflow", "float64", "净流入，单位：元。"),
+    F("turnover", "float64", "成交额，单位：元。"),
+    F("turnover_rate", "float64", "换手率，百分比数值。"),
+    F("market_cap", "float64", "流通市值，单位：元。"),
+    F("industry_id", "string", "行业 ID。"),
+    F("industry_limit_up_count", "integer", "同行业跌停家数，开盘红跌停数据通常为空。"),
+)
+
 
 INTERFACES: dict[str, SourceRequestInterface] = {
     "kph_market_emotion": SourceRequestInterface(
@@ -92,7 +111,7 @@ INTERFACES: dict[str, SourceRequestInterface] = {
         first_stage_strategy="请求开盘红精选/行业/地区板块排行，默认不入库。",
         source_ability="KPH sector ranking",
         description="Return KPH sector ranking rows.",
-        parameters=(P("trade_date", "string", True, "交易日期，YYYYMMDD 或 YYYY-MM-DD。"), P("sector_type", "string", False, "板块类型：selected、industry、region，默认 selected。", "selected"), P("fetch_all", "boolean", False, "是否分页获取全部，默认 false。", False)),
+        parameters=(P("trade_date", "string", False, "交易日期，YYYYMMDD 或 YYYY-MM-DD；留空自动取最新有数据的交易日。"), P("sector_type", "string", False, "板块类型：selected、industry、region，默认 selected。", "selected"), P("fetch_all", "boolean", False, "是否分页获取全部，默认 false。", False)),
         fields=(
             F("trade_date", "date/string", "交易日期。"),
             F("plate_id", "string", "板块 ID。"),
@@ -118,7 +137,7 @@ INTERFACES: dict[str, SourceRequestInterface] = {
         first_stage_strategy="按开盘红板块 ID 和历史日期请求成分股，默认不入库。",
         source_ability="KPH historical sector constituents",
         description="Return KPH historical sector constituents.",
-        parameters=(P("plate_id", "string", True, "板块 ID。"), P("trade_date", "string", True, "历史交易日期，必须早于今天。")),
+        parameters=(P("plate_id", "string", True, "板块 ID。"), P("trade_date", "string", False, "历史交易日期，YYYYMMDD 或 YYYY-MM-DD；留空自动回溯到最新有数据的交易日。")),
         fields=(
             F("trade_date", "date/string", "交易日期。"),
             F("plate_id", "string", "板块 ID。"),
@@ -146,7 +165,7 @@ INTERFACES: dict[str, SourceRequestInterface] = {
         first_stage_strategy="请求开盘红历史涨停股列表，默认不入库。",
         source_ability="KPH historical limit-up stocks",
         description="Return historical limit-up stocks.",
-        parameters=(P("trade_date", "string", True, "历史交易日期，必须早于今天。"),),
+        parameters=(P("trade_date", "string", False, "历史交易日期，YYYYMMDD 或 YYYY-MM-DD；留空自动回溯到最新有数据的交易日。"),),
         fields=LIMIT_HISTORY_FIELDS,
         example=RequestExample(request={"params": {"trade_date": "20260513"}, "persist": False}, response=({"instrument_id": "601126.SH", "limit_tag": "首板"},)),
     ),
@@ -160,8 +179,8 @@ INTERFACES: dict[str, SourceRequestInterface] = {
         first_stage_strategy="请求开盘红历史跌停股列表，默认不入库。",
         source_ability="KPH historical limit-down stocks",
         description="Return historical limit-down stocks.",
-        parameters=(P("trade_date", "string", True, "历史交易日期，必须早于今天。"),),
-        fields=LIMIT_HISTORY_FIELDS,
+        parameters=(P("trade_date", "string", False, "历史交易日期，YYYYMMDD 或 YYYY-MM-DD；留空自动回溯到最新有数据的交易日。"),),
+        fields=LIMIT_DOWN_HISTORY_FIELDS,
         example=RequestExample(request={"params": {"trade_date": "20260513"}, "persist": False}, response=({"instrument_id": "002810.SZ", "seal_money": 0},)),
     ),
     "kph_wind_vane_history": SourceRequestInterface(
@@ -174,7 +193,7 @@ INTERFACES: dict[str, SourceRequestInterface] = {
         first_stage_strategy="请求开盘红历史风向标股票列表，默认不入库。",
         source_ability="KPH historical wind-vane stocks",
         description="Return historical wind-vane stocks.",
-        parameters=(P("trade_date", "string", True, "历史交易日期，必须早于今天。"),),
+        parameters=(P("trade_date", "string", False, "历史交易日期，YYYYMMDD 或 YYYY-MM-DD；留空自动回溯到最新有数据的交易日。"),),
         fields=LIMIT_HISTORY_FIELDS,
         example=RequestExample(request={"params": {"trade_date": "20260513"}, "persist": False}, response=({"instrument_id": "601126.SH", "themes": "智能电网"},)),
     ),

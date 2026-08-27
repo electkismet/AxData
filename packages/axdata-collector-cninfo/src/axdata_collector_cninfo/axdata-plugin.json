@@ -1,0 +1,5875 @@
+{
+  "manifest_version": "1.0",
+  "plugin_api_version": "1.0",
+  "plugin": {
+    "plugin_id": "axdata.collector.cninfo",
+    "name_zh": "巨潮采集器",
+    "version": "0.1.0",
+    "description": "巨潮采集器插件:按接口目录自动生成独立采集器。"
+  },
+  "provider": null,
+  "interfaces": [],
+  "downloaders": [],
+  "collectors": [
+    {
+      "collector_id": "cninfo.bond_corporate_issue_cninfo.snapshot",
+      "name": "cninfo.bond_corporate_issue_cninfo.snapshot",
+      "display_name_zh": "企业债发行采集",
+      "description": "独立巨潮采集器插件:采集企业债发行并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.bond_corporate_issue_cninfo",
+      "category": "债券报表",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "bond_corporate_issue_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.bond_corporate_issue_cninfo"
+        ],
+        "default_dir_name": "cninfo.bond_corporate_issue_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "bond_code"
+        ],
+        "required_columns": [
+          "bond_code"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.bond_corporate_issue_cninfo",
+            "table": "cninfo_bond_corporate_issue_cninfo",
+            "display_name_zh": "企业债发行",
+            "description": "临时请求巨潮企业债发行专题统计，按日期范围返回，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "bond_code"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "bond_code",
+                "type": "string",
+                "description": "债券代码。"
+              },
+              {
+                "name": "bond_short_name",
+                "type": "string",
+                "description": "债券简称。"
+              },
+              {
+                "name": "announcement_date",
+                "type": "date",
+                "description": "公告日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "online_issue_start_date",
+                "type": "date",
+                "description": "交易所网上发行起始日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "online_issue_end_date",
+                "type": "date",
+                "description": "交易所网上发行终止日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "planned_issue_amount",
+                "type": "number",
+                "description": "计划发行总量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "actual_issue_amount",
+                "type": "number",
+                "description": "实际发行总量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "par_value",
+                "type": "number",
+                "description": "发行面值，单位：元。"
+              },
+              {
+                "name": "issue_price",
+                "type": "number",
+                "description": "发行价格，单位：元。"
+              },
+              {
+                "name": "issue_method",
+                "type": "string",
+                "description": "发行方式。"
+              },
+              {
+                "name": "issue_target",
+                "type": "string",
+                "description": "发行对象。"
+              },
+              {
+                "name": "issue_scope",
+                "type": "string",
+                "description": "发行范围。"
+              },
+              {
+                "name": "underwriting_method",
+                "type": "string",
+                "description": "承销方式。"
+              },
+              {
+                "name": "min_subscription_unit",
+                "type": "number",
+                "description": "最小认购单位，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "fundraising_use",
+                "type": "string",
+                "description": "募资用途说明。"
+              },
+              {
+                "name": "min_subscription_amount",
+                "type": "number",
+                "description": "最低认购额，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "bond_name",
+                "type": "string",
+                "description": "债券名称。"
+              }
+            ],
+            "default_query_fields": [
+              "bond_code"
+            ],
+            "default_filter_fields": [
+              "bond_code"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "bond_code"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.bond_corporate_issue_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.bond_corporate_issue_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "bond_code"
+        ],
+        "primary_key": [
+          "bond_code"
+        ]
+      },
+      "asset_class": "bond"
+    },
+    {
+      "collector_id": "cninfo.bond_cov_issue_cninfo.snapshot",
+      "name": "cninfo.bond_cov_issue_cninfo.snapshot",
+      "display_name_zh": "可转债发行采集",
+      "description": "独立巨潮采集器插件:采集可转债发行并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.bond_cov_issue_cninfo",
+      "category": "债券报表",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "bond_cov_issue_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.bond_cov_issue_cninfo"
+        ],
+        "default_dir_name": "cninfo.bond_cov_issue_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "bond_code"
+        ],
+        "required_columns": [
+          "bond_code"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.bond_cov_issue_cninfo",
+            "table": "cninfo_bond_cov_issue_cninfo",
+            "display_name_zh": "可转债发行",
+            "description": "临时请求巨潮可转债发行专题统计，按日期范围返回，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "bond_code"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "bond_code",
+                "type": "string",
+                "description": "债券代码。"
+              },
+              {
+                "name": "bond_short_name",
+                "type": "string",
+                "description": "债券简称。"
+              },
+              {
+                "name": "announcement_date",
+                "type": "date",
+                "description": "公告日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "issue_start_date",
+                "type": "date",
+                "description": "发行起始日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "issue_end_date",
+                "type": "date",
+                "description": "发行终止日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "planned_issue_amount",
+                "type": "number",
+                "description": "计划发行总量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "actual_issue_amount",
+                "type": "number",
+                "description": "实际发行总量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "par_value",
+                "type": "number",
+                "description": "发行面值，单位：元。"
+              },
+              {
+                "name": "issue_price",
+                "type": "number",
+                "description": "发行价格，单位：元。"
+              },
+              {
+                "name": "issue_method",
+                "type": "string",
+                "description": "发行方式。"
+              },
+              {
+                "name": "issue_target",
+                "type": "string",
+                "description": "发行对象。"
+              },
+              {
+                "name": "issue_scope",
+                "type": "string",
+                "description": "发行范围。"
+              },
+              {
+                "name": "underwriting_method",
+                "type": "string",
+                "description": "承销方式。"
+              },
+              {
+                "name": "fundraising_use",
+                "type": "string",
+                "description": "募资用途说明。"
+              },
+              {
+                "name": "initial_conversion_price",
+                "type": "number",
+                "description": "初始转股价格，单位：元。"
+              },
+              {
+                "name": "conversion_start_date",
+                "type": "date",
+                "description": "转股开始日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "conversion_end_date",
+                "type": "date",
+                "description": "转股终止日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "online_subscription_date",
+                "type": "date",
+                "description": "网上申购日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "online_subscription_code",
+                "type": "string",
+                "description": "网上申购代码。"
+              },
+              {
+                "name": "online_subscription_short_name",
+                "type": "string",
+                "description": "网上申购简称。"
+              },
+              {
+                "name": "online_subscription_max",
+                "type": "number",
+                "description": "网上申购数量上限，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "online_subscription_min",
+                "type": "number",
+                "description": "网上申购数量下限，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "online_subscription_unit",
+                "type": "number",
+                "description": "网上申购单位，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "online_lottery_result_refund_date",
+                "type": "date",
+                "description": "网上申购中签结果公告日及退款日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "priority_subscription_date",
+                "type": "date",
+                "description": "优先申购日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "allotment_price",
+                "type": "number",
+                "description": "配售价格，单位：元。"
+              },
+              {
+                "name": "bondholder_record_date",
+                "type": "date",
+                "description": "债权登记日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "priority_subscription_payment_date",
+                "type": "date",
+                "description": "优先申购缴款日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "conversion_code",
+                "type": "string",
+                "description": "转股代码。"
+              },
+              {
+                "name": "trading_market",
+                "type": "string",
+                "description": "交易市场。"
+              },
+              {
+                "name": "bond_name",
+                "type": "string",
+                "description": "债券名称。"
+              }
+            ],
+            "default_query_fields": [
+              "bond_code"
+            ],
+            "default_filter_fields": [
+              "bond_code"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "bond_code"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.bond_cov_issue_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.bond_cov_issue_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "bond_code"
+        ],
+        "primary_key": [
+          "bond_code"
+        ]
+      },
+      "asset_class": "bond"
+    },
+    {
+      "collector_id": "cninfo.bond_cov_stock_issue_cninfo.snapshot",
+      "name": "cninfo.bond_cov_stock_issue_cninfo.snapshot",
+      "display_name_zh": "可转债转股采集",
+      "description": "独立巨潮采集器插件:采集可转债转股并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.bond_cov_stock_issue_cninfo",
+      "category": "债券报表",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "bond_cov_stock_issue_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {},
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.bond_cov_stock_issue_cninfo"
+        ],
+        "default_dir_name": "cninfo.bond_cov_stock_issue_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "bond_code"
+        ],
+        "required_columns": [
+          "bond_code"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.bond_cov_stock_issue_cninfo",
+            "table": "cninfo_bond_cov_stock_issue_cninfo",
+            "display_name_zh": "可转债转股",
+            "description": "临时请求巨潮可转债转股专题统计，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "bond_code"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "bond_code",
+                "type": "string",
+                "description": "债券代码。"
+              },
+              {
+                "name": "bond_short_name",
+                "type": "string",
+                "description": "债券简称。"
+              },
+              {
+                "name": "announcement_date",
+                "type": "date",
+                "description": "公告日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "conversion_code",
+                "type": "string",
+                "description": "转股代码。"
+              },
+              {
+                "name": "conversion_short_name",
+                "type": "string",
+                "description": "转股简称。"
+              },
+              {
+                "name": "conversion_price",
+                "type": "number",
+                "description": "转股价格，单位：元。"
+              },
+              {
+                "name": "voluntary_conversion_start_date",
+                "type": "date",
+                "description": "自愿转换期起始日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "voluntary_conversion_end_date",
+                "type": "date",
+                "description": "自愿转换期终止日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "underlying_stock",
+                "type": "string",
+                "description": "标的股票。"
+              },
+              {
+                "name": "bond_name",
+                "type": "string",
+                "description": "债券名称。"
+              }
+            ],
+            "default_query_fields": [
+              "bond_code"
+            ],
+            "default_filter_fields": [
+              "bond_code"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "bond_code"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.bond_cov_stock_issue_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.bond_cov_stock_issue_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "bond_code"
+        ],
+        "primary_key": [
+          "bond_code"
+        ]
+      },
+      "asset_class": "bond"
+    },
+    {
+      "collector_id": "cninfo.bond_local_government_issue_cninfo.snapshot",
+      "name": "cninfo.bond_local_government_issue_cninfo.snapshot",
+      "display_name_zh": "地方债发行采集",
+      "description": "独立巨潮采集器插件:采集地方债发行并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.bond_local_government_issue_cninfo",
+      "category": "债券报表",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "bond_local_government_issue_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.bond_local_government_issue_cninfo"
+        ],
+        "default_dir_name": "cninfo.bond_local_government_issue_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "bond_code"
+        ],
+        "required_columns": [
+          "bond_code"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.bond_local_government_issue_cninfo",
+            "table": "cninfo_bond_local_government_issue_cninfo",
+            "display_name_zh": "地方债发行",
+            "description": "临时请求巨潮地方债发行专题统计，按日期范围返回，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "bond_code"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "bond_code",
+                "type": "string",
+                "description": "债券代码。"
+              },
+              {
+                "name": "bond_short_name",
+                "type": "string",
+                "description": "债券简称。"
+              },
+              {
+                "name": "issue_start_date",
+                "type": "date",
+                "description": "发行起始日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "issue_end_date",
+                "type": "date",
+                "description": "发行终止日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "planned_issue_amount",
+                "type": "number",
+                "description": "计划发行总量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "actual_issue_amount",
+                "type": "number",
+                "description": "实际发行总量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "issue_price",
+                "type": "number",
+                "description": "发行价格，单位：元。"
+              },
+              {
+                "name": "par_value",
+                "type": "number",
+                "description": "单位面值，单位：元。"
+              },
+              {
+                "name": "payment_date",
+                "type": "date",
+                "description": "缴款日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "additional_issue_count",
+                "type": "number",
+                "description": "增发次数，源端数值口径。"
+              },
+              {
+                "name": "trading_market",
+                "type": "string",
+                "description": "交易市场。"
+              },
+              {
+                "name": "issue_method",
+                "type": "string",
+                "description": "发行方式。"
+              },
+              {
+                "name": "issue_target",
+                "type": "string",
+                "description": "发行对象。"
+              },
+              {
+                "name": "announcement_date",
+                "type": "date",
+                "description": "公告日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "bond_name",
+                "type": "string",
+                "description": "债券名称。"
+              }
+            ],
+            "default_query_fields": [
+              "bond_code"
+            ],
+            "default_filter_fields": [
+              "bond_code"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "bond_code"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.bond_local_government_issue_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.bond_local_government_issue_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "bond_code"
+        ],
+        "primary_key": [
+          "bond_code"
+        ]
+      },
+      "asset_class": "bond"
+    },
+    {
+      "collector_id": "cninfo.bond_treasure_issue_cninfo.snapshot",
+      "name": "cninfo.bond_treasure_issue_cninfo.snapshot",
+      "display_name_zh": "国债发行采集",
+      "description": "独立巨潮采集器插件:采集国债发行并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.bond_treasure_issue_cninfo",
+      "category": "债券报表",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "bond_treasure_issue_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.bond_treasure_issue_cninfo"
+        ],
+        "default_dir_name": "cninfo.bond_treasure_issue_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "bond_code"
+        ],
+        "required_columns": [
+          "bond_code"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.bond_treasure_issue_cninfo",
+            "table": "cninfo_bond_treasure_issue_cninfo",
+            "display_name_zh": "国债发行",
+            "description": "临时请求巨潮国债发行专题统计，按日期范围返回，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "bond_code"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "bond_code",
+                "type": "string",
+                "description": "债券代码。"
+              },
+              {
+                "name": "bond_short_name",
+                "type": "string",
+                "description": "债券简称。"
+              },
+              {
+                "name": "issue_start_date",
+                "type": "date",
+                "description": "发行起始日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "issue_end_date",
+                "type": "date",
+                "description": "发行终止日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "planned_issue_amount",
+                "type": "number",
+                "description": "计划发行总量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "actual_issue_amount",
+                "type": "number",
+                "description": "实际发行总量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "issue_price",
+                "type": "number",
+                "description": "发行价格，单位：元。"
+              },
+              {
+                "name": "par_value",
+                "type": "number",
+                "description": "单位面值，单位：元。"
+              },
+              {
+                "name": "payment_date",
+                "type": "date",
+                "description": "缴款日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "additional_issue_count",
+                "type": "number",
+                "description": "增发次数，源端数值口径。"
+              },
+              {
+                "name": "trading_market",
+                "type": "string",
+                "description": "交易市场。"
+              },
+              {
+                "name": "issue_method",
+                "type": "string",
+                "description": "发行方式。"
+              },
+              {
+                "name": "issue_target",
+                "type": "string",
+                "description": "发行对象。"
+              },
+              {
+                "name": "announcement_date",
+                "type": "date",
+                "description": "公告日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "bond_name",
+                "type": "string",
+                "description": "债券名称。"
+              }
+            ],
+            "default_query_fields": [
+              "bond_code"
+            ],
+            "default_filter_fields": [
+              "bond_code"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "bond_code"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.bond_treasure_issue_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.bond_treasure_issue_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "bond_code"
+        ],
+        "primary_key": [
+          "bond_code"
+        ]
+      },
+      "asset_class": "bond"
+    },
+    {
+      "collector_id": "cninfo.announcement_detail.snapshot",
+      "name": "cninfo.announcement_detail.snapshot",
+      "display_name_zh": "公告PDF元信息采集",
+      "description": "独立巨潮采集器插件:采集公告PDF元信息并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.announcement_detail",
+      "category": "公告数据",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "cninfo_announcement_detail"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "announcement_id": "1218968511",
+        "url": "https://static.cninfo.com.cn/finalpage/2024-01-23/1218968511.PDF"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.announcement_detail"
+        ],
+        "default_dir_name": "cninfo.announcement_detail",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "announcement_id"
+        ],
+        "required_columns": [
+          "announcement_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.announcement_detail",
+            "table": "cninfo_announcement_detail",
+            "display_name_zh": "公告PDF元信息",
+            "description": "这个接口只确认 PDF 文件类型、大小和下载地址，不解析 PDF 正文。",
+            "layer": "snapshot",
+            "primary_key": [
+              "announcement_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "announcement_id",
+                "type": "string",
+                "description": "公告 ID。"
+              },
+              {
+                "name": "title",
+                "type": "string",
+                "description": "公告标题；传入时返回。"
+              },
+              {
+                "name": "content_type",
+                "type": "string",
+                "description": "文件类型，例如 application/pdf。"
+              },
+              {
+                "name": "file_size_bytes",
+                "type": "integer",
+                "description": "文件大小，单位：字节。"
+              },
+              {
+                "name": "download_url",
+                "type": "string",
+                "description": "PDF 下载地址。"
+              }
+            ],
+            "default_query_fields": [
+              "announcement_id",
+              "title"
+            ],
+            "default_filter_fields": [
+              "announcement_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "announcement_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.announcement_detail"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.announcement_detail"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "announcement_id"
+        ],
+        "primary_key": [
+          "announcement_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.announcements.snapshot",
+      "name": "cninfo.announcements.snapshot",
+      "display_name_zh": "公告列表采集",
+      "description": "独立巨潮采集器插件:采集公告列表并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.announcements",
+      "category": "公告数据",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "cninfo_announcements"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "000001.SZ",
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.announcements"
+        ],
+        "default_dir_name": "cninfo.announcements",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "announcement_id"
+        ],
+        "required_columns": [
+          "announcement_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.announcements",
+            "table": "cninfo_announcements",
+            "display_name_zh": "公告列表",
+            "description": "这个接口返回公告元信息和 PDF 下载地址。",
+            "layer": "snapshot",
+            "primary_key": [
+              "announcement_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "announcement_id",
+                "type": "string",
+                "description": "公告 ID。"
+              },
+              {
+                "name": "title",
+                "type": "string",
+                "description": "公告标题。"
+              },
+              {
+                "name": "publish_date",
+                "type": "date",
+                "description": "公告发布日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "file_type",
+                "type": "string",
+                "description": "附件类型，例如 PDF。"
+              },
+              {
+                "name": "file_size_kb",
+                "type": "number",
+                "description": "附件大小，单位：KB。"
+              },
+              {
+                "name": "download_url",
+                "type": "string",
+                "description": "PDF 下载地址。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name",
+              "announcement_id",
+              "title",
+              "publish_date"
+            ],
+            "default_filter_fields": [
+              "announcement_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "announcement_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.announcements"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.announcements"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "announcement_id"
+        ],
+        "primary_key": [
+          "announcement_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.fund_report_asset_allocation_cninfo.snapshot",
+      "name": "cninfo.fund_report_asset_allocation_cninfo.snapshot",
+      "display_name_zh": "基金资产配置采集",
+      "description": "独立巨潮采集器插件:采集基金资产配置并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.fund_report_asset_allocation_cninfo",
+      "category": "基金报表",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "fund_report_asset_allocation_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {},
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.fund_report_asset_allocation_cninfo"
+        ],
+        "default_dir_name": "cninfo.fund_report_asset_allocation_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "report_date"
+        ],
+        "required_columns": [
+          "report_date"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.fund_report_asset_allocation_cninfo",
+            "table": "cninfo_fund_report_asset_allocation_cninfo",
+            "display_name_zh": "基金资产配置",
+            "description": "临时请求巨潮基金资产配置专题统计，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "report_date"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "report_date",
+                "type": "date",
+                "description": "报告期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "fund_count",
+                "type": "number",
+                "description": "基金覆盖家数，单位：只。"
+              },
+              {
+                "name": "equity_asset_pct",
+                "type": "number",
+                "description": "股票权益类占净资产比例，源端百分比数值口径。"
+              },
+              {
+                "name": "bond_asset_pct",
+                "type": "number",
+                "description": "债券固定收益类占净资产比例，源端百分比数值口径。"
+              },
+              {
+                "name": "cash_asset_pct",
+                "type": "number",
+                "description": "现金货币类占净资产比例，源端百分比数值口径。"
+              },
+              {
+                "name": "fund_market_net_assets",
+                "type": "number",
+                "description": "基金市场净资产规模，金额单位/口径沿用巨潮源端。"
+              }
+            ],
+            "default_query_fields": [
+              "report_date"
+            ],
+            "default_filter_fields": [
+              "report_date"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "report_date"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.fund_report_asset_allocation_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.fund_report_asset_allocation_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "report_date"
+        ],
+        "primary_key": [
+          "report_date"
+        ]
+      },
+      "asset_class": "fund"
+    },
+    {
+      "collector_id": "cninfo.fund_report_industry_allocation_cninfo.snapshot",
+      "name": "cninfo.fund_report_industry_allocation_cninfo.snapshot",
+      "display_name_zh": "基金行业配置采集",
+      "description": "独立巨潮采集器插件:采集基金行业配置并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.fund_report_industry_allocation_cninfo",
+      "category": "基金报表",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "fund_report_industry_allocation_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.fund_report_industry_allocation_cninfo"
+        ],
+        "default_dir_name": "cninfo.fund_report_industry_allocation_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "industry_code"
+        ],
+        "required_columns": [
+          "industry_code"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.fund_report_industry_allocation_cninfo",
+            "table": "cninfo_fund_report_industry_allocation_cninfo",
+            "display_name_zh": "基金行业配置",
+            "description": "临时请求巨潮基金行业配置专题统计，按报告期返回，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "industry_code"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "industry_code",
+                "type": "string",
+                "description": "证监会行业编码。"
+              },
+              {
+                "name": "industry_name",
+                "type": "string",
+                "description": "证监会行业名称。"
+              },
+              {
+                "name": "report_date",
+                "type": "date",
+                "description": "报告期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "fund_count",
+                "type": "number",
+                "description": "基金覆盖家数，单位：只。"
+              },
+              {
+                "name": "industry_scale",
+                "type": "number",
+                "description": "行业规模，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "net_asset_pct",
+                "type": "number",
+                "description": "占净资产比例，源端百分比数值口径。"
+              }
+            ],
+            "default_query_fields": [
+              "industry_code"
+            ],
+            "default_filter_fields": [
+              "industry_code"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "industry_code"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.fund_report_industry_allocation_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.fund_report_industry_allocation_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "industry_code"
+        ],
+        "primary_key": [
+          "industry_code"
+        ]
+      },
+      "asset_class": "fund"
+    },
+    {
+      "collector_id": "cninfo.fund_report_stock_cninfo.snapshot",
+      "name": "cninfo.fund_report_stock_cninfo.snapshot",
+      "display_name_zh": "基金重仓股采集",
+      "description": "独立巨潮采集器插件:采集基金重仓股并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.fund_report_stock_cninfo",
+      "category": "基金报表",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "fund_report_stock_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.fund_report_stock_cninfo"
+        ],
+        "default_dir_name": "cninfo.fund_report_stock_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.fund_report_stock_cninfo",
+            "table": "cninfo_fund_report_stock_cninfo",
+            "display_name_zh": "基金重仓股",
+            "description": "临时请求巨潮基金重仓股专题统计，按报告期返回，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码；若源端不是六位 A 股代码则为空。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE；无法识别时为空。"
+              },
+              {
+                "name": "record_id",
+                "type": "string",
+                "description": "源端记录序号。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "股票简称。"
+              },
+              {
+                "name": "report_date",
+                "type": "date",
+                "description": "报告期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "fund_count",
+                "type": "number",
+                "description": "基金覆盖家数，单位：只。"
+              },
+              {
+                "name": "holding_shares",
+                "type": "number",
+                "description": "持股总数，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "holding_market_value",
+                "type": "number",
+                "description": "持股总市值，金额单位/口径沿用巨潮源端。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.fund_report_stock_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.fund_report_stock_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "fund"
+    },
+    {
+      "collector_id": "cninfo.stock_allotment_cninfo.snapshot",
+      "name": "cninfo.stock_allotment_cninfo.snapshot",
+      "display_name_zh": "配股实施方案采集",
+      "description": "独立巨潮采集器插件:采集配股实施方案并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_allotment_cninfo",
+      "category": "股本股东",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_allotment_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "600030.SH",
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_allotment_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_allotment_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_allotment_cninfo",
+            "table": "cninfo_stock_allotment_cninfo",
+            "display_name_zh": "配股实施方案",
+            "description": "临时请求巨潮配股实施方案 webapi，返回单只股票配股明细，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "record_id",
+                "type": "string",
+                "description": "源端记录标识。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "suspend_start_date",
+                "type": "date",
+                "description": "停牌起始日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "listing_announcement_date",
+                "type": "date",
+                "description": "上市公告日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "payment_start_date",
+                "type": "date",
+                "description": "配股缴款起始日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "convertible_allotment_shares",
+                "type": "number",
+                "description": "可转配股数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "suspend_end_date",
+                "type": "date",
+                "description": "停牌截止日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "actual_allotment_shares",
+                "type": "number",
+                "description": "实际配股数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "allotment_price",
+                "type": "number",
+                "description": "配股价格，单位：元。"
+              },
+              {
+                "name": "allotment_ratio",
+                "type": "number",
+                "description": "配股比例，源端数值口径。"
+              },
+              {
+                "name": "pre_total_share",
+                "type": "number",
+                "description": "配股前总股本，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "transfer_fee_per_share",
+                "type": "number",
+                "description": "每股配权转让费，单位：元。"
+              },
+              {
+                "name": "legal_person_actual_shares",
+                "type": "number",
+                "description": "法人股实配数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "raised_funds_net",
+                "type": "number",
+                "description": "实际募资净额，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "major_shareholder_subscribe_method",
+                "type": "string",
+                "description": "大股东认购方式。"
+              },
+              {
+                "name": "other_allotment_name",
+                "type": "string",
+                "description": "其他配售简称。"
+              },
+              {
+                "name": "issue_method",
+                "type": "string",
+                "description": "发行方式。"
+              },
+              {
+                "name": "failed_refund_date",
+                "type": "date",
+                "description": "配股失败退还申购款日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "ex_right_date",
+                "type": "date",
+                "description": "除权基准日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "expected_issue_expense",
+                "type": "number",
+                "description": "预计发行费用，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "issue_result_announcement_date",
+                "type": "date",
+                "description": "配股发行结果公告日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "warrant_trade_end_date",
+                "type": "date",
+                "description": "配股权证交易截止日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "other_actual_shares",
+                "type": "number",
+                "description": "其他股份实配数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "state_actual_shares",
+                "type": "number",
+                "description": "国家股实配数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "entrusted_unit",
+                "type": "string",
+                "description": "委托单位。"
+              },
+              {
+                "name": "public_transfer_shares",
+                "type": "number",
+                "description": "公众获转配数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "other_allotment_code",
+                "type": "string",
+                "description": "其他配售代码。"
+              },
+              {
+                "name": "allotment_target",
+                "type": "string",
+                "description": "配售对象。"
+              },
+              {
+                "name": "warrant_trade_start_date",
+                "type": "date",
+                "description": "配股权证交易起始日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "fund_arrival_date",
+                "type": "date",
+                "description": "资金到账日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "organization_name",
+                "type": "string",
+                "description": "机构名称。"
+              },
+              {
+                "name": "record_date",
+                "type": "date",
+                "description": "股权登记日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "raised_funds_gross",
+                "type": "number",
+                "description": "实际募资总额，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "expected_raised_funds",
+                "type": "number",
+                "description": "预计募集资金，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "major_shareholder_subscribe_shares",
+                "type": "number",
+                "description": "大股东认购数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "public_actual_shares",
+                "type": "number",
+                "description": "公众股实配数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "transfer_actual_shares",
+                "type": "number",
+                "description": "转配股实配数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "underwriting_fee",
+                "type": "number",
+                "description": "承销费用，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "legal_person_transfer_shares",
+                "type": "number",
+                "description": "法人获转配数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "post_float_share",
+                "type": "number",
+                "description": "配股后流通股本，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "stock_class",
+                "type": "string",
+                "description": "股票类别。"
+              },
+              {
+                "name": "public_allotment_name",
+                "type": "string",
+                "description": "公众配售简称。"
+              },
+              {
+                "name": "issue_method_code",
+                "type": "string",
+                "description": "发行方式编码。"
+              },
+              {
+                "name": "underwriting_method",
+                "type": "string",
+                "description": "承销方式。"
+              },
+              {
+                "name": "announcement_date",
+                "type": "date",
+                "description": "公告日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "allotment_listing_date",
+                "type": "date",
+                "description": "配股上市日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "payment_end_date",
+                "type": "date",
+                "description": "配股缴款截止日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "underwriting_balance",
+                "type": "number",
+                "description": "承销余额，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "expected_allotment_shares",
+                "type": "number",
+                "description": "预计配股数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "post_total_share",
+                "type": "number",
+                "description": "配股后总股本，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "employee_actual_shares",
+                "type": "number",
+                "description": "职工股实配数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "underwriting_method_code",
+                "type": "string",
+                "description": "承销方式编码。"
+              },
+              {
+                "name": "issue_expenses_total",
+                "type": "number",
+                "description": "发行费用总额，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "pre_float_share",
+                "type": "number",
+                "description": "配股前流通股本，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "stock_class_code",
+                "type": "string",
+                "description": "股票类别编码。"
+              },
+              {
+                "name": "public_allotment_code",
+                "type": "string",
+                "description": "公众配售代码。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_allotment_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_allotment_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_cg_equity_mortgage_cninfo.snapshot",
+      "name": "cninfo.stock_cg_equity_mortgage_cninfo.snapshot",
+      "display_name_zh": "股权质押采集",
+      "description": "独立巨潮采集器插件:采集股权质押并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_cg_equity_mortgage_cninfo",
+      "category": "公司治理",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_cg_equity_mortgage_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_cg_equity_mortgage_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_cg_equity_mortgage_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_cg_equity_mortgage_cninfo",
+            "table": "cninfo_stock_cg_equity_mortgage_cninfo",
+            "display_name_zh": "股权质押",
+            "description": "临时请求巨潮股权质押专题统计，按统计日期返回，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "stat_date",
+                "type": "date",
+                "description": "请求统计日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "股票简称。"
+              },
+              {
+                "name": "announcement_date",
+                "type": "date",
+                "description": "公告日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "pledgor",
+                "type": "string",
+                "description": "出质人。"
+              },
+              {
+                "name": "pledgee",
+                "type": "string",
+                "description": "质权人。"
+              },
+              {
+                "name": "pledged_shares",
+                "type": "number",
+                "description": "质押数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "pledged_total_share_pct",
+                "type": "number",
+                "description": "占总股本比例，源端百分比数值口径。"
+              },
+              {
+                "name": "released_pledge_shares",
+                "type": "number",
+                "description": "质押解除数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "pledge_event",
+                "type": "string",
+                "description": "质押事项。"
+              },
+              {
+                "name": "cumulative_pledge_total_share_pct",
+                "type": "number",
+                "description": "累计质押占总股本比例，源端百分比数值口径。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_cg_equity_mortgage_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_cg_equity_mortgage_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_cg_guarantee_cninfo.snapshot",
+      "name": "cninfo.stock_cg_guarantee_cninfo.snapshot",
+      "display_name_zh": "对外担保采集",
+      "description": "独立巨潮采集器插件:采集对外担保并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_cg_guarantee_cninfo",
+      "category": "公司治理",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_cg_guarantee_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "market": "全部",
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_cg_guarantee_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_cg_guarantee_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_cg_guarantee_cninfo",
+            "table": "cninfo_stock_cg_guarantee_cninfo",
+            "display_name_zh": "对外担保",
+            "description": "临时请求巨潮对外担保专题统计，按公告区间和市场返回，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "announcement_period",
+                "type": "string",
+                "description": "公告统计区间，沿用巨潮源端文本。"
+              },
+              {
+                "name": "guarantee_count",
+                "type": "number",
+                "description": "担保笔数，单位：笔。"
+              },
+              {
+                "name": "guarantee_amount",
+                "type": "number",
+                "description": "担保金额，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "parent_equity",
+                "type": "number",
+                "description": "归属于母公司所有者权益，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "guarantee_amount_net_asset_pct",
+                "type": "number",
+                "description": "担保金额占净资产比例，源端百分比数值口径。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_cg_guarantee_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_cg_guarantee_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_cg_lawsuit_cninfo.snapshot",
+      "name": "cninfo.stock_cg_lawsuit_cninfo.snapshot",
+      "display_name_zh": "公司诉讼采集",
+      "description": "独立巨潮采集器插件:采集公司诉讼并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_cg_lawsuit_cninfo",
+      "category": "公司治理",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_cg_lawsuit_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "market": "沪市",
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_cg_lawsuit_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_cg_lawsuit_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_cg_lawsuit_cninfo",
+            "table": "cninfo_stock_cg_lawsuit_cninfo",
+            "display_name_zh": "公司诉讼",
+            "description": "临时请求巨潮公司诉讼专题统计，按公告区间和市场返回，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "announcement_period",
+                "type": "string",
+                "description": "公告统计区间，沿用巨潮源端文本。"
+              },
+              {
+                "name": "lawsuit_count",
+                "type": "number",
+                "description": "诉讼次数，单位：次。"
+              },
+              {
+                "name": "lawsuit_amount",
+                "type": "number",
+                "description": "诉讼金额，金额单位/口径沿用巨潮源端。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_cg_lawsuit_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_cg_lawsuit_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_dividend_cninfo.snapshot",
+      "name": "cninfo.stock_dividend_cninfo.snapshot",
+      "display_name_zh": "历史分红采集",
+      "description": "独立巨潮采集器插件:采集历史分红并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_dividend_cninfo",
+      "category": "分红融资",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_dividend_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "600009.SH"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_dividend_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_dividend_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_dividend_cninfo",
+            "table": "cninfo_stock_dividend_cninfo",
+            "display_name_zh": "历史分红",
+            "description": "临时请求巨潮历史分红 webapi，返回单只股票分红实施方案，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "announcement_date",
+                "type": "date",
+                "description": "实施方案公告日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "dividend_type",
+                "type": "string",
+                "description": "分红类型。"
+              },
+              {
+                "name": "bonus_share_ratio",
+                "type": "number",
+                "description": "送股比例，源端数值口径。"
+              },
+              {
+                "name": "transfer_share_ratio",
+                "type": "number",
+                "description": "转增比例，源端数值口径。"
+              },
+              {
+                "name": "cash_dividend_ratio",
+                "type": "number",
+                "description": "派息比例，源端数值口径。"
+              },
+              {
+                "name": "record_date",
+                "type": "date",
+                "description": "股权登记日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "ex_right_date",
+                "type": "date",
+                "description": "除权日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "dividend_payment_date",
+                "type": "date",
+                "description": "派息日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "share_arrival_date",
+                "type": "date",
+                "description": "股份到账日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "plan_description",
+                "type": "string",
+                "description": "实施方案分红说明。"
+              },
+              {
+                "name": "report_period",
+                "type": "string",
+                "description": "报告时间/报告期，沿用巨潮源端文本。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_dividend_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_dividend_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_hold_change_cninfo.snapshot",
+      "name": "cninfo.stock_hold_change_cninfo.snapshot",
+      "display_name_zh": "股本变动采集",
+      "description": "独立巨潮采集器插件:采集股本变动并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_hold_change_cninfo",
+      "category": "股本股东",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_hold_change_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "market": "沪市"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_hold_change_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_hold_change_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_hold_change_cninfo",
+            "table": "cninfo_stock_hold_change_cninfo",
+            "display_name_zh": "股本变动",
+            "description": "临时请求巨潮股本变动专题统计，返回所选市场的股本变动行，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "trade_market",
+                "type": "string",
+                "description": "交易市场。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "announcement_date",
+                "type": "date",
+                "description": "公告日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "change_date",
+                "type": "date",
+                "description": "变动日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "change_reason",
+                "type": "string",
+                "description": "变动原因。"
+              },
+              {
+                "name": "total_share",
+                "type": "number",
+                "description": "总股本，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "circulated_share",
+                "type": "number",
+                "description": "已流通股份，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "circulated_ratio",
+                "type": "number",
+                "description": "已流通比例，源端数值口径。"
+              },
+              {
+                "name": "restricted_share",
+                "type": "number",
+                "description": "流通受限股份，单位/口径沿用巨潮源端。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_hold_change_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_hold_change_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_hold_control_cninfo.snapshot",
+      "name": "cninfo.stock_hold_control_cninfo.snapshot",
+      "display_name_zh": "实际控制人持股变动采集",
+      "description": "独立巨潮采集器插件:采集实际控制人持股变动并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_hold_control_cninfo",
+      "category": "股本股东",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_hold_control_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "control_type": "实际控制人"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_hold_control_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_hold_control_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_hold_control_cninfo",
+            "table": "cninfo_stock_hold_control_cninfo",
+            "display_name_zh": "实际控制人持股变动",
+            "description": "临时请求巨潮实际控制人持股变动专题统计，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "change_date",
+                "type": "date",
+                "description": "变动日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "actual_controller_name",
+                "type": "string",
+                "description": "实际控制人名称。"
+              },
+              {
+                "name": "holding_shares",
+                "type": "number",
+                "description": "控股数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "holding_ratio",
+                "type": "number",
+                "description": "控股比例，源端数值口径。"
+              },
+              {
+                "name": "direct_controller_name",
+                "type": "string",
+                "description": "直接控制人名称。"
+              },
+              {
+                "name": "control_type",
+                "type": "string",
+                "description": "控制类型。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_hold_control_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_hold_control_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_hold_management_detail_cninfo.snapshot",
+      "name": "cninfo.stock_hold_management_detail_cninfo.snapshot",
+      "display_name_zh": "高管持股变动明细采集",
+      "description": "独立巨潮采集器插件:采集高管持股变动明细并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_hold_management_detail_cninfo",
+      "category": "股本股东",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_hold_management_detail_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "change_type": "增持",
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_hold_management_detail_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_hold_management_detail_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_hold_management_detail_cninfo",
+            "table": "cninfo_stock_hold_management_detail_cninfo",
+            "display_name_zh": "高管持股变动明细",
+            "description": "临时请求巨潮高管持股变动明细，按变动类型和公告区间返回，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "change_type",
+                "type": "string",
+                "description": "变动类型：增持、减持。"
+              },
+              {
+                "name": "end_date",
+                "type": "date",
+                "description": "截止日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "announcement_date",
+                "type": "date",
+                "description": "公告日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "executive_name",
+                "type": "string",
+                "description": "高管姓名。"
+              },
+              {
+                "name": "director_supervisor_senior_name",
+                "type": "string",
+                "description": "董监高姓名。"
+              },
+              {
+                "name": "director_supervisor_senior_position",
+                "type": "string",
+                "description": "董监高职务。"
+              },
+              {
+                "name": "changer_relation",
+                "type": "string",
+                "description": "变动人与董监高关系。"
+              },
+              {
+                "name": "beginning_holding_shares",
+                "type": "number",
+                "description": "期初持股数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "ending_holding_shares",
+                "type": "number",
+                "description": "期末持股数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "change_shares",
+                "type": "number",
+                "description": "变动数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "change_ratio",
+                "type": "number",
+                "description": "变动比例，源端百分比数值口径。"
+              },
+              {
+                "name": "average_price",
+                "type": "number",
+                "description": "成交均价，单位：元。"
+              },
+              {
+                "name": "ending_market_value",
+                "type": "number",
+                "description": "期末市值，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "change_reason",
+                "type": "string",
+                "description": "持股变动原因。"
+              },
+              {
+                "name": "data_source",
+                "type": "string",
+                "description": "数据来源。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_hold_management_detail_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_hold_management_detail_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_hold_num_cninfo.snapshot",
+      "name": "cninfo.stock_hold_num_cninfo.snapshot",
+      "display_name_zh": "股东人数及持股集中度采集",
+      "description": "独立巨潮采集器插件:采集股东人数及持股集中度并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_hold_num_cninfo",
+      "category": "股本股东",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_hold_num_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_hold_num_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_hold_num_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_hold_num_cninfo",
+            "table": "cninfo_stock_hold_num_cninfo",
+            "display_name_zh": "股东人数及持股集中度",
+            "description": "临时请求巨潮股东人数及持股集中度专题统计，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "report_date",
+                "type": "date",
+                "description": "请求报告期日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "change_date",
+                "type": "date",
+                "description": "变动日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "shareholder_count",
+                "type": "number",
+                "description": "本期股东人数，单位：户。"
+              },
+              {
+                "name": "prev_shareholder_count",
+                "type": "number",
+                "description": "上期股东人数，单位：户。"
+              },
+              {
+                "name": "shareholder_count_change_pct",
+                "type": "number",
+                "description": "股东人数增幅，源端百分比数值口径。"
+              },
+              {
+                "name": "avg_holding",
+                "type": "number",
+                "description": "本期人均持股数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "prev_avg_holding",
+                "type": "number",
+                "description": "上期人均持股数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "avg_holding_change_pct",
+                "type": "number",
+                "description": "人均持股数量增幅，源端百分比数值口径。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_hold_num_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_hold_num_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_industry_category_cninfo.snapshot",
+      "name": "cninfo.stock_industry_category_cninfo.snapshot",
+      "display_name_zh": "行业分类数据采集",
+      "description": "独立巨潮采集器插件:采集行业分类数据并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_industry_category_cninfo",
+      "category": "行业数据",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_industry_category_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "industry_type": "008001"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_industry_category_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_industry_category_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "parent_code"
+        ],
+        "required_columns": [
+          "parent_code"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_industry_category_cninfo",
+            "table": "cninfo_stock_industry_category_cninfo",
+            "display_name_zh": "行业分类数据",
+            "description": "临时请求巨潮行业分类字典，返回分类树行，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "parent_code"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "parent_code",
+                "type": "string",
+                "description": "父类编码。"
+              },
+              {
+                "name": "category_code",
+                "type": "string",
+                "description": "类目编码。"
+              },
+              {
+                "name": "category_name",
+                "type": "string",
+                "description": "类目名称。"
+              },
+              {
+                "name": "category_name_en",
+                "type": "string",
+                "description": "类目英文名称。"
+              },
+              {
+                "name": "end_date",
+                "type": "date",
+                "description": "终止日期，格式 YYYYMMDD；仍有效时可能为空。"
+              },
+              {
+                "name": "industry_type_code",
+                "type": "string",
+                "description": "行业类型编码。"
+              },
+              {
+                "name": "industry_type",
+                "type": "string",
+                "description": "行业类型。"
+              },
+              {
+                "name": "level",
+                "type": "integer",
+                "description": "按类目编码长度推导的层级，从 0 开始。"
+              }
+            ],
+            "default_query_fields": [
+              "parent_code"
+            ],
+            "default_filter_fields": [
+              "parent_code"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "parent_code"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_industry_category_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_industry_category_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "parent_code"
+        ],
+        "primary_key": [
+          "parent_code"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_industry_change_cninfo.snapshot",
+      "name": "cninfo.stock_industry_change_cninfo.snapshot",
+      "display_name_zh": "行业归属变动采集",
+      "description": "独立巨潮采集器插件:采集行业归属变动并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_industry_change_cninfo",
+      "category": "行业数据",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_industry_change_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "002594.SZ",
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_industry_change_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_industry_change_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_industry_change_cninfo",
+            "table": "cninfo_stock_industry_change_cninfo",
+            "display_name_zh": "行业归属变动",
+            "description": "临时请求巨潮上市公司行业归属变动，按单只股票和日期区间返回，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "新证券简称。"
+              },
+              {
+                "name": "organization_name",
+                "type": "string",
+                "description": "机构名称。"
+              },
+              {
+                "name": "change_date",
+                "type": "date",
+                "description": "行业归属变更日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "classification_standard_code",
+                "type": "string",
+                "description": "分类标准编码。"
+              },
+              {
+                "name": "classification_standard",
+                "type": "string",
+                "description": "分类标准名称。"
+              },
+              {
+                "name": "industry_code",
+                "type": "string",
+                "description": "行业编码。"
+              },
+              {
+                "name": "industry_sector",
+                "type": "string",
+                "description": "行业门类。"
+              },
+              {
+                "name": "industry_subcategory",
+                "type": "string",
+                "description": "行业次类。"
+              },
+              {
+                "name": "industry_major",
+                "type": "string",
+                "description": "行业大类。"
+              },
+              {
+                "name": "industry_middle",
+                "type": "string",
+                "description": "行业中类。"
+              },
+              {
+                "name": "latest_record_flag",
+                "type": "string",
+                "description": "最新记录标识，沿用巨潮源端。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_industry_change_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_industry_change_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_industry_pe_ratio_cninfo.snapshot",
+      "name": "cninfo.stock_industry_pe_ratio_cninfo.snapshot",
+      "display_name_zh": "行业市盈率采集",
+      "description": "独立巨潮采集器插件:采集行业市盈率并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_industry_pe_ratio_cninfo",
+      "category": "行业数据",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_industry_pe_ratio_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "classification": "证监会行业分类",
+        "date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_industry_pe_ratio_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_industry_pe_ratio_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "change_date"
+        ],
+        "required_columns": [
+          "change_date"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_industry_pe_ratio_cninfo",
+            "table": "cninfo_stock_industry_pe_ratio_cninfo",
+            "display_name_zh": "行业市盈率",
+            "description": "临时请求巨潮行业市盈率专题统计，按日期和行业分类返回，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "change_date"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "change_date",
+                "type": "date",
+                "description": "变动日期/查询日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "classification",
+                "type": "string",
+                "description": "行业分类。"
+              },
+              {
+                "name": "industry_level",
+                "type": "integer",
+                "description": "行业层级。"
+              },
+              {
+                "name": "industry_code",
+                "type": "string",
+                "description": "行业编码。"
+              },
+              {
+                "name": "industry_name",
+                "type": "string",
+                "description": "行业名称。"
+              },
+              {
+                "name": "company_count",
+                "type": "number",
+                "description": "公司数量，单位：家。"
+              },
+              {
+                "name": "included_company_count",
+                "type": "number",
+                "description": "纳入计算公司数量，单位：家。"
+              },
+              {
+                "name": "total_market_value_static",
+                "type": "number",
+                "description": "总市值-静态，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "net_profit_static",
+                "type": "number",
+                "description": "净利润-静态，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "static_pe_weighted",
+                "type": "number",
+                "description": "静态市盈率-加权平均。"
+              },
+              {
+                "name": "static_pe_median",
+                "type": "number",
+                "description": "静态市盈率-中位数。"
+              },
+              {
+                "name": "static_pe_mean",
+                "type": "number",
+                "description": "静态市盈率-算术平均。"
+              }
+            ],
+            "default_query_fields": [
+              "change_date"
+            ],
+            "default_filter_fields": [
+              "change_date"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "change_date"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_industry_pe_ratio_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_industry_pe_ratio_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "change_date"
+        ],
+        "primary_key": [
+          "change_date"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_ipo_summary_cninfo.snapshot",
+      "name": "cninfo.stock_ipo_summary_cninfo.snapshot",
+      "display_name_zh": "上市相关采集",
+      "description": "独立巨潮采集器插件:采集上市相关并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_ipo_summary_cninfo",
+      "category": "新股数据",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_ipo_summary_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "600030.SH"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_ipo_summary_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_ipo_summary_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_ipo_summary_cninfo",
+            "table": "cninfo_stock_ipo_summary_cninfo",
+            "display_name_zh": "上市相关",
+            "description": "临时请求巨潮单股上市相关 webapi，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "prospectus_announcement_date",
+                "type": "date",
+                "description": "招股公告日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "lottery_rate_announcement_date",
+                "type": "date",
+                "description": "中签率公告日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "par_value",
+                "type": "number",
+                "description": "每股面值，单位：元。"
+              },
+              {
+                "name": "total_issue_shares",
+                "type": "number",
+                "description": "总发行数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "nav_per_share_before_issue",
+                "type": "number",
+                "description": "发行前每股净资产，单位：元。"
+              },
+              {
+                "name": "diluted_pe",
+                "type": "number",
+                "description": "摊薄发行市盈率。"
+              },
+              {
+                "name": "raised_funds_net",
+                "type": "number",
+                "description": "募集资金净额，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "online_issue_date",
+                "type": "date",
+                "description": "上网发行日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "listing_date",
+                "type": "date",
+                "description": "上市日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "issue_price",
+                "type": "number",
+                "description": "发行价格，单位：元。"
+              },
+              {
+                "name": "issue_expenses_total",
+                "type": "number",
+                "description": "发行费用总额，金额单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "nav_per_share_after_issue",
+                "type": "number",
+                "description": "发行后每股净资产，单位：元。"
+              },
+              {
+                "name": "online_lottery_rate",
+                "type": "number",
+                "description": "上网发行中签率，源端百分比数值口径。"
+              },
+              {
+                "name": "lead_underwriter",
+                "type": "string",
+                "description": "主承销商。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_ipo_summary_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_ipo_summary_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_irm_ans_cninfo.snapshot",
+      "name": "cninfo.stock_irm_ans_cninfo.snapshot",
+      "display_name_zh": "互动易回答详情采集",
+      "description": "独立巨潮采集器插件:采集互动易回答详情并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_irm_ans_cninfo",
+      "category": "互动易",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_irm_ans_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "question_id": "1495108801386602496"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_irm_ans_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_irm_ans_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_irm_ans_cninfo",
+            "table": "cninfo_stock_irm_ans_cninfo",
+            "display_name_zh": "互动易回答详情",
+            "description": "临时请求互动易单条问答详情，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "公司简称。"
+              },
+              {
+                "name": "question_id",
+                "type": "string",
+                "description": "互动易问题编号。"
+              },
+              {
+                "name": "question",
+                "type": "string",
+                "description": "提问内容。"
+              },
+              {
+                "name": "answer",
+                "type": "string",
+                "description": "回答内容。"
+              },
+              {
+                "name": "questioner",
+                "type": "string",
+                "description": "提问者。"
+              },
+              {
+                "name": "question_time",
+                "type": "datetime",
+                "description": "提问时间，Asia/Shanghai，格式 YYYYMMDDHHMMSS。"
+              },
+              {
+                "name": "answer_time",
+                "type": "datetime",
+                "description": "回答时间，Asia/Shanghai，格式 YYYYMMDDHHMMSS。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_irm_ans_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_irm_ans_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_irm_cninfo.snapshot",
+      "name": "cninfo.stock_irm_cninfo.snapshot",
+      "display_name_zh": "互动易提问采集",
+      "description": "独立巨潮采集器插件:采集互动易提问并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_irm_cninfo",
+      "category": "互动易",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_irm_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "002594.SZ"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_irm_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_irm_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_irm_cninfo",
+            "table": "cninfo_stock_irm_cninfo",
+            "display_name_zh": "互动易提问",
+            "description": "临时请求互动易提问列表，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "公司简称。"
+              },
+              {
+                "name": "industry",
+                "type": "string",
+                "description": "源端行业名称。"
+              },
+              {
+                "name": "industry_code",
+                "type": "string",
+                "description": "源端行业代码。"
+              },
+              {
+                "name": "question_id",
+                "type": "string",
+                "description": "互动易问题编号。"
+              },
+              {
+                "name": "question",
+                "type": "string",
+                "description": "提问内容。"
+              },
+              {
+                "name": "questioner",
+                "type": "string",
+                "description": "提问者。"
+              },
+              {
+                "name": "questioner_id",
+                "type": "string",
+                "description": "提问者编号。"
+              },
+              {
+                "name": "source",
+                "type": "string",
+                "description": "提问来源：APP、公众号、网站等。"
+              },
+              {
+                "name": "question_time",
+                "type": "datetime",
+                "description": "提问时间，Asia/Shanghai，格式 YYYYMMDDHHMMSS。"
+              },
+              {
+                "name": "update_time",
+                "type": "datetime",
+                "description": "更新时间，Asia/Shanghai，格式 YYYYMMDDHHMMSS。"
+              },
+              {
+                "name": "answer_id",
+                "type": "string",
+                "description": "已关联回答 ID；未回答时为空。"
+              },
+              {
+                "name": "answer",
+                "type": "string",
+                "description": "已关联回答内容；未回答时为空。"
+              },
+              {
+                "name": "answerer",
+                "type": "string",
+                "description": "回答者；未回答时为空。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_irm_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_irm_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_new_gh_cninfo.snapshot",
+      "name": "cninfo.stock_new_gh_cninfo.snapshot",
+      "display_name_zh": "新股过会采集",
+      "description": "独立巨潮采集器插件:采集新股过会并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_new_gh_cninfo",
+      "category": "新股数据",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_new_gh_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {},
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_new_gh_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_new_gh_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "company_name"
+        ],
+        "required_columns": [
+          "company_name"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_new_gh_cninfo",
+            "table": "cninfo_stock_new_gh_cninfo",
+            "display_name_zh": "新股过会",
+            "description": "临时请求巨潮新股过会列表，默认只返回本地 limit 条且不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "company_name"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "company_name",
+                "type": "string",
+                "description": "公司名称。"
+              },
+              {
+                "name": "meeting_date",
+                "type": "date",
+                "description": "上会日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "review_type",
+                "type": "string",
+                "description": "审核类型。"
+              },
+              {
+                "name": "review_content",
+                "type": "string",
+                "description": "审议内容。"
+              },
+              {
+                "name": "review_result",
+                "type": "string",
+                "description": "审核结果。"
+              },
+              {
+                "name": "announcement_date",
+                "type": "date",
+                "description": "审核公告日，格式 YYYYMMDD。"
+              }
+            ],
+            "default_query_fields": [
+              "company_name"
+            ],
+            "default_filter_fields": [
+              "company_name"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "company_name"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_new_gh_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_new_gh_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "company_name"
+        ],
+        "primary_key": [
+          "company_name"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_new_ipo_cninfo.snapshot",
+      "name": "cninfo.stock_new_ipo_cninfo.snapshot",
+      "display_name_zh": "新股发行采集",
+      "description": "独立巨潮采集器插件:采集新股发行并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_new_ipo_cninfo",
+      "category": "新股数据",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_new_ipo_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "time_type": "36",
+        "market": "ALL"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_new_ipo_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_new_ipo_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_new_ipo_cninfo",
+            "table": "cninfo_stock_new_ipo_cninfo",
+            "display_name_zh": "新股发行",
+            "description": "临时请求巨潮新股发行列表，默认只返回本地 limit 条且不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "listing_date",
+                "type": "date",
+                "description": "上市日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "subscription_date",
+                "type": "date",
+                "description": "申购日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "issue_price",
+                "type": "number",
+                "description": "发行价，单位：元。"
+              },
+              {
+                "name": "total_issue_shares",
+                "type": "number",
+                "description": "总发行数量，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "issue_pe",
+                "type": "number",
+                "description": "发行市盈率。"
+              },
+              {
+                "name": "online_lottery_rate",
+                "type": "number",
+                "description": "上网发行中签率，源端百分比数值口径。"
+              },
+              {
+                "name": "lottery_result_announcement_date",
+                "type": "date",
+                "description": "摇号结果公告日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "winning_announcement_date",
+                "type": "date",
+                "description": "中签公告日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "payment_date",
+                "type": "date",
+                "description": "中签缴款日，格式 YYYYMMDD。"
+              },
+              {
+                "name": "online_subscription_limit",
+                "type": "number",
+                "description": "网上申购上限，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "online_issue_shares",
+                "type": "number",
+                "description": "上网发行数量，单位/口径沿用巨潮源端。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_new_ipo_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_new_ipo_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_profile_cninfo.snapshot",
+      "name": "cninfo.stock_profile_cninfo.snapshot",
+      "display_name_zh": "公司概况采集",
+      "description": "独立巨潮采集器插件:采集公司概况并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_profile_cninfo",
+      "category": "公司资料",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_profile_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "600030.SH"
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_profile_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_profile_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_profile_cninfo",
+            "table": "cninfo_stock_profile_cninfo",
+            "display_name_zh": "公司概况",
+            "description": "临时请求巨潮公司概况 webapi，返回单家公司资料，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "company_name",
+                "type": "string",
+                "description": "公司全称。"
+              },
+              {
+                "name": "english_name",
+                "type": "string",
+                "description": "英文名称。"
+              },
+              {
+                "name": "former_short_name",
+                "type": "string",
+                "description": "曾用简称。"
+              },
+              {
+                "name": "a_share_code",
+                "type": "string",
+                "description": "A 股代码。"
+              },
+              {
+                "name": "a_share_name",
+                "type": "string",
+                "description": "A 股简称。"
+              },
+              {
+                "name": "b_share_code",
+                "type": "string",
+                "description": "B 股代码。"
+              },
+              {
+                "name": "b_share_name",
+                "type": "string",
+                "description": "B 股简称。"
+              },
+              {
+                "name": "h_share_code",
+                "type": "string",
+                "description": "H 股代码。"
+              },
+              {
+                "name": "h_share_name",
+                "type": "string",
+                "description": "H 股简称。"
+              },
+              {
+                "name": "selected_indexes",
+                "type": "string",
+                "description": "入选指数，沿用巨潮源端文本。"
+              },
+              {
+                "name": "market",
+                "type": "string",
+                "description": "所属市场。"
+              },
+              {
+                "name": "industry",
+                "type": "string",
+                "description": "所属行业。"
+              },
+              {
+                "name": "legal_representative",
+                "type": "string",
+                "description": "法人代表。"
+              },
+              {
+                "name": "registered_capital",
+                "type": "number",
+                "description": "注册资金，沿用巨潮源端单位/口径。"
+              },
+              {
+                "name": "founded_date",
+                "type": "date",
+                "description": "成立日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "listing_date",
+                "type": "date",
+                "description": "上市日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "website",
+                "type": "string",
+                "description": "官方网站。"
+              },
+              {
+                "name": "email",
+                "type": "string",
+                "description": "电子邮箱。"
+              },
+              {
+                "name": "phone",
+                "type": "string",
+                "description": "联系电话。"
+              },
+              {
+                "name": "fax",
+                "type": "string",
+                "description": "传真。"
+              },
+              {
+                "name": "registered_address",
+                "type": "string",
+                "description": "注册地址。"
+              },
+              {
+                "name": "office_address",
+                "type": "string",
+                "description": "办公地址。"
+              },
+              {
+                "name": "postcode",
+                "type": "string",
+                "description": "邮政编码。"
+              },
+              {
+                "name": "main_business",
+                "type": "string",
+                "description": "主营业务。"
+              },
+              {
+                "name": "business_scope",
+                "type": "string",
+                "description": "经营范围。"
+              },
+              {
+                "name": "organization_profile",
+                "type": "string",
+                "description": "机构简介。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_profile_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_profile_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_rank_forecast_cninfo.snapshot",
+      "name": "cninfo.stock_rank_forecast_cninfo.snapshot",
+      "display_name_zh": "投资评级采集",
+      "description": "独立巨潮采集器插件:采集投资评级并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_rank_forecast_cninfo",
+      "category": "评级预测",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_rank_forecast_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_rank_forecast_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_rank_forecast_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_rank_forecast_cninfo",
+            "table": "cninfo_stock_rank_forecast_cninfo",
+            "display_name_zh": "投资评级",
+            "description": "临时请求巨潮投资评级专题统计，按日期返回，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "publish_date",
+                "type": "date",
+                "description": "发布日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "institution_short_name",
+                "type": "string",
+                "description": "研究机构简称。"
+              },
+              {
+                "name": "analyst_name",
+                "type": "string",
+                "description": "研究员名称。"
+              },
+              {
+                "name": "rating",
+                "type": "string",
+                "description": "投资评级。"
+              },
+              {
+                "name": "is_first_rating",
+                "type": "string",
+                "description": "是否首次评级，沿用巨潮源端文本。"
+              },
+              {
+                "name": "rating_change",
+                "type": "string",
+                "description": "评级变化。"
+              },
+              {
+                "name": "previous_rating",
+                "type": "string",
+                "description": "前一次投资评级。"
+              },
+              {
+                "name": "target_price_low",
+                "type": "number",
+                "description": "目标价格下限，单位：元。"
+              },
+              {
+                "name": "target_price_high",
+                "type": "number",
+                "description": "目标价格上限，单位：元。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name",
+              "publish_date",
+              "rating"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_rank_forecast_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_rank_forecast_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_share_change_cninfo.snapshot",
+      "name": "cninfo.stock_share_change_cninfo.snapshot",
+      "display_name_zh": "公司股本变动采集",
+      "description": "独立巨潮采集器插件:采集公司股本变动并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_share_change_cninfo",
+      "category": "股本股东",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_share_change_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "002594.SZ",
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_share_change_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_share_change_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "instrument_id"
+        ],
+        "required_columns": [
+          "instrument_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_share_change_cninfo",
+            "table": "cninfo_stock_share_change_cninfo",
+            "display_name_zh": "公司股本变动",
+            "description": "临时请求巨潮单股公司股本变动 webapi，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "instrument_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "organization_name",
+                "type": "string",
+                "description": "机构名称。"
+              },
+              {
+                "name": "announcement_date",
+                "type": "date",
+                "description": "公告日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "change_date",
+                "type": "date",
+                "description": "变动日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "change_reason_code",
+                "type": "string",
+                "description": "变动原因编码。"
+              },
+              {
+                "name": "change_reason",
+                "type": "string",
+                "description": "变动原因。"
+              },
+              {
+                "name": "total_share",
+                "type": "number",
+                "description": "总股本，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "non_circulating_share",
+                "type": "number",
+                "description": "未流通股份，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "promoter_share",
+                "type": "number",
+                "description": "发起人股份，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "state_share",
+                "type": "number",
+                "description": "国家持股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "state_owned_legal_person_share",
+                "type": "number",
+                "description": "国有法人持股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "domestic_legal_person_share",
+                "type": "number",
+                "description": "境内法人持股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "foreign_legal_person_share",
+                "type": "number",
+                "description": "境外法人持股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "natural_person_share",
+                "type": "number",
+                "description": "自然人持股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "raised_legal_person_share",
+                "type": "number",
+                "description": "募集法人股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "employee_share",
+                "type": "number",
+                "description": "内部职工股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "transferred_share",
+                "type": "number",
+                "description": "转配股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "other_restricted_share",
+                "type": "number",
+                "description": "其他流通受限股份，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "preferred_share",
+                "type": "number",
+                "description": "优先股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "other_non_circulating_share",
+                "type": "number",
+                "description": "其他未流通股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "circulating_share",
+                "type": "number",
+                "description": "已流通股份，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "a_share",
+                "type": "number",
+                "description": "人民币普通股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "b_share",
+                "type": "number",
+                "description": "境内上市外资股 B 股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "h_share",
+                "type": "number",
+                "description": "境外上市外资股 H 股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "executive_share",
+                "type": "number",
+                "description": "高管股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "other_circulating_share",
+                "type": "number",
+                "description": "其他流通股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "restricted_share",
+                "type": "number",
+                "description": "流通受限股份，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "allocated_legal_person_share",
+                "type": "number",
+                "description": "配售法人股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "strategic_investor_share",
+                "type": "number",
+                "description": "战略投资者持股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "securities_investment_fund_share",
+                "type": "number",
+                "description": "证券投资基金持股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "general_legal_person_share",
+                "type": "number",
+                "description": "一般法人持股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "state_restricted_share",
+                "type": "number",
+                "description": "国家持股-受限，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "state_owned_legal_person_restricted_share",
+                "type": "number",
+                "description": "国有法人持股-受限，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "other_domestic_restricted_share",
+                "type": "number",
+                "description": "其他内资持股-受限，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "domestic_legal_person_restricted_share",
+                "type": "number",
+                "description": "其中：境内法人持股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "domestic_natural_person_restricted_share",
+                "type": "number",
+                "description": "其中：境内自然人持股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "foreign_restricted_share",
+                "type": "number",
+                "description": "外资持股-受限，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "foreign_legal_person_restricted_share",
+                "type": "number",
+                "description": "其中：境外法人持股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "foreign_natural_person_restricted_share",
+                "type": "number",
+                "description": "其中：境外自然人持股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "restricted_executive_share",
+                "type": "number",
+                "description": "其中：限售高管股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "restricted_b_share",
+                "type": "number",
+                "description": "其中：限售 B 股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "restricted_h_share",
+                "type": "number",
+                "description": "其中：限售 H 股，单位/口径沿用巨潮源端。"
+              },
+              {
+                "name": "controlling_shareholder_actual_controller_share",
+                "type": "number",
+                "description": "控股股东、实际控制人持股，单位/口径沿用巨潮源端。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name"
+            ],
+            "default_filter_fields": [
+              "instrument_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "instrument_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_share_change_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_share_change_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "instrument_id"
+        ],
+        "primary_key": [
+          "instrument_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_zh_a_disclosure_relation_cninfo.snapshot",
+      "name": "cninfo.stock_zh_a_disclosure_relation_cninfo.snapshot",
+      "display_name_zh": "预约披露调研公告采集",
+      "description": "独立巨潮采集器插件:采集预约披露调研公告并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_zh_a_disclosure_relation_cninfo",
+      "category": "公告数据",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_zh_a_disclosure_relation_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "000001.SZ",
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_zh_a_disclosure_relation_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_zh_a_disclosure_relation_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "announcement_id"
+        ],
+        "required_columns": [
+          "announcement_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_zh_a_disclosure_relation_cninfo",
+            "table": "cninfo_stock_zh_a_disclosure_relation_cninfo",
+            "display_name_zh": "预约披露调研公告",
+            "description": "临时请求巨潮预约披露调研公告列表，返回公告元信息，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "announcement_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "announcement_id",
+                "type": "string",
+                "description": "公告 ID。"
+              },
+              {
+                "name": "title",
+                "type": "string",
+                "description": "公告标题。"
+              },
+              {
+                "name": "publish_date",
+                "type": "date",
+                "description": "公告发布日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "file_type",
+                "type": "string",
+                "description": "附件类型，例如 PDF。"
+              },
+              {
+                "name": "file_size_kb",
+                "type": "number",
+                "description": "附件大小，单位：KB。"
+              },
+              {
+                "name": "download_url",
+                "type": "string",
+                "description": "PDF 下载地址。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name",
+              "announcement_id",
+              "title",
+              "publish_date"
+            ],
+            "default_filter_fields": [
+              "announcement_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "announcement_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_zh_a_disclosure_relation_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_zh_a_disclosure_relation_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "announcement_id"
+        ],
+        "primary_key": [
+          "announcement_id"
+        ]
+      },
+      "asset_class": "stock"
+    },
+    {
+      "collector_id": "cninfo.stock_zh_a_disclosure_report_cninfo.snapshot",
+      "name": "cninfo.stock_zh_a_disclosure_report_cninfo.snapshot",
+      "display_name_zh": "信息披露公告采集",
+      "description": "独立巨潮采集器插件:采集信息披露公告并写入本地快照层。",
+      "collector_plugin_id": "axdata.collector.cninfo",
+      "dataset_id": "cninfo.stock_zh_a_disclosure_report_cninfo",
+      "category": "公告数据",
+      "resource_group": "cninfo.http",
+      "runner_entry": "axdata_collector_cninfo.collectors:run_collector",
+      "interfaces": [
+        "stock_zh_a_disclosure_report_cninfo"
+      ],
+      "required_interfaces": [],
+      "required_datasets": [],
+      "default_schedule": {
+        "kind": "manual"
+      },
+      "default_params": {
+        "code": "000001.SZ",
+        "start_date": "",
+        "end_date": ""
+      },
+      "output": {
+        "layer": "snapshot",
+        "formats": [
+          "parquet",
+          "csv"
+        ],
+        "supported_formats": [
+          "parquet",
+          "csv",
+          "duckdb"
+        ],
+        "default_output_path_parts": [
+          "snapshot",
+          "dataset=cninfo.stock_zh_a_disclosure_report_cninfo"
+        ],
+        "default_dir_name": "cninfo.stock_zh_a_disclosure_report_cninfo",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "primary_key": [
+          "announcement_id"
+        ],
+        "required_columns": [
+          "announcement_id"
+        ],
+        "snapshot_date_meta_keys": [
+          "data_date",
+          "snapshot_date",
+          "trade_date",
+          "publish_date",
+          "date"
+        ],
+        "datasets": [
+          {
+            "dataset_id": "cninfo.stock_zh_a_disclosure_report_cninfo",
+            "table": "cninfo_stock_zh_a_disclosure_report_cninfo",
+            "display_name_zh": "信息披露公告",
+            "description": "临时请求巨潮信息披露公告列表，返回公告元信息，默认不入库。",
+            "layer": "snapshot",
+            "primary_key": [
+              "announcement_id"
+            ],
+            "write_mode": "upsert_by_key",
+            "fields": [
+              {
+                "name": "instrument_id",
+                "type": "string",
+                "description": "AxData 统一证券代码。"
+              },
+              {
+                "name": "symbol",
+                "type": "string",
+                "description": "六位证券代码。"
+              },
+              {
+                "name": "exchange",
+                "type": "string",
+                "description": "交易所代码：SSE、SZSE、BSE。"
+              },
+              {
+                "name": "name",
+                "type": "string",
+                "description": "证券简称。"
+              },
+              {
+                "name": "announcement_id",
+                "type": "string",
+                "description": "公告 ID。"
+              },
+              {
+                "name": "title",
+                "type": "string",
+                "description": "公告标题。"
+              },
+              {
+                "name": "publish_date",
+                "type": "date",
+                "description": "公告发布日期，格式 YYYYMMDD。"
+              },
+              {
+                "name": "file_type",
+                "type": "string",
+                "description": "附件类型，例如 PDF。"
+              },
+              {
+                "name": "file_size_kb",
+                "type": "number",
+                "description": "附件大小，单位：KB。"
+              },
+              {
+                "name": "download_url",
+                "type": "string",
+                "description": "PDF 下载地址。"
+              }
+            ],
+            "default_query_fields": [
+              "instrument_id",
+              "symbol",
+              "name",
+              "announcement_id",
+              "title",
+              "publish_date"
+            ],
+            "default_filter_fields": [
+              "announcement_id"
+            ],
+            "quality_rules": {
+              "required_columns": [
+                "announcement_id"
+              ]
+            },
+            "storage": {
+              "layout": "snapshot",
+              "path_parts": [
+                "snapshot",
+                "dataset=cninfo.stock_zh_a_disclosure_report_cninfo"
+              ]
+            },
+            "default_output_path_parts": [
+              "snapshot",
+              "dataset=cninfo.stock_zh_a_disclosure_report_cninfo"
+            ],
+            "formats": [
+              "parquet",
+              "csv",
+              "duckdb"
+            ]
+          }
+        ]
+      },
+      "quality": {
+        "required_columns": [
+          "announcement_id"
+        ],
+        "primary_key": [
+          "announcement_id"
+        ]
+      },
+      "asset_class": "stock"
+    }
+  ],
+  "dependencies": [],
+  "config_schema": {},
+  "required_config": [],
+  "resources": {},
+  "build": {}
+}

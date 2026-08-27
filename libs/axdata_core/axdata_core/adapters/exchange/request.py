@@ -108,6 +108,8 @@ class ExchangeRequestAdapter:
         self._opener = opener
         self._timeout = timeout
         self.last_meta: dict[str, Any] = {}
+        # 生命周期文件实例级缓存:区间补采逐日循环时只下载一次,避免反复请求被源端限流
+        self._lifecycle_cache: dict[str, list[dict[str, Any]]] = {}
 
     def supports(self, interface_name: str) -> bool:
         return interface_name in SUPPORTED_INTERFACES
@@ -295,6 +297,8 @@ class ExchangeRequestAdapter:
         raise SourceUnavailableError(f"Exchange calendar returned unexpected payload for {month}")
 
     def _fetch_sse_lifecycle_rows(self) -> list[dict[str, Any]]:
+        if "sse" in self._lifecycle_cache:
+            return self._lifecycle_cache["sse"]
         rows: list[dict[str, Any]] = []
         for stock_type in ("1", "8"):
             page_no = 1
@@ -332,9 +336,12 @@ class ExchangeRequestAdapter:
                     if isinstance(row, dict):
                         rows.append(_normalize_sse_stock_row(row))
                 page_no += 1
+        self._lifecycle_cache["sse"] = rows
         return rows
 
     def _fetch_szse_lifecycle_rows(self) -> list[dict[str, Any]]:
+        if "szse" in self._lifecycle_cache:
+            return self._lifecycle_cache["szse"]
         rows = self._fetch_szse_listed_rows()
         delisted_rows = self._fetch_szse_delisted_rows()
         by_id = {str(row.get("instrument_id")): row for row in rows if row.get("instrument_id")}
@@ -347,7 +354,9 @@ class ExchangeRequestAdapter:
             if row.get("delist_date"):
                 current["delist_date"] = row.get("delist_date")
                 current["listing_status"] = "delisted"
-        return list(by_id.values())
+        merged = list(by_id.values())
+        self._lifecycle_cache["szse"] = merged
+        return merged
 
     def _fetch_szse_listed_rows(self) -> list[dict[str, Any]]:
         if self._opener is None:
@@ -387,6 +396,7 @@ class ExchangeRequestAdapter:
                 if isinstance(row, dict):
                     rows.append(_normalize_szse_stock_row(row))
             page_no += 1
+        self._lifecycle_cache["szse"] = rows
         return rows
 
     def _fetch_szse_listed_xlsx_rows(self) -> list[dict[str, Any]]:
@@ -442,6 +452,8 @@ class ExchangeRequestAdapter:
         return rows
 
     def _fetch_bse_lifecycle_rows(self) -> list[dict[str, Any]]:
+        if "bse" in self._lifecycle_cache:
+            return self._lifecycle_cache["bse"]
         rows: list[dict[str, Any]] = []
         page_no = 0
         total_pages = 1
@@ -475,6 +487,7 @@ class ExchangeRequestAdapter:
                 if isinstance(row, dict):
                     rows.append(_normalize_bse_stock_row(row))
             page_no += 1
+        self._lifecycle_cache["bse"] = rows
         return rows
 
     def _fetch_json_urlopen(
@@ -610,6 +623,13 @@ def _resolve_date_range(params: Mapping[str, Any]) -> tuple[date, date, str]:
     return date(today.year, 1, 1), date(today.year, 12, 31), "current_year"
 
 
+def _last_trade_date() -> date:
+    """最近一个已收盘的交易日:粗略按工作日回退,周末回退到周五。"""
+    today = date.today()
+    offset = {0: 3, 6: 2}.get(today.weekday(), 1)
+    return today - timedelta(days=offset)
+
+
 def _resolve_historical_stock_dates(params: Mapping[str, Any]) -> tuple[list[str], str]:
     trade_date_raw = params.get("trade_date")
     start_raw = params.get("start_date")
@@ -631,7 +651,8 @@ def _resolve_historical_stock_dates(params: Mapping[str, Any]) -> tuple[list[str
             raise SourceRequestValidationError("start_date must be before or equal to end_date")
         return [_format_date(day) for day in _date_iter(start, end)], "range"
 
-    raise SourceRequestValidationError("trade_date or start_date/end_date is required")
+    # 未指定日期时默认最新交易日(与全库统一规则一致)
+    return [_format_date(_last_trade_date())], "latest"
 
 
 def _parse_date_list(value: Any, name: str) -> list[str]:

@@ -33,7 +33,7 @@ INTERFACES: dict[str, SourceRequestInterface] = {
             "change_pct and turnover_rate are percentage numbers."
         ),
         parameters=(
-            RequestParameter("trade_date", "string", True, "Trade date.", "交易日期，YYYYMMDD 或 YYYY-MM-DD。"),
+            RequestParameter("trade_date", "string", False, "Trade date.", "交易日期，YYYYMMDD 或 YYYY-MM-DD。"),
             RequestParameter("page", "integer", False, "Page number.", "页码，默认 1。", 1),
             RequestParameter("limit", "integer", False, "Page size.", "每页条数，默认 50，最大 200。", 50),
         ),

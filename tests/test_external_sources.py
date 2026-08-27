@@ -2772,6 +2772,9 @@ class ClsOpener:
 
 
 class KphOpener:
+    def __init__(self):
+        self.his_daban_calls = 0
+
     def __call__(self, request, timeout):
         body = parse_qs(request.data.decode("utf-8"))
         action = body.get("a", [""])[0]
@@ -2781,9 +2784,13 @@ class KphOpener:
         if action == "RealRankingInfo":
             return FakeResponse(json.dumps({"errcode": "0", "list": [["801807", "算力", 123456789, 2.88, 3.5, 1000, 0, 0, 0, 5.21, 999999, 1.5, None, None, None, None, None, 50]]}, ensure_ascii=False))
         if action == "ZhiShuStockList_W8":
-            return FakeResponse(json.dumps({"errcode": "0", "list": [["000001", "平安银行", None, None, "银行", 11.5, 0.35, 123456789, 0.21, None, 220000000000, 1, 2, 3, None, None, None, None, None, None, None, None, None, "首板", "龙一", None, None, None, None, None, None, None, None, 5.5, None, None, None, None, None, None, 2]]}, ensure_ascii=False))
+            return FakeResponse(json.dumps({"errcode": "0", "list": [["000001", "平安银行", None, None, "银行", 11.5, 0.35, 123456789, 0.21, None, 220000000000, 1, 2, 3, None, None, None, None, None, None, None, None, None, "首板", "龙一", None, None, None, None, None, None, None, None, None, 5.5, None, None, None, None, None, None, 2]]}, ensure_ascii=False))
         if action == "HisDaBanList":
-            return FakeResponse(json.dumps({"errcode": "0", "list": [["601126", "四方股份", None, None, None, None, 1778655105, 0, 75845056, "首板", 1, "智能电网", 27697971, 2581487973, 6.65, 40196945337, "智能电网", None, None, None, None, None, None, 160656208, None, None, "801346", 11]]}, ensure_ascii=False))
+            # 首页返回满页 50 条,次页返回 2 条,验证翻页聚合
+            self.his_daban_calls += 1
+            row = ["601126", "四方股份", None, None, None, None, 1778655105, 0, 75845056, "首板", 1, "智能电网", 27697971, 2581487973, 6.65, 40196945337, "智能电网", None, None, None, None, None, None, 160656208, None, None, "801346", 11]
+            count = 50 if self.his_daban_calls == 1 else 2
+            return FakeResponse(json.dumps({"errcode": "0", "list": [row] * count}, ensure_ascii=False))
         if action == "GetZhangTingTianTi":
             return FakeResponse(json.dumps({"errcode": "0", "StockList": [[["000001", "平安银行", 2, 1778655105, "801001", "芯片", 1, 0, 8, 100000, 200000]]]}, ensure_ascii=False))
         if action == "GetPMSL_PMLD":
@@ -2917,6 +2924,7 @@ def test_kph_adapter_normalizes_supported_interfaces():
     assert constituents[0]["limit_tag"] == "首板"
 
     limit_up = adapter.request("kph_limit_up_history", {"trade_date": "20260513"})
+    assert len(limit_up) == 52
     assert limit_up[0]["instrument_id"] == "601126.SH"
     assert limit_up[0]["reason"] == "智能电网"
 
@@ -2935,6 +2943,69 @@ def test_kph_adapter_normalizes_supported_interfaces():
 
     resumption = adapter.request("kph_limit_resumption_history", {"trade_date": "20260513"})
     assert resumption[0]["reason_detail"] == "算力订单催化"
+
+
+class KphNoDataOpener:
+    def __call__(self, request, timeout):
+        return FakeResponse(json.dumps({"errcode": "1020", "errmsg": "参数出错"}, ensure_ascii=False))
+
+
+def test_kph_adapter_treats_no_data_errcode_as_empty():
+    adapter = KphRequestAdapter(opener=KphNoDataOpener())
+
+    assert adapter.request("kph_limit_up_history", {"trade_date": "20260103"}) == []
+    assert adapter.request("kph_limit_down_history", {"trade_date": "20260103"}) == []
+    assert adapter.request("kph_wind_vane_history", {"trade_date": "20260103"}) == []
+    assert adapter.request("kph_market_emotion", {"trade_date": "20260103"}) == []
+    assert adapter.request("kph_sector_ranking", {"trade_date": "20260103"}) == []
+
+
+class KphLatestDayOpener:
+    """HisDaBanList 对 2026-08-26 及更早返回数据,更新的日期返回 1020(无数据)。"""
+
+    def __init__(self):
+        self.requested_days: list[str] = []
+
+    def __call__(self, request, timeout):
+        body = parse_qs(request.data.decode("utf-8"))
+        action = body.get("a", [""])[0]
+        if action == "HisDaBanList":
+            day = body.get("Day", [""])[0]
+            self.requested_days.append(day)
+            if day >= "2026-08-27":
+                return FakeResponse(json.dumps({"errcode": "1020", "errmsg": "参数出错"}, ensure_ascii=False))
+            row = ["601126", "四方股份", None, None, None, None, 1778655105, 0, 75845056, "首板", 1, "智能电网", 27697971, 2581487973, 6.65, 40196945337, "智能电网", None, None, None, None, None, None, 160656208, None, None, "801346", 11]
+            return FakeResponse(json.dumps({"errcode": "0", "list": [row]}, ensure_ascii=False))
+        raise AssertionError(request.full_url + " " + str(body))
+
+
+def test_kph_limit_history_without_date_walks_back_to_latest_trade_day(monkeypatch):
+    import datetime as datetime_module
+
+    import axdata_core.adapters.kph.request as kph_request
+
+    class FrozenDate:
+        @staticmethod
+        def today():
+            return datetime_module.date(2026, 8, 27)
+
+    monkeypatch.setattr(kph_request, "date_type", FrozenDate)
+    opener = KphLatestDayOpener()
+    adapter = KphRequestAdapter(opener=opener)
+
+    rows = adapter.request("kph_limit_up_history", {})
+
+    assert opener.requested_days[0] == "2026-08-27"
+    assert opener.requested_days[-1] == "2026-08-26"
+    assert len(rows) == 1
+    assert rows[0]["trade_date"] == "20260826"
+    assert adapter.last_meta["trade_date"] == "20260826"
+
+    # 显式指定过去日期:只请求当天,不做回溯
+    opener.requested_days.clear()
+    rows = adapter.request("kph_limit_up_history", {"trade_date": "20260105"})
+    assert opener.requested_days == ["2026-01-05"]
+    assert rows[0]["trade_date"] == "20260105"
 
 
 class SinaOpener:

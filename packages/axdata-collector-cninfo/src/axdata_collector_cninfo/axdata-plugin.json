@@ -30,8 +30,8 @@
         "kind": "manual"
       },
       "default_params": {
-        "start_date": "20210911",
-        "end_date": "20211110"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -49,8 +49,8 @@
           "dataset=cninfo.bond_corporate_issue_cninfo"
         ],
         "default_dir_name": "cninfo.bond_corporate_issue_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "bond_code"
         ],
@@ -74,7 +74,7 @@
             "primary_key": [
               "bond_code"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "bond_code",
@@ -221,8 +221,8 @@
         "kind": "manual"
       },
       "default_params": {
-        "start_date": "20210913",
-        "end_date": "20211112"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -240,8 +240,8 @@
           "dataset=cninfo.bond_cov_issue_cninfo"
         ],
         "default_dir_name": "cninfo.bond_cov_issue_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "bond_code"
         ],
@@ -265,7 +265,7 @@
             "primary_key": [
               "bond_code"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "bond_code",
@@ -498,8 +498,8 @@
           "dataset=cninfo.bond_cov_stock_issue_cninfo"
         ],
         "default_dir_name": "cninfo.bond_cov_stock_issue_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "bond_code"
         ],
@@ -523,7 +523,7 @@
             "primary_key": [
               "bond_code"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "bond_code",
@@ -635,8 +635,8 @@
         "kind": "manual"
       },
       "default_params": {
-        "start_date": "20210911",
-        "end_date": "20211110"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -654,8 +654,8 @@
           "dataset=cninfo.bond_local_government_issue_cninfo"
         ],
         "default_dir_name": "cninfo.bond_local_government_issue_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "bond_code"
         ],
@@ -679,7 +679,7 @@
             "primary_key": [
               "bond_code"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "bond_code",
@@ -816,8 +816,8 @@
         "kind": "manual"
       },
       "default_params": {
-        "start_date": "20210910",
-        "end_date": "20211109"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -835,8 +835,8 @@
           "dataset=cninfo.bond_treasure_issue_cninfo"
         ],
         "default_dir_name": "cninfo.bond_treasure_issue_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "bond_code"
         ],
@@ -860,7 +860,7 @@
             "primary_key": [
               "bond_code"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "bond_code",
@@ -1016,8 +1016,8 @@
           "dataset=cninfo.announcement_detail"
         ],
         "default_dir_name": "cninfo.announcement_detail",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "announcement_id"
         ],
@@ -1041,7 +1041,7 @@
             "primary_key": [
               "announcement_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "announcement_id",
@@ -1130,8 +1130,8 @@
       },
       "default_params": {
         "code": "000001.SZ",
-        "start_date": "20240101",
-        "end_date": "20240131"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -1149,13 +1149,13 @@
           "dataset=cninfo.announcements"
         ],
         "default_dir_name": "cninfo.announcements",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
-          "instrument_id"
+          "announcement_id"
         ],
         "required_columns": [
-          "instrument_id"
+          "announcement_id"
         ],
         "snapshot_date_meta_keys": [
           "data_date",
@@ -1172,9 +1172,9 @@
             "description": "这个接口返回公告元信息和 PDF 下载地址。",
             "layer": "snapshot",
             "primary_key": [
-              "instrument_id"
+              "announcement_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -1231,15 +1231,16 @@
               "instrument_id",
               "symbol",
               "name",
+              "announcement_id",
               "title",
               "publish_date"
             ],
             "default_filter_fields": [
-              "instrument_id"
+              "announcement_id"
             ],
             "quality_rules": {
               "required_columns": [
-                "instrument_id"
+                "announcement_id"
               ]
             },
             "storage": {
@@ -1263,10 +1264,10 @@
       },
       "quality": {
         "required_columns": [
-          "instrument_id"
+          "announcement_id"
         ],
         "primary_key": [
-          "instrument_id"
+          "announcement_id"
         ]
       },
       "asset_class": "stock"
@@ -1306,8 +1307,8 @@
           "dataset=cninfo.fund_report_asset_allocation_cninfo"
         ],
         "default_dir_name": "cninfo.fund_report_asset_allocation_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "report_date"
         ],
@@ -1331,7 +1332,7 @@
             "primary_key": [
               "report_date"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "report_date",
@@ -1423,7 +1424,7 @@
         "kind": "manual"
       },
       "default_params": {
-        "date": "20210630"
+        "date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -1441,8 +1442,8 @@
           "dataset=cninfo.fund_report_industry_allocation_cninfo"
         ],
         "default_dir_name": "cninfo.fund_report_industry_allocation_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "industry_code"
         ],
@@ -1466,7 +1467,7 @@
             "primary_key": [
               "industry_code"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "industry_code",
@@ -1558,7 +1559,7 @@
         "kind": "manual"
       },
       "default_params": {
-        "date": "20210630"
+        "date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -1576,8 +1577,8 @@
           "dataset=cninfo.fund_report_stock_cninfo"
         ],
         "default_dir_name": "cninfo.fund_report_stock_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -1601,7 +1602,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -1711,8 +1712,8 @@
       },
       "default_params": {
         "code": "600030.SH",
-        "start_date": "19900101",
-        "end_date": "20241022"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -1730,8 +1731,8 @@
           "dataset=cninfo.stock_allotment_cninfo"
         ],
         "default_dir_name": "cninfo.stock_allotment_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -1755,7 +1756,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -2114,7 +2115,7 @@
         "kind": "manual"
       },
       "default_params": {
-        "date": "20210930"
+        "date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -2132,8 +2133,8 @@
           "dataset=cninfo.stock_cg_equity_mortgage_cninfo"
         ],
         "default_dir_name": "cninfo.stock_cg_equity_mortgage_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -2157,7 +2158,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -2287,8 +2288,8 @@
       },
       "default_params": {
         "market": "全部",
-        "start_date": "20180630",
-        "end_date": "20210927"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -2306,8 +2307,8 @@
           "dataset=cninfo.stock_cg_guarantee_cninfo"
         ],
         "default_dir_name": "cninfo.stock_cg_guarantee_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -2331,7 +2332,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -2441,8 +2442,8 @@
       },
       "default_params": {
         "market": "沪市",
-        "start_date": "20180630",
-        "end_date": "20210927"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -2460,8 +2461,8 @@
           "dataset=cninfo.stock_cg_lawsuit_cninfo"
         ],
         "default_dir_name": "cninfo.stock_cg_lawsuit_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -2485,7 +2486,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -2602,8 +2603,8 @@
           "dataset=cninfo.stock_dividend_cninfo"
         ],
         "default_dir_name": "cninfo.stock_dividend_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -2627,7 +2628,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -2778,8 +2779,8 @@
           "dataset=cninfo.stock_hold_change_cninfo"
         ],
         "default_dir_name": "cninfo.stock_hold_change_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -2803,7 +2804,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -2945,8 +2946,8 @@
           "dataset=cninfo.stock_hold_control_cninfo"
         ],
         "default_dir_name": "cninfo.stock_hold_control_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -2970,7 +2971,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -3085,8 +3086,8 @@
       },
       "default_params": {
         "change_type": "增持",
-        "start_date": "20240101",
-        "end_date": "20241231"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -3104,8 +3105,8 @@
           "dataset=cninfo.stock_hold_management_detail_cninfo"
         ],
         "default_dir_name": "cninfo.stock_hold_management_detail_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -3129,7 +3130,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -3288,7 +3289,7 @@
         "kind": "manual"
       },
       "default_params": {
-        "date": "20210630"
+        "date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -3306,8 +3307,8 @@
           "dataset=cninfo.stock_hold_num_cninfo"
         ],
         "default_dir_name": "cninfo.stock_hold_num_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -3331,7 +3332,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -3473,8 +3474,8 @@
           "dataset=cninfo.stock_industry_category_cninfo"
         ],
         "default_dir_name": "cninfo.stock_industry_category_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "parent_code"
         ],
@@ -3498,7 +3499,7 @@
             "primary_key": [
               "parent_code"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "parent_code",
@@ -3601,8 +3602,8 @@
       },
       "default_params": {
         "code": "002594.SZ",
-        "start_date": "20091227",
-        "end_date": "20220713"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -3620,8 +3621,8 @@
           "dataset=cninfo.stock_industry_change_cninfo"
         ],
         "default_dir_name": "cninfo.stock_industry_change_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -3645,7 +3646,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -3780,7 +3781,7 @@
       },
       "default_params": {
         "classification": "证监会行业分类",
-        "date": "20240617"
+        "date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -3798,8 +3799,8 @@
           "dataset=cninfo.stock_industry_pe_ratio_cninfo"
         ],
         "default_dir_name": "cninfo.stock_industry_pe_ratio_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "change_date"
         ],
@@ -3823,7 +3824,7 @@
             "primary_key": [
               "change_date"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "change_date",
@@ -3963,8 +3964,8 @@
           "dataset=cninfo.stock_ipo_summary_cninfo"
         ],
         "default_dir_name": "cninfo.stock_ipo_summary_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -3988,7 +3989,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -4154,8 +4155,8 @@
           "dataset=cninfo.stock_irm_ans_cninfo"
         ],
         "default_dir_name": "cninfo.stock_irm_ans_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -4179,7 +4180,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -4311,8 +4312,8 @@
           "dataset=cninfo.stock_irm_cninfo"
         ],
         "default_dir_name": "cninfo.stock_irm_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -4336,7 +4337,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -4496,8 +4497,8 @@
           "dataset=cninfo.stock_new_gh_cninfo"
         ],
         "default_dir_name": "cninfo.stock_new_gh_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "company_name"
         ],
@@ -4521,7 +4522,7 @@
             "primary_key": [
               "company_name"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "company_name",
@@ -4632,8 +4633,8 @@
           "dataset=cninfo.stock_new_ipo_cninfo"
         ],
         "default_dir_name": "cninfo.stock_new_ipo_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -4657,7 +4658,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -4814,8 +4815,8 @@
           "dataset=cninfo.stock_profile_cninfo"
         ],
         "default_dir_name": "cninfo.stock_profile_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -4839,7 +4840,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -5047,7 +5048,7 @@
         "kind": "manual"
       },
       "default_params": {
-        "date": "20230817"
+        "date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -5065,8 +5066,8 @@
           "dataset=cninfo.stock_rank_forecast_cninfo"
         ],
         "default_dir_name": "cninfo.stock_rank_forecast_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -5090,7 +5091,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -5222,8 +5223,8 @@
       },
       "default_params": {
         "code": "002594.SZ",
-        "start_date": "20091227",
-        "end_date": "20241021"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -5241,8 +5242,8 @@
           "dataset=cninfo.stock_share_change_cninfo"
         ],
         "default_dir_name": "cninfo.stock_share_change_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -5266,7 +5267,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -5561,8 +5562,8 @@
       },
       "default_params": {
         "code": "000001.SZ",
-        "start_date": "20230619",
-        "end_date": "20231220"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -5580,13 +5581,13 @@
           "dataset=cninfo.stock_zh_a_disclosure_relation_cninfo"
         ],
         "default_dir_name": "cninfo.stock_zh_a_disclosure_relation_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
-          "instrument_id"
+          "announcement_id"
         ],
         "required_columns": [
-          "instrument_id"
+          "announcement_id"
         ],
         "snapshot_date_meta_keys": [
           "data_date",
@@ -5603,9 +5604,9 @@
             "description": "临时请求巨潮预约披露调研公告列表，返回公告元信息，默认不入库。",
             "layer": "snapshot",
             "primary_key": [
-              "instrument_id"
+              "announcement_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -5662,15 +5663,16 @@
               "instrument_id",
               "symbol",
               "name",
+              "announcement_id",
               "title",
               "publish_date"
             ],
             "default_filter_fields": [
-              "instrument_id"
+              "announcement_id"
             ],
             "quality_rules": {
               "required_columns": [
-                "instrument_id"
+                "announcement_id"
               ]
             },
             "storage": {
@@ -5694,10 +5696,10 @@
       },
       "quality": {
         "required_columns": [
-          "instrument_id"
+          "announcement_id"
         ],
         "primary_key": [
-          "instrument_id"
+          "announcement_id"
         ]
       },
       "asset_class": "stock"
@@ -5722,8 +5724,8 @@
       },
       "default_params": {
         "code": "000001.SZ",
-        "start_date": "20240101",
-        "end_date": "20240131"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -5741,13 +5743,13 @@
           "dataset=cninfo.stock_zh_a_disclosure_report_cninfo"
         ],
         "default_dir_name": "cninfo.stock_zh_a_disclosure_report_cninfo",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
-          "instrument_id"
+          "announcement_id"
         ],
         "required_columns": [
-          "instrument_id"
+          "announcement_id"
         ],
         "snapshot_date_meta_keys": [
           "data_date",
@@ -5764,9 +5766,9 @@
             "description": "临时请求巨潮信息披露公告列表，返回公告元信息，默认不入库。",
             "layer": "snapshot",
             "primary_key": [
-              "instrument_id"
+              "announcement_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -5823,15 +5825,16 @@
               "instrument_id",
               "symbol",
               "name",
+              "announcement_id",
               "title",
               "publish_date"
             ],
             "default_filter_fields": [
-              "instrument_id"
+              "announcement_id"
             ],
             "quality_rules": {
               "required_columns": [
-                "instrument_id"
+                "announcement_id"
               ]
             },
             "storage": {
@@ -5855,10 +5858,10 @@
       },
       "quality": {
         "required_columns": [
-          "instrument_id"
+          "announcement_id"
         ],
         "primary_key": [
-          "instrument_id"
+          "announcement_id"
         ]
       },
       "asset_class": "stock"

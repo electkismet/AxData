@@ -1064,6 +1064,8 @@ class CollectorSchedulerService:
             trigger_type=trigger_type,
             skip_active_duplicates=skip_active_duplicates,
             enforce_failure_backoff=enforce_failure_backoff,
+            # 与手动运行同一口径:手动补采允许禁用任务,enabled 只管自动调度
+            allow_disabled_manual_run=trigger_type == TriggerType.MANUAL.value,
             params_override=merged_override,
             metadata={
                 "run_mode": "backfill",

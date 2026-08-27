@@ -32,7 +32,7 @@
         "timezone": "Asia/Shanghai"
       },
       "default_params": {
-        "trade_date": "20260513"
+        "trade_date": ""
       },
       "output": {
         "layer": "core",
@@ -50,7 +50,7 @@
           "table=kph_limit_down_history"
         ],
         "default_dir_name": "kph.limit_down_history",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
@@ -112,7 +112,7 @@
               {
                 "name": "limit_time",
                 "type": "integer",
-                "description": "涨停/跌停时间戳。"
+                "description": "跌停时间戳。"
               },
               {
                 "name": "open_time",
@@ -132,12 +132,12 @@
               {
                 "name": "limit_tag",
                 "type": "string",
-                "description": "连板标签。"
+                "description": "连续跌停标签，开盘红跌停数据通常为空。"
               },
               {
                 "name": "limit_count",
                 "type": "integer",
-                "description": "连板数。"
+                "description": "连续跌停天数，开盘红跌停数据通常为空。"
               },
               {
                 "name": "themes",
@@ -147,7 +147,7 @@
               {
                 "name": "reason",
                 "type": "string",
-                "description": "涨停原因。"
+                "description": "跌停原因，开盘红跌停列表多为“无”。"
               },
               {
                 "name": "net_inflow",
@@ -177,7 +177,7 @@
               {
                 "name": "industry_limit_up_count",
                 "type": "integer",
-                "description": "同行业涨停数。"
+                "description": "同行业跌停家数，开盘红跌停数据通常为空。"
               }
             ],
             "default_query_fields": [
@@ -272,7 +272,7 @@
           "table=kph_limit_ladder"
         ],
         "default_dir_name": "kph.limit_ladder",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
@@ -469,7 +469,7 @@
           "table=kph_limit_resumption_history"
         ],
         "default_dir_name": "kph.limit_resumption_history",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
@@ -637,7 +637,7 @@
         "timezone": "Asia/Shanghai"
       },
       "default_params": {
-        "trade_date": "20260513"
+        "trade_date": ""
       },
       "output": {
         "layer": "core",
@@ -655,7 +655,7 @@
           "table=kph_limit_up_history"
         ],
         "default_dir_name": "kph.limit_up_history",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
@@ -877,14 +877,12 @@
           "table=kph_market_emotion"
         ],
         "default_dir_name": "kph.market_emotion",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
-          "trade_date",
           "trade_date"
         ],
         "required_columns": [
-          "trade_date",
           "trade_date"
         ],
         "snapshot_date_meta_keys": [
@@ -906,7 +904,6 @@
             "description": "请求开盘红市场情绪，传历史日期走历史接口，默认不入库。",
             "layer": "core",
             "primary_key": [
-              "trade_date",
               "trade_date"
             ],
             "write_mode": "upsert_by_key",
@@ -986,12 +983,10 @@
               "trade_date"
             ],
             "default_filter_fields": [
-              "trade_date",
               "trade_date"
             ],
             "quality_rules": {
               "required_columns": [
-                "trade_date",
                 "trade_date"
               ]
             },
@@ -1020,11 +1015,9 @@
       },
       "quality": {
         "required_columns": [
-          "trade_date",
           "trade_date"
         ],
         "primary_key": [
-          "trade_date",
           "trade_date"
         ],
         "date_field": "trade_date"
@@ -1070,15 +1063,19 @@
           "table=kph_market_review_events"
         ],
         "default_dir_name": "kph.market_review_events",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
-          "trade_date"
+          "event_time",
+          "tag_id",
+          "plate_id"
         ],
         "required_columns": [
           "trade_date",
-          "trade_date"
+          "event_time",
+          "tag_id",
+          "plate_id"
         ],
         "snapshot_date_meta_keys": [
           "data_date",
@@ -1100,7 +1097,9 @@
             "layer": "core",
             "primary_key": [
               "trade_date",
-              "trade_date"
+              "event_time",
+              "tag_id",
+              "plate_id"
             ],
             "write_mode": "upsert_by_key",
             "fields": [
@@ -1155,12 +1154,14 @@
             ],
             "default_filter_fields": [
               "trade_date",
-              "trade_date"
+              "event_time"
             ],
             "quality_rules": {
               "required_columns": [
                 "trade_date",
-                "trade_date"
+                "event_time",
+                "tag_id",
+                "plate_id"
               ]
             },
             "storage": {
@@ -1189,11 +1190,15 @@
       "quality": {
         "required_columns": [
           "trade_date",
-          "trade_date"
+          "event_time",
+          "tag_id",
+          "plate_id"
         ],
         "primary_key": [
           "trade_date",
-          "trade_date"
+          "event_time",
+          "tag_id",
+          "plate_id"
         ],
         "date_field": "trade_date"
       },
@@ -1221,7 +1226,7 @@
       },
       "default_params": {
         "plate_id": "801001",
-        "trade_date": "20260513"
+        "trade_date": ""
       },
       "output": {
         "layer": "core",
@@ -1239,7 +1244,7 @@
           "table=kph_sector_constituents_history"
         ],
         "default_dir_name": "kph.sector_constituents_history",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
@@ -1431,7 +1436,7 @@
         "timezone": "Asia/Shanghai"
       },
       "default_params": {
-        "trade_date": "20260513",
+        "trade_date": "",
         "sector_type": "selected"
       },
       "output": {
@@ -1450,15 +1455,15 @@
           "table=kph_sector_ranking"
         ],
         "default_dir_name": "kph.sector_ranking",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
-          "trade_date"
+          "plate_id"
         ],
         "required_columns": [
           "trade_date",
-          "trade_date"
+          "plate_id"
         ],
         "snapshot_date_meta_keys": [
           "data_date",
@@ -1480,7 +1485,7 @@
             "layer": "core",
             "primary_key": [
               "trade_date",
-              "trade_date"
+              "plate_id"
             ],
             "write_mode": "upsert_by_key",
             "fields": [
@@ -1548,12 +1553,12 @@
             ],
             "default_filter_fields": [
               "trade_date",
-              "trade_date"
+              "plate_id"
             ],
             "quality_rules": {
               "required_columns": [
                 "trade_date",
-                "trade_date"
+                "plate_id"
               ]
             },
             "storage": {
@@ -1582,11 +1587,11 @@
       "quality": {
         "required_columns": [
           "trade_date",
-          "trade_date"
+          "plate_id"
         ],
         "primary_key": [
           "trade_date",
-          "trade_date"
+          "plate_id"
         ],
         "date_field": "trade_date"
       },
@@ -1613,7 +1618,7 @@
         "timezone": "Asia/Shanghai"
       },
       "default_params": {
-        "trade_date": "20260513"
+        "trade_date": ""
       },
       "output": {
         "layer": "core",
@@ -1631,7 +1636,7 @@
           "table=kph_wind_vane_history"
         ],
         "default_dir_name": "kph.wind_vane_history",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",

@@ -189,11 +189,19 @@ class ClsRequestAdapter:
                             "block_key": str(key),
                             "title": _clean_text(value.get("title") or value.get("name")),
                             "summary": _clean_text(value.get("desc") or value.get("summary") or value.get("interpret")),
-                            "raw_item": dict(value),
+                            # raw_item 统一序列化为 JSON 字符串,避免 dict/list 混列导致 Parquet 类型冲突
+                            "raw_item": json.dumps(value, ensure_ascii=False),
                         }
                     )
                 elif isinstance(value, list):
-                    rows.append({"block_key": str(key), "title": str(key), "summary": None, "raw_item": list(value)})
+                    rows.append(
+                        {
+                            "block_key": str(key),
+                            "title": str(key),
+                            "summary": None,
+                            "raw_item": json.dumps(value, ensure_ascii=False),
+                        }
+                    )
         self.last_meta = {"source_name": "财联社", "source_url": CLS_MAINLINE_URL}
         return rows
 
@@ -320,10 +328,14 @@ class ClsRequestAdapter:
             host="x-quote.cls.cn",
         )
         items = _cls_data_list(payload, "CLS limit-up pool")
-        self.last_meta = {"source_name": "财联社", "source_url": CLS_LIMIT_UP_URL}
+        # 源端为实时快照且不接受日期参数:按采集日落 trade_date,
+        # 供每日收盘后定时累积成历史(接口本身无法回补历史)
+        trade_date = datetime.now().strftime("%Y%m%d")
+        self.last_meta = {"source_name": "财联社", "source_url": CLS_LIMIT_UP_URL, "trade_date": trade_date}
         return [
             _normalize_cls_stock(item)
             | {
+                "trade_date": trade_date,
                 "up_reason": _clean_text(item.get("up_reason")),
             }
             for item in items
@@ -409,45 +421,65 @@ class ClsRequestAdapter:
         if category not in _NEWS_CATEGORY_MAP:
             raise SourceRequestValidationError("category must be all, important, or company")
         date_text = _normalize_date_text(params.get("date")) or datetime.now().strftime("%Y%m%d")
-        limit = min(_positive_int(params.get("limit"), default=20, name="limit"), 100)
+        # limit 为目标总条数;上游单次最多 50 条,超过时按 last_time 滚动翻页
+        limit = min(_positive_int(params.get("limit"), default=20, name="limit"), 2000)
+        page_size = 50
         day = datetime.strptime(date_text, "%Y%m%d")
         day_start = int(datetime(day.year, day.month, day.day, 0, 0, 0).timestamp())
         day_end = int(datetime(day.year, day.month, day.day, 23, 59, 59).timestamp())
-        request_params = _signed_params(refresh_type="1", last_time=str(day_end), rn=str(limit))
-        api_category = _NEWS_CATEGORY_MAP[category]
-        if api_category:
-            request_params.pop("sign", None)
-            request_params["category"] = api_category
-            request_params["sign"] = _make_sign(request_params)
-        payload = self._fetch_json(
-            CLS_TELEGRAPH_URL,
-            params=request_params,
-            context="CLS news telegraph",
-            host="api3.cls.cn",
-            mobile=True,
-        )
-        data = _cls_errno_data(payload, "CLS news telegraph")
-        items = data.get("roll_data", []) if isinstance(data, Mapping) else []
         rows: list[dict[str, Any]] = []
-        for item in items:
-            if not isinstance(item, Mapping):
-                continue
-            ctime = _parse_int(item.get("ctime")) or 0
-            if ctime < day_start or ctime > day_end:
-                continue
-            rows.append(
-                {
-                    "news_id": _clean_text(item.get("id") or item.get("news_id")),
-                    "title": _clean_text(item.get("title")),
-                    "content": _clean_text(item.get("content")),
-                    "publish_time": datetime.fromtimestamp(ctime).strftime("%Y-%m-%d %H:%M:%S") if ctime else None,
-                    "ctime": ctime or None,
-                    "category": category,
-                }
+        seen_ids: set[str] = set()
+        last_time = day_end
+        while len(rows) < limit:
+            request_params = _signed_params(refresh_type="1", last_time=str(last_time), rn=str(page_size))
+            api_category = _NEWS_CATEGORY_MAP[category]
+            if api_category:
+                request_params.pop("sign", None)
+                request_params["category"] = api_category
+                request_params["sign"] = _make_sign(request_params)
+            payload = self._fetch_json(
+                CLS_TELEGRAPH_URL,
+                params=request_params,
+                context="CLS news telegraph",
+                host="api3.cls.cn",
+                mobile=True,
             )
-            if len(rows) >= limit:
+            data = _cls_errno_data(payload, "CLS news telegraph")
+            items = data.get("roll_data", []) if isinstance(data, Mapping) else []
+            if not items:
                 break
-        self.last_meta = {"source_name": "财联社", "source_url": CLS_TELEGRAPH_URL, "date": date_text, "category": category, "limit": limit}
+            page_min_ctime = last_time
+            for item in items:
+                if not isinstance(item, Mapping):
+                    continue
+                ctime = _parse_int(item.get("ctime")) or 0
+                if ctime:
+                    page_min_ctime = min(page_min_ctime, ctime)
+                if ctime < day_start or ctime > day_end:
+                    continue
+                news_id = _clean_text(item.get("id") or item.get("news_id"))
+                if not news_id or news_id in seen_ids:
+                    continue
+                seen_ids.add(news_id)
+                rows.append(
+                    {
+                        "news_id": news_id,
+                        "title": _clean_text(item.get("title")),
+                        "content": _clean_text(item.get("content")),
+                        "publish_time": datetime.fromtimestamp(ctime).strftime("%Y-%m-%d %H:%M:%S") if ctime else None,
+                        # date 列按发布日 YYYYMMDD 派生,用于分区落盘与跨文件去重
+                        "date": date_text,
+                        "ctime": ctime or None,
+                        "category": category,
+                    }
+                )
+                if len(rows) >= limit:
+                    break
+            # 翻页游标:本页最小 ctime;无进展或已翻过当天则停止
+            if page_min_ctime >= last_time or page_min_ctime < day_start:
+                break
+            last_time = page_min_ctime
+        self.last_meta = {"source_name": "财联社", "source_url": CLS_TELEGRAPH_URL, "date": date_text, "category": category, "limit": limit, "rows": len(rows)}
         return rows
 
     def _fetch_json(
@@ -532,7 +564,14 @@ def _identity_from_cls_code(secu_code: str) -> dict[str, Any]:
     text = str(secu_code or "").strip().lower()
     match = re.match(r"^(sh|sz|bj)(\d{6})$", text)
     if not match:
-        return {"instrument_id": None, "symbol": None, "exchange": None, "secu_code": secu_code or None, "secu_name": None}
+        # 源端对北交所等代码有时返回 920274.BJ / 300647.SZ 点后缀格式,先归一化再识别
+        try:
+            text = _to_cls_secu_code(text)
+        except SourceRequestValidationError:
+            text = ""
+        match = re.match(r"^(sh|sz|bj)(\d{6})$", text)
+        if not match:
+            return {"instrument_id": None, "symbol": None, "exchange": None, "secu_code": secu_code or None, "secu_name": None}
     prefix, symbol = match.groups()
     exchange = {"sh": "SSE", "sz": "SZSE", "bj": "BSE"}[prefix]
     suffix = {"SSE": "SH", "SZSE": "SZ", "BSE": "BJ"}[exchange]

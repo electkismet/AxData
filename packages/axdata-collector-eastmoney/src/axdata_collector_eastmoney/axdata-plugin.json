@@ -32,7 +32,7 @@
         "timezone": "Asia/Shanghai"
       },
       "default_params": {
-        "trade_date": "20240102"
+        "trade_date": ""
       },
       "output": {
         "layer": "core",
@@ -50,15 +50,17 @@
           "table=eastmoney_dragon_tiger_daily"
         ],
         "default_dir_name": "eastmoney.dragon_tiger_daily",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
-          "instrument_id"
+          "instrument_id",
+          "reason"
         ],
         "required_columns": [
           "trade_date",
-          "instrument_id"
+          "instrument_id",
+          "reason"
         ],
         "snapshot_date_meta_keys": [
           "data_date",
@@ -80,7 +82,8 @@
             "layer": "core",
             "primary_key": [
               "trade_date",
-              "instrument_id"
+              "instrument_id",
+              "reason"
             ],
             "write_mode": "upsert_by_key",
             "fields": [
@@ -200,11 +203,13 @@
       "quality": {
         "required_columns": [
           "trade_date",
-          "instrument_id"
+          "instrument_id",
+          "reason"
         ],
         "primary_key": [
           "trade_date",
-          "instrument_id"
+          "instrument_id",
+          "reason"
         ],
         "date_field": "trade_date"
       },
@@ -249,7 +254,7 @@
           "table=eastmoney_limit_down_pool"
         ],
         "default_dir_name": "eastmoney.limit_down_pool",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
@@ -471,7 +476,7 @@
           "table=eastmoney_limit_up_pool"
         ],
         "default_dir_name": "eastmoney.limit_up_pool",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
@@ -676,8 +681,8 @@
       },
       "default_params": {
         "code": "000001.SZ",
-        "start_date": "20240102",
-        "end_date": "20240105"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "core",
@@ -695,7 +700,7 @@
           "table=eastmoney_margin_trading"
         ],
         "default_dir_name": "eastmoney.margin_trading",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
@@ -911,8 +916,8 @@
           "dataset=eastmoney.market_index_realtime"
         ],
         "default_dir_name": "eastmoney.market_index_realtime",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "index_code"
         ],
@@ -936,7 +941,7 @@
             "primary_key": [
               "index_code"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "index_code",
@@ -1059,11 +1064,11 @@
       },
       "default_params": {
         "code": "000001.SZ",
-        "start_date": "20240101",
-        "end_date": "20241231"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
-        "layer": "snapshot",
+        "layer": "core",
         "formats": [
           "parquet",
           "csv"
@@ -1074,17 +1079,17 @@
           "duckdb"
         ],
         "default_output_path_parts": [
-          "snapshot",
-          "dataset=eastmoney.research_reports"
+          "core",
+          "table=eastmoney_research_reports"
         ],
         "default_dir_name": "eastmoney.research_reports",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
-          "instrument_id"
+          "report_id"
         ],
         "required_columns": [
-          "instrument_id"
+          "report_id"
         ],
         "snapshot_date_meta_keys": [
           "data_date",
@@ -1099,11 +1104,11 @@
             "table": "eastmoney_research_reports",
             "display_name_zh": "个股研报列表",
             "description": "这个接口只保留已确认字段；金额字段单位为元，遇到源端空结果返回空表。",
-            "layer": "snapshot",
+            "layer": "core",
             "primary_key": [
-              "instrument_id"
+              "report_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "report_id",
@@ -1182,6 +1187,7 @@
               }
             ],
             "default_query_fields": [
+              "report_id",
               "instrument_id",
               "symbol",
               "name",
@@ -1191,38 +1197,46 @@
               "rating"
             ],
             "default_filter_fields": [
-              "instrument_id"
+              "report_id"
             ],
             "quality_rules": {
               "required_columns": [
-                "instrument_id"
+                "report_id"
               ]
             },
             "storage": {
-              "layout": "snapshot",
+              "layout": "daily_file",
               "path_parts": [
-                "snapshot",
-                "dataset=eastmoney.research_reports"
+                "core",
+                "table=eastmoney_research_reports"
               ]
             },
             "default_output_path_parts": [
-              "snapshot",
-              "dataset=eastmoney.research_reports"
+              "core",
+              "table=eastmoney_research_reports"
             ],
             "formats": [
               "parquet",
               "csv",
               "duckdb"
-            ]
+            ],
+            "partition_by": [
+              "publish_date"
+            ],
+            "date_field": "publish_date"
           }
-        ]
+        ],
+        "partition_by": [
+          "publish_date"
+        ],
+        "date_field": "publish_date"
       },
       "quality": {
         "required_columns": [
-          "instrument_id"
+          "report_id"
         ],
         "primary_key": [
-          "instrument_id"
+          "report_id"
         ]
       },
       "asset_class": "stock"
@@ -1264,8 +1278,8 @@
           "dataset=eastmoney.sector_constituents"
         ],
         "default_dir_name": "eastmoney.sector_constituents",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -1289,7 +1303,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -1476,8 +1490,8 @@
           "dataset=eastmoney.sector_realtime"
         ],
         "default_dir_name": "eastmoney.sector_realtime",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "sector_code"
         ],
@@ -1501,7 +1515,7 @@
             "primary_key": [
               "sector_code"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "sector_code",
@@ -1676,7 +1690,7 @@
           "table=eastmoney_stock_change_detail"
         ],
         "default_dir_name": "eastmoney.stock_change_detail",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
@@ -1862,8 +1876,8 @@
           "dataset=eastmoney.stock_changes"
         ],
         "default_dir_name": "eastmoney.stock_changes",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -1887,7 +1901,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -2015,8 +2029,8 @@
           "dataset=eastmoney.stock_realtime_snapshot"
         ],
         "default_dir_name": "eastmoney.stock_realtime_snapshot",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -2040,7 +2054,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -2227,8 +2241,8 @@
           "dataset=eastmoney.stock_sector_belong"
         ],
         "default_dir_name": "eastmoney.stock_sector_belong",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -2252,7 +2266,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -2362,7 +2376,7 @@
           "table=eastmoney_yesterday_limit_up_pool"
         ],
         "default_dir_name": "eastmoney.yesterday_limit_up_pool",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",

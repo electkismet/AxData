@@ -160,7 +160,8 @@ class TencentRequestAdapter:
         default_adjust: str = "none",
     ) -> list[dict[str, Any]]:
         quote_code = _to_tencent_quote_code(str(params.get("code") or ""))
-        start_date = _normalize_date(params.get("start_date"), default="20240101", name="start_date")
+        explicit_range = params.get("start_date") not in (None, "") or params.get("end_date") not in (None, "")
+        start_date = _normalize_date(params.get("start_date"), default=date.today().strftime("%Y%m%d"), name="start_date")
         end_date = _normalize_date(params.get("end_date"), default=start_date, name="end_date")
         if start_date > end_date:
             raise SourceRequestValidationError("start_date must be before or equal to end_date")
@@ -170,7 +171,7 @@ class TencentRequestAdapter:
             allowed={"none", "qfq", "hfq"},
             name="adjust",
         )
-        limit = min(_positive_int(params.get("limit"), default=120, name="limit"), 640)
+        limit = min(_positive_int(params.get("limit"), default=640, name="limit"), 640)
         source_adjust = "" if adjust == "none" else adjust
 
         rows: list[dict[str, Any]] = []
@@ -184,12 +185,16 @@ class TencentRequestAdapter:
                     asset_type=asset_type,
                 )
             )
-        rows = [
-            row
-            for row in rows
-            if row["trade_date"] >= start_date and row["trade_date"] <= end_date
-        ]
+        if explicit_range:
+            rows = [
+                row
+                for row in rows
+                if row["trade_date"] >= start_date and row["trade_date"] <= end_date
+            ]
         rows.sort(key=lambda row: row["trade_date"])
+        if not explicit_range:
+            # 未指定日期时返回最新 limit 根 K 线,而非"今天"这个空区间
+            rows = rows[-limit:] if limit else rows
         self.last_meta = {
             "source_name": "腾讯财经",
             "source_url": TENCENT_KLINE_URL,

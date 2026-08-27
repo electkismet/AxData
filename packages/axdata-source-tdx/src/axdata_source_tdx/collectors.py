@@ -278,7 +278,9 @@ def _independent_tdx_collector_spec(*, interface: Any, downloader: Any) -> Colle
             or []
         ),
         "default_dir_name": _TDX_DATASET_IDS[interface_name],
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        # 写入模式全库统一为 upsert_by_key:同主键新值替换、补采幂等、重跑即修复
+        "write_mode": "upsert_by_key",
         "primary_key": primary_key,
         "required_columns": required_columns,
         "expected_columns": expected_columns,
@@ -300,7 +302,8 @@ def _independent_tdx_collector_spec(*, interface: Any, downloader: Any) -> Colle
             numeric_positive_columns=numeric_positive_columns,
         )
     ]
-    for key in ("date_field", "datetime_field", "write_mode", "partition_by"):
+    # write_mode 不再从 downloader 透传,采集器统一 upsert_by_key
+    for key in ("date_field", "datetime_field", "partition_by"):
         if output.get(key) is not None:
             collector_output[key] = output.get(key)
 

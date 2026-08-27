@@ -942,8 +942,8 @@ class CninfoRequestAdapter:
         symbol = _symbol_from_code(str(params.get("code") or ""))
         if symbol is None:
             raise SourceRequestValidationError("code is required and must be a six-digit A-share code")
-        start_date = _normalize_date(params.get("start_date") or "19900101", "start_date", required=True)
-        end_date = _normalize_date(params.get("end_date") or "20991231", "end_date", required=True)
+        start_date = _normalize_date(params.get("start_date") or _recent_window_start(), "start_date", required=True)
+        end_date = _normalize_date(params.get("end_date") or _today_yyyymmdd(), "end_date", required=True)
         if start_date and end_date and start_date > end_date:
             raise SourceRequestValidationError("start_date must be before or equal to end_date")
         payload = self._fetch_cninfo_webapi_json(
@@ -1079,7 +1079,7 @@ class CninfoRequestAdapter:
         return rows
 
     def _request_stock_hold_num(self, params: Mapping[str, Any]) -> list[dict[str, Any]]:
-        report_date = _normalize_date(params.get("date") or "20210630", "date", required=True)
+        report_date = _normalize_date(params.get("date") or _latest_report_period(), "date", required=True)
         payload = self._fetch_cninfo_webapi_json(
             CNINFO_WEBAPI_STOCK_HOLD_NUM_URL,
             method="POST",
@@ -1232,8 +1232,8 @@ class CninfoRequestAdapter:
         requested_symbol = _symbol_from_code(str(params.get("code") or ""))
         if requested_symbol is None:
             raise SourceRequestValidationError("code is required and must be a six-digit A-share code")
-        start_date = _normalize_date(params.get("start_date") or "19900101", "start_date", required=True)
-        end_date = _normalize_date(params.get("end_date") or "20991231", "end_date", required=True)
+        start_date = _normalize_date(params.get("start_date") or _recent_window_start(), "start_date", required=True)
+        end_date = _normalize_date(params.get("end_date") or _today_yyyymmdd(), "end_date", required=True)
         if start_date and end_date and start_date > end_date:
             raise SourceRequestValidationError("start_date must be before or equal to end_date")
         payload = self._fetch_cninfo_webapi_json(
@@ -1296,7 +1296,7 @@ class CninfoRequestAdapter:
         if unknown_keys:
             unknown = ", ".join(unknown_keys)
             raise SourceRequestValidationError(f"Unknown param(s) for fund_report_industry_allocation_cninfo: {unknown}")
-        report_date = _normalize_date(params.get("date") or "20210630", "date", required=True)
+        report_date = _normalize_date(params.get("date") or _latest_report_period(), "date", required=True)
         limit = min(_positive_int(params.get("limit"), default=100, name="limit"), 1000)
         payload = self._fetch_cninfo_webapi_json(
             CNINFO_WEBAPI_FUND_INDUSTRY_ALLOCATION_URL,
@@ -1323,7 +1323,7 @@ class CninfoRequestAdapter:
         if unknown_keys:
             unknown = ", ".join(unknown_keys)
             raise SourceRequestValidationError(f"Unknown param(s) for fund_report_stock_cninfo: {unknown}")
-        report_date = _normalize_date(params.get("date") or "20210630", "date", required=True)
+        report_date = _normalize_date(params.get("date") or _latest_report_period(), "date", required=True)
         limit = min(_positive_int(params.get("limit"), default=100, name="limit"), 1000)
         payload = self._fetch_cninfo_webapi_json(
             CNINFO_WEBAPI_FUND_STOCK_URL,
@@ -2423,3 +2423,22 @@ def _clean_text(value: Any) -> str | None:
     text = re.sub(r"<[^>]+>", "", str(value))
     text = re.sub(r"\s+", " ", text).strip()
     return text or None
+
+def _today_yyyymmdd() -> str:
+    return datetime.now().strftime("%Y%m%d")
+
+
+def _recent_window_start(days: int = 30) -> str:
+    """区间类接口无日期时的统一默认:最近 30 天窗口起点。"""
+    return (datetime.now() - timedelta(days=days - 1)).strftime("%Y%m%d")
+
+
+def _latest_report_period() -> str:
+    """报告期类接口无日期时的统一默认:最新已结束季度末。"""
+    today = datetime.now().date()
+    for year in (today.year, today.year - 1):
+        for month, day in ((12, 31), (9, 30), (6, 30), (3, 31)):
+            period = datetime(year, month, day).date()
+            if period < today:
+                return period.strftime("%Y%m%d")
+    return f"{today.year - 1}1231"

@@ -24,6 +24,8 @@ dependencies = [
     "pandas>=1.5",
     "duckdb>=0.9",
     "lxml>=5.2.0",
+    "html5lib>=1.1",
+    "beautifulsoup4>=4.12",
     "packaging>=23",
 ]
 

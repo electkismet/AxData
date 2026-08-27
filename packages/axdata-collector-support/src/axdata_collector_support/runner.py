@@ -69,17 +69,34 @@ def make_runner(source_code: str):
         interfaces = [str(item) for item in (collector_info.get("interfaces") or []) if str(item)]
         interface_name = interfaces[0] if interfaces else _interface_from_collector_id(source_code, collector_id)
 
-        request_params = {key: value for key, value in dict(params or {}).items() if str(value).strip() != ""}
-        dated = (collector_info.get("quality") or {}).get("date_field") == "trade_date"
-        start_date = str(request_params.pop("start_date", "") or "").strip()
-        end_date = str(request_params.pop("end_date", "") or "").strip()
+        raw_params = dict(params or {})
+        request_params = {key: value for key, value in raw_params.items() if str(value).strip() != ""}
+        defaults = collector_info.get("default_params") or {}
+        # 日期参数识别:以清单默认参数(接口真实参数面)为准,不受补采注入的 start/end 干扰。
+        # - trade_date 族(开盘红/东财池类):区间补采走逐日循环
+        # - date 族(单日期参数):同样走逐日循环
+        # - start_date/end_date 族(腾讯/巨潮/新浪历史类):原生区间参数,直接透传
+        default_keys = set(defaults) or (set(raw_params) - {"start_date", "end_date"})
+        if "trade_date" in default_keys:
+            date_param = "trade_date"
+        elif "date" in default_keys and "start_date" not in default_keys:
+            date_param = "date"
+        else:
+            date_param = None
+        range_mode = date_param is not None
+        start_date = str(request_params.pop("start_date", "") or "").strip() if range_mode else ""
+        end_date = str(request_params.pop("end_date", "") or "").strip() if range_mode else ""
 
         adapter = _create_adapter(source_code)
 
-        if dated and (start_date or end_date) and not request_params.get("trade_date"):
+        if range_mode and (start_date or end_date):
+            # 显式区间补采优先:覆盖任务参数里残留的旧日期,按区间逐日采集
+            request_params.pop(date_param, None)
             records: list[dict[str, Any]] = []
             for day in _date_range(start_date or end_date, end_date or start_date):
-                records.extend(dict(row) for row in adapter.request(interface_name, {"trade_date": day}))
+                records.extend(
+                    dict(row) for row in adapter.request(interface_name, {date_param: day, **request_params})
+                )
                 if progress_callback is not None:
                     try:
                         progress_callback(len(records), f"已取 {day}")
@@ -100,10 +117,15 @@ def make_runner(source_code: str):
             "dataset_id": collector_info.get("dataset_id") or "",
             "row_count": len(records),
         }
-        data_date = next(
-            (str(records[0][key]) for key in _DATE_KEYS if records and records[0].get(key)),
-            None,
-        )
+        # 取全部记录日期中的最大值作为数据日期(最新交易日):
+        # 不同源排序方向不一(升序/降序都有),max 对两种都正确,
+        # 文件名/快照日期按最新交易日落盘
+        data_date = None
+        for key in _DATE_KEYS:
+            values = [str(row[key]) for row in records if row.get(key)]
+            if values:
+                data_date = max(values)
+                break
         meta["data_date"] = data_date or end_date or start_date or date.today().strftime("%Y%m%d")
         meta.update(dict(getattr(adapter, "last_meta", {}) or {}))
         return {"records": records, "meta": meta}

@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import re
 from collections.abc import Mapping
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
@@ -420,10 +420,46 @@ class EastmoneyRequestAdapter:
         ]
 
     def _request_dragon_tiger_daily(self, params: Mapping[str, Any]) -> list[dict[str, Any]]:
-        trade_date = _normalize_date(params.get("trade_date"), "trade_date", required=True)
+        requested = _normalize_date(params.get("trade_date"), "trade_date", required=False)
+        if requested is not None and requested >= _today_yyyymmdd():
+            raise SourceRequestValidationError("trade_date must be earlier than today for this Eastmoney historical interface")
+        # 显式传 page 时按单页语义返回;不传页码则自动翻页取全天完整榜单
+        explicit_page = params.get("page") not in (None, "")
         page = _positive_int(params.get("page"), default=1, name="page")
-        limit = min(_positive_int(params.get("limit"), default=50, name="limit"), 200)
-        payload = self._fetch_data_center(
+        limit = min(_positive_int(params.get("limit"), default=200, name="limit"), 200)
+        trade_date = requested or _today_yyyymmdd()
+        rows: list[dict[str, Any]] = []
+        payload: Mapping[str, Any] = {}
+        # 未指定日期时从今天起回溯到最新有数据的交易日(与开盘红历史接口同一规则)
+        for _ in range(1 if requested is not None else 12):
+            payload = self._dragon_tiger_page(trade_date, page=page, limit=limit)
+            rows = [_normalize_dragon_tiger_row(row) for row in payload["rows"]]
+            if rows or requested is not None:
+                break
+            trade_date = _shift_yyyymmdd(trade_date, days=-1)
+        total_count = _parse_int(payload.get("total_count"))
+        if not explicit_page and total_count and rows:
+            # 自动翻页直到取齐 total_count,防止繁忙交易日榜单被单页截断
+            while len(rows) < total_count:
+                page += 1
+                payload = self._dragon_tiger_page(trade_date, page=page, limit=limit)
+                page_rows = [_normalize_dragon_tiger_row(row) for row in payload["rows"]]
+                if not page_rows:
+                    break
+                rows.extend(page_rows)
+        self.last_meta = {
+            "source_name": "东方财富",
+            "source_url": EASTMONEY_DATA_CENTER_URL,
+            "trade_date": trade_date,
+            "page": page,
+            "limit": limit,
+            "total_count": payload.get("total_count"),
+            "total_pages": payload.get("total_pages"),
+        }
+        return rows
+
+    def _dragon_tiger_page(self, trade_date: str, *, page: int, limit: int) -> Mapping[str, Any]:
+        return self._fetch_data_center(
             {
                 "sortColumns": "TRADE_DATE,SECURITY_CODE",
                 "sortTypes": "-1,1",
@@ -439,17 +475,6 @@ class EastmoneyRequestAdapter:
             referer="https://data.eastmoney.com/stock/lhb.html",
             empty_is_ok=True,
         )
-        rows = [_normalize_dragon_tiger_row(row) for row in payload["rows"]]
-        self.last_meta = {
-            "source_name": "东方财富",
-            "source_url": EASTMONEY_DATA_CENTER_URL,
-            "trade_date": trade_date,
-            "page": page,
-            "limit": limit,
-            "total_count": payload.get("total_count"),
-            "total_pages": payload.get("total_pages"),
-        }
-        return rows
 
     def _request_margin_trading(self, params: Mapping[str, Any]) -> list[dict[str, Any]]:
         code = params.get("code")
@@ -463,7 +488,7 @@ class EastmoneyRequestAdapter:
         if start_date and end_date and start_date > end_date:
             raise SourceRequestValidationError("start_date must be before or equal to end_date")
         page = _positive_int(params.get("page"), default=1, name="page")
-        limit = min(_positive_int(params.get("limit"), default=50, name="limit"), 200)
+        limit = min(_positive_int(params.get("limit"), default=200, name="limit"), 200)
 
         filter_parts = [f'(SCODE="{symbol}")']
         if start_date:
@@ -510,6 +535,10 @@ class EastmoneyRequestAdapter:
         end_date = _normalize_date(params.get("end_date"), "end_date", required=False)
         if start_date and end_date and start_date > end_date:
             raise SourceRequestValidationError("start_date must be before or equal to end_date")
+        # 不传日期时默认最近一年窗口:研报接口无时间范围会返回最旧的一页
+        if not start_date and not end_date:
+            end_date = _today_yyyymmdd()
+            start_date = _shift_yyyymmdd(end_date, days=-364)
         page = _positive_int(params.get("page"), default=1, name="page")
         limit = min(_positive_int(params.get("limit"), default=20, name="limit"), 100)
         query = {
@@ -914,6 +943,11 @@ def _normalize_date(value: Any, name: str, *, required: bool) -> str | None:
 
 def _today_yyyymmdd() -> str:
     return datetime.now().strftime("%Y%m%d")
+
+
+def _shift_yyyymmdd(value: str, *, days: int) -> str:
+    parsed = datetime.strptime(value, "%Y%m%d")
+    return parsed.strftime("%Y%m%d") if days == 0 else (parsed + timedelta(days=days)).strftime("%Y%m%d")
 
 
 def _date_dash(value: str | None) -> str:

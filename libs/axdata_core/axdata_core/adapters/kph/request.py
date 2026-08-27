@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import json
 import re
-from collections.abc import Mapping, Sequence
+from collections.abc import Iterator, Mapping, Sequence
 from datetime import date as date_type
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
@@ -45,6 +45,9 @@ _BASE_PARAMS = {
 }
 _SECTOR_TYPE_MAP = {"selected": "7", "industry": "4", "region": "6", "7": "7", "4": "4", "6": "6"}
 _LIMIT_PID = {"up": "4", "down": "3", "wind_vane": "6"}
+_NO_DATA_ERRCODES = {"1020"}
+# 未指定日期时向过去回溯找最新有数据的交易日:覆盖周末与最长长假
+_MAX_HISTORY_LOOKBACK_DAYS = 12
 
 
 class KphRequestAdapter:
@@ -93,6 +96,9 @@ class KphRequestAdapter:
             },
             context="KPH market emotion",
         )
+        if not payload:
+            self.last_meta = {"source_name": "开盘红", "source_url": KPH_REALTIME_URL if is_today else KPH_HISTORY_URL, "trade_date": trade_date.replace("-", "")}
+            return []
         info = payload.get("info") if isinstance(payload.get("info"), Mapping) else {}
         row = {
             "trade_date": trade_date.replace("-", ""),
@@ -114,90 +120,118 @@ class KphRequestAdapter:
         return [row]
 
     def _request_sector_ranking(self, params: Mapping[str, Any]) -> list[dict[str, Any]]:
-        trade_date = _normalize_date(params.get("trade_date"), required=True)
+        start_day, explicit = _history_start_day(params.get("trade_date"))
         sector_type = str(params.get("sector_type") or "selected").strip().lower()
         zs_type = _SECTOR_TYPE_MAP.get(sector_type)
         if zs_type is None:
             raise SourceRequestValidationError("sector_type must be selected, industry, or region")
         fetch_all = _parse_bool(params.get("fetch_all"), default=False)
-        host = KPH_REALTIME_URL if trade_date == _today_dash() else KPH_HISTORY_URL
         type_param = "1" if zs_type == "7" else "2"
         page_size = 50
-        index = 0
         rows: list[dict[str, Any]] = []
-        while True:
-            payload = self._post(
-                host,
-                {
-                    "a": "RealRankingInfo",
-                    "c": "ZhiShuRanking",
-                    "Order": "1",
-                    "st": str(page_size),
-                    "Index": str(index),
-                    "Date": trade_date,
-                    "Type": type_param,
-                    "ZSType": zs_type,
-                },
-                context="KPH sector ranking",
-            )
-            batch = _payload_list(payload)
-            rows.extend(_parse_sector_row(row, trade_date=trade_date, sector_type=sector_type) for row in batch)
-            if not fetch_all or len(batch) < page_size:
+        trade_date = start_day.strftime("%Y-%m-%d")
+        for day in _history_day_candidates(start_day, explicit=explicit):
+            trade_date = day.strftime("%Y-%m-%d")
+            host = KPH_REALTIME_URL if trade_date == _today_dash() else KPH_HISTORY_URL
+            index = 0
+            rows = []
+            while True:
+                payload = self._post(
+                    host,
+                    {
+                        "a": "RealRankingInfo",
+                        "c": "ZhiShuRanking",
+                        "Order": "1",
+                        "st": str(page_size),
+                        "Index": str(index),
+                        "Date": trade_date,
+                        "Type": type_param,
+                        "ZSType": zs_type,
+                    },
+                    context="KPH sector ranking",
+                )
+                batch = _payload_list(payload)
+                rows.extend(_parse_sector_row(row, trade_date=trade_date, sector_type=sector_type) for row in batch)
+                if not fetch_all or len(batch) < page_size:
+                    break
+                index += page_size
+            if rows or explicit:
                 break
-            index += page_size
-        self.last_meta = {"source_name": "开盘红", "source_url": host, "trade_date": trade_date.replace("-", ""), "sector_type": sector_type}
+        self.last_meta = {"source_name": "开盘红", "source_url": KPH_REALTIME_URL if trade_date == _today_dash() else KPH_HISTORY_URL, "trade_date": trade_date.replace("-", ""), "sector_type": sector_type}
         return rows
 
     def _request_sector_constituents_history(self, params: Mapping[str, Any]) -> list[dict[str, Any]]:
         plate_id = _required_text(params.get("plate_id"), "plate_id")
-        trade_date = _historical_date(params.get("trade_date"))
-        payload = self._post(
-            KPH_HISTORY_URL,
-            {
-                "a": "ZhiShuStockList_W8",
-                "c": "ZhiShuRanking",
-                "Order": "1",
-                "st": "1000",
-                "old": "1",
-                "Index": "0",
-                "Date": trade_date,
-                "Type": "6",
-                "PlateID": plate_id,
-                "IsZZ": "0",
-                "IsKZZType": "0",
-                "TSZB": "0",
-                "TSZB_Type": "0",
-                "filterType": "0",
-            },
-            context="KPH sector constituents history",
-        )
+        start_day, explicit = _history_start_day(params.get("trade_date"))
+        rows: list[dict[str, Any]] = []
+        trade_date = start_day.strftime("%Y-%m-%d")
+        for day in _history_day_candidates(start_day, explicit=explicit):
+            trade_date = day.strftime("%Y-%m-%d")
+            payload = self._post(
+                KPH_HISTORY_URL,
+                {
+                    "a": "ZhiShuStockList_W8",
+                    "c": "ZhiShuRanking",
+                    "Order": "1",
+                    "st": "1000",
+                    "old": "1",
+                    "Index": "0",
+                    "Date": trade_date,
+                    "Type": "6",
+                    "PlateID": plate_id,
+                    "IsZZ": "0",
+                    "IsKZZType": "0",
+                    "TSZB": "0",
+                    "TSZB_Type": "0",
+                    "filterType": "0",
+                },
+                context="KPH sector constituents history",
+            )
+            rows = [_parse_sector_constituent_row(row, trade_date=trade_date, plate_id=plate_id) for row in _payload_list(payload)]
+            if rows or explicit:
+                break
         self.last_meta = {"source_name": "开盘红", "source_url": KPH_HISTORY_URL, "trade_date": trade_date.replace("-", ""), "plate_id": plate_id}
-        return [_parse_sector_constituent_row(row, trade_date=trade_date, plate_id=plate_id) for row in _payload_list(payload)]
+        return rows
 
     def _request_limit_history(self, params: Mapping[str, Any], *, kind: str) -> list[dict[str, Any]]:
-        trade_date = _historical_date(params.get("trade_date"))
+        start_day, explicit = _history_start_day(params.get("trade_date"))
         pid = _LIMIT_PID[kind]
-        payload = self._post(
-            KPH_HISTORY_URL,
-            {
-                "a": "HisDaBanList",
-                "c": "HisHomeDingPan",
-                "Order": "1",
-                "st": "50",
-                "Index": "0",
-                "Is_st": "1",
-                "PidType": pid,
-                "Type": "6",
-                "FilterMotherboard": "0",
-                "Filter": "0",
-                "FilterTIB": "0",
-                "FilterGem": "0",
-                "Day": trade_date,
-            },
-            context=f"KPH {kind} history",
-        )
+        page_size = 50
+        rows: list[dict[str, Any]] = []
+        trade_date = start_day.strftime("%Y-%m-%d")
+        for day in _history_day_candidates(start_day, explicit=explicit):
+            trade_date = day.strftime("%Y-%m-%d")
+            index = 0
+            rows = []
+            while True:
+                payload = self._post(
+                    KPH_HISTORY_URL,
+                    {
+                        "a": "HisDaBanList",
+                        "c": "HisHomeDingPan",
+                        "Order": "1",
+                        "st": str(page_size),
+                        "Index": str(index),
+                        "Is_st": "1",
+                        "PidType": pid,
+                        "Type": "6",
+                        "FilterMotherboard": "0",
+                        "Filter": "0",
+                        "FilterTIB": "0",
+                        "FilterGem": "0",
+                        "Day": trade_date,
+                    },
+                    context=f"KPH {kind} history",
+                )
+                batch = _payload_list(payload)
+                rows.extend(_parse_limit_history_row(row, trade_date=trade_date, kind=kind) for row in batch)
+                if len(batch) < page_size:
+                    break
+                index += page_size
+            if rows or explicit:
+                break
         self.last_meta = {"source_name": "开盘红", "source_url": KPH_HISTORY_URL, "trade_date": trade_date.replace("-", ""), "kind": kind}
-        return [_parse_limit_history_row(row, trade_date=trade_date, kind=kind) for row in _payload_list(payload)]
+        return rows
 
     def _request_limit_ladder(self, params: Mapping[str, Any]) -> list[dict[str, Any]]:
         trade_date = _normalize_date(params.get("trade_date"), required=False) or _today_dash()
@@ -230,18 +264,24 @@ class KphRequestAdapter:
         return [_parse_market_event(item, trade_date=trade_date) for item in items if isinstance(item, Mapping)]
 
     def _request_limit_resumption_history(self, params: Mapping[str, Any]) -> list[dict[str, Any]]:
-        trade_date = _normalize_date(params.get("trade_date"), required=False) or _today_dash()
+        start_day, explicit = _history_start_day(params.get("trade_date"))
         limit = _positive_int(params.get("limit"), default=100, name="limit")
         offset = _non_negative_int(params.get("offset"), default=0, name="offset")
-        payload = self._post(
-            KPH_HISTORY_URL,
-            {"a": "GetPlateInfo_w38", "c": "HisLimitResumption", "st": str(limit), "Index": str(offset), "Date": trade_date},
-            context="KPH limit resumption history",
-        )
         rows: list[dict[str, Any]] = []
-        for plate in payload.get("list", []) if isinstance(payload.get("list"), list) else []:
-            if isinstance(plate, Mapping):
-                rows.extend(_parse_resumption_stock(row, plate=plate, trade_date=trade_date) for row in plate.get("StockList", []) if isinstance(row, list))
+        trade_date = start_day.strftime("%Y-%m-%d")
+        for day in _history_day_candidates(start_day, explicit=explicit):
+            trade_date = day.strftime("%Y-%m-%d")
+            payload = self._post(
+                KPH_HISTORY_URL,
+                {"a": "GetPlateInfo_w38", "c": "HisLimitResumption", "st": str(limit), "Index": str(offset), "Date": trade_date},
+                context="KPH limit resumption history",
+            )
+            rows = []
+            for plate in payload.get("list", []) if isinstance(payload.get("list"), list) else []:
+                if isinstance(plate, Mapping):
+                    rows.extend(_parse_resumption_stock(row, plate=plate, trade_date=trade_date) for row in plate.get("StockList", []) if isinstance(row, list))
+            if rows or explicit:
+                break
         self.last_meta = {"source_name": "开盘红", "source_url": KPH_HISTORY_URL, "trade_date": trade_date.replace("-", "")}
         return rows
 
@@ -271,6 +311,9 @@ class KphRequestAdapter:
             raise SourceUnavailableError(f"{context} returned unexpected payload.")
         errcode = payload.get("errcode")
         if errcode not in (None, "0", 0):
+            if str(errcode) in _NO_DATA_ERRCODES:
+                # KPH 对非交易日/无数据日期统一返回 1020(参数出错),视为空结果以便区间补采跳过
+                return {}
             raise SourceUnavailableError(f"{context} returned errcode={errcode}")
         return payload
 
@@ -316,7 +359,7 @@ def _parse_sector_constituent_row(row: Sequence[Any], *, trade_date: str, plate_
 
 
 def _parse_limit_history_row(row: Sequence[Any], *, trade_date: str, kind: str) -> dict[str, Any]:
-    is_up_like = kind in {"up", "wind_vane"}
+    # 涨停/跌停共用同一行布局:连板标签、原因等字段按位解析,无值自然为空
     return {
         "trade_date": trade_date.replace("-", ""),
         **_identity_from_symbol(_clean_text(_at(row, 0))),
@@ -324,17 +367,17 @@ def _parse_limit_history_row(row: Sequence[Any], *, trade_date: str, kind: str) 
         "limit_time": _parse_int(_at(row, 6)),
         "open_time": _parse_int(_at(row, 7)),
         "seal_amount": _parse_float(_at(row, 8)),
-        "limit_tag": _clean_text(_at(row, 9)) if is_up_like else None,
-        "limit_count": _parse_int(_at(row, 10)) if is_up_like else None,
+        "limit_tag": _clean_text(_at(row, 9)),
+        "limit_count": _parse_int(_at(row, 10)),
         "themes": _clean_text(_at(row, 11)),
         "net_inflow": _parse_float(_at(row, 12)),
         "turnover": _parse_float(_at(row, 13)),
         "turnover_rate": _parse_float(_at(row, 14)),
         "market_cap": _parse_float(_at(row, 15)),
-        "reason": _clean_text(_at(row, 16)) if is_up_like else None,
+        "reason": _clean_text(_at(row, 16)),
         "seal_money": _parse_float(_at(row, 23)),
         "industry_id": _clean_text(_at(row, 26)),
-        "industry_limit_up_count": _parse_int(_at(row, 27)) if is_up_like else None,
+        "industry_limit_up_count": _parse_int(_at(row, 27)),
     }
 
 
@@ -389,12 +432,25 @@ def _payload_list(payload: Mapping[str, Any]) -> list[Sequence[Any]]:
     return [row for row in rows if isinstance(row, Sequence) and not isinstance(row, (str, bytes, bytearray))]
 
 
-def _historical_date(value: Any) -> str:
-    trade_date = _normalize_date(value, required=True)
+def _history_start_day(value: Any) -> tuple[date_type, bool]:
+    """解析历史接口日期:显式过去日期直接采用;留空从今天起回溯最新有数据的交易日。"""
+
+    trade_date = _normalize_date(value, required=False)
+    if trade_date is None:
+        return date_type.today(), False
     parsed = datetime.strptime(trade_date, "%Y-%m-%d").date()
     if parsed >= date_type.today():
         raise SourceRequestValidationError("trade_date must be earlier than today for this KPH historical interface")
-    return trade_date
+    return parsed, True
+
+
+def _history_day_candidates(start_day: date_type, *, explicit: bool) -> Iterator[date_type]:
+    """显式日期只尝试当天;未指定时最多回溯 _MAX_HISTORY_LOOKBACK_DAYS 天。"""
+
+    day = start_day
+    for _ in range(1 if explicit else _MAX_HISTORY_LOOKBACK_DAYS):
+        yield day
+        day -= timedelta(days=1)
 
 
 def _normalize_date(value: Any, *, required: bool) -> str | None:

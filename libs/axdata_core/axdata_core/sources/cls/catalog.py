@@ -224,7 +224,7 @@ INTERFACES: dict[str, SourceRequestInterface] = {
         first_stage_strategy="请求财联社电报快讯，支持日期和分类，默认不入库。",
         source_ability="CLS telegraph news",
         description="Return CLS telegraph news rows.",
-        parameters=(P("date", "string", False, "查询日期，YYYYMMDD 或 YYYY-MM-DD，默认今天。"), P("category", "string", False, "分类：all、important、company。", "important"), P("limit", "integer", False, "最多返回条数，默认 20。", 20)),
+        parameters=(P("date", "string", False, "查询日期，YYYYMMDD 或 YYYY-MM-DD，默认今天。"), P("category", "string", False, "分类：all、important、company。", "important"), P("limit", "integer", False, "最多返回条数，默认 20；超过 50 自动翻页取全当天。", 20)),
         fields=(F("news_id", "string", "电报 ID。"), F("title", "string", "标题。"), F("content", "string", "正文。"), F("publish_time", "datetime/string", "发布时间。"), F("ctime", "integer", "发布时间戳。"), F("category", "string", "分类。")),
         example=RequestExample(request={"params": {"category": "important", "limit": 5}, "persist": False}, response=({"title": "重要快讯", "category": "important"},)),
     ),

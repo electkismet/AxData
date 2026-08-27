@@ -232,9 +232,10 @@ def test_default_collector_tasks_mock_sample_e2e_reaches_parquet_browser_api_cli
     run_payloads = {name: run.to_dict() for name, run in runs.items()}
     assert runs["stock_kline_daily_tdx"].quality["calendar_coverage_status"] == "ok"
     daily_payload = run_payloads["stock_kline_daily_tdx"]
-    assert daily_payload["write_mode"] == "snapshot"
+    assert daily_payload["write_mode"] == "upsert_by_key"
     assert daily_payload["primary_key"] == ["instrument_id", "trade_time", "period"]
-    assert daily_payload["partition_by"] == ["trade_date"]
+    # K 线数据帧只有 trade_time 没有 trade_date 列,声明分区自动降级为普通单文件
+    assert daily_payload["partition_by"] == []
     assert daily_payload["partitions_touched"] == []
 
     datasets = {item.dataset: item for item in list_datasets(data_root=data_root)}
@@ -246,7 +247,7 @@ def test_default_collector_tasks_mock_sample_e2e_reaches_parquet_browser_api_cli
     assert "exchange.trade_calendar" not in datasets
     assert datasets["daily"].provider == "axdata.collector.tdx"
     assert datasets["daily"].metadata["collector_name"] == "tdx.stock_kline_daily_tdx.snapshot"
-    assert datasets["daily"].write_mode == "snapshot"
+    assert datasets["daily"].write_mode == "upsert_by_key"
     assert datasets["daily"].rows_written == 2
     assert datasets["daily"].quality_status == "ok"
 
@@ -288,7 +289,7 @@ def test_default_collector_tasks_mock_sample_e2e_reaches_parquet_browser_api_cli
     assert status_payload["status_counts"]["success"] == 1
     run_payload = client.get(f"/v1/collector/runs/{runs['stock_kline_daily_tdx'].run_id}").json()["data"]
     assert run_payload["rows_written"] == 2
-    assert run_payload["write_mode"] == "snapshot"
+    assert run_payload["write_mode"] == "upsert_by_key"
     api_dataset = client.get("/v1/data/datasets/daily").json()["data"]
     assert api_dataset["rows_written"] == 2
     api_preview = client.get(
@@ -339,7 +340,7 @@ def test_default_collector_tasks_mock_sample_e2e_reaches_parquet_browser_api_cli
     assert cli_main(["--data-root", str(data_root), "collector", "run", "list", "--json"]) == 0
     cli_runs = json.loads(capsys.readouterr().out)
     assert {row["task_id"] for row in cli_runs} >= DEFAULT_TASK_IDS
-    assert any(row["rows_written"] == 2 and row["write_mode"] == "snapshot" for row in cli_runs)
+    assert any(row["rows_written"] == 2 and row["write_mode"] == "upsert_by_key" for row in cli_runs)
 
     assert cli_main(["--data-root", str(data_root), "collector", "status", "--json"]) == 0
     cli_status = json.loads(capsys.readouterr().out)
@@ -348,7 +349,7 @@ def test_default_collector_tasks_mock_sample_e2e_reaches_parquet_browser_api_cli
 
     assert cli_main(["--data-root", str(data_root), "data", "inspect", "daily", "--json"]) == 0
     cli_dataset = json.loads(capsys.readouterr().out)
-    assert cli_dataset["write_mode"] == "snapshot"
+    assert cli_dataset["write_mode"] == "upsert_by_key"
     assert cli_dataset["quality_status"] == "ok"
 
     assert cli_main(

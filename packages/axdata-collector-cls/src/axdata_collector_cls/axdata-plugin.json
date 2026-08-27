@@ -31,7 +31,7 @@
       },
       "default_params": {},
       "output": {
-        "layer": "snapshot",
+        "layer": "core",
         "formats": [
           "parquet",
           "csv"
@@ -42,16 +42,18 @@
           "duckdb"
         ],
         "default_output_path_parts": [
-          "snapshot",
-          "dataset=cls.limit_up_pool"
+          "core",
+          "table=cls_limit_up_pool"
         ],
         "default_dir_name": "cls.limit_up_pool",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
+          "trade_date",
           "instrument_id"
         ],
         "required_columns": [
+          "trade_date",
           "instrument_id"
         ],
         "snapshot_date_meta_keys": [
@@ -67,12 +69,18 @@
             "table": "cls_limit_up_pool",
             "display_name_zh": "涨停池含原因",
             "description": "请求财联社当日涨停池，包含涨停原因，默认不入库。",
-            "layer": "snapshot",
+            "layer": "core",
             "primary_key": [
+              "trade_date",
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
+              {
+                "name": "trade_date",
+                "type": "date",
+                "description": "采集日，格式 YYYYMMDD。"
+              },
               {
                 "name": "instrument_id",
                 "type": "string",
@@ -129,29 +137,39 @@
               ]
             },
             "storage": {
-              "layout": "snapshot",
+              "layout": "daily_file",
               "path_parts": [
-                "snapshot",
-                "dataset=cls.limit_up_pool"
+                "core",
+                "table=cls_limit_up_pool"
               ]
             },
             "default_output_path_parts": [
-              "snapshot",
-              "dataset=cls.limit_up_pool"
+              "core",
+              "table=cls_limit_up_pool"
             ],
             "formats": [
               "parquet",
               "csv",
               "duckdb"
-            ]
+            ],
+            "partition_by": [
+              "trade_date"
+            ],
+            "date_field": "trade_date"
           }
-        ]
+        ],
+        "partition_by": [
+          "trade_date"
+        ],
+        "date_field": "trade_date"
       },
       "quality": {
         "required_columns": [
+          "trade_date",
           "instrument_id"
         ],
         "primary_key": [
+          "trade_date",
           "instrument_id"
         ]
       },
@@ -192,8 +210,8 @@
           "dataset=cls.market_emotion"
         ],
         "default_dir_name": "cls.market_emotion",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "market_degree"
         ],
@@ -217,7 +235,7 @@
             "primary_key": [
               "market_degree"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "market_degree",
@@ -365,8 +383,8 @@
           "dataset=cls.market_mainline"
         ],
         "default_dir_name": "cls.market_mainline",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "block_key"
         ],
@@ -390,7 +408,7 @@
             "primary_key": [
               "block_key"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "block_key",
@@ -489,8 +507,8 @@
           "dataset=cls.market_wind"
         ],
         "default_dir_name": "cls.market_wind",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "plate_code"
         ],
@@ -514,7 +532,7 @@
             "primary_key": [
               "plate_code"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "plate_code",
@@ -609,8 +627,8 @@
           "dataset=cls.market_wind_stocks"
         ],
         "default_dir_name": "cls.market_wind_stocks",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -634,7 +652,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -740,10 +758,11 @@
         "kind": "manual"
       },
       "default_params": {
+        "date": "",
         "category": "important"
       },
       "output": {
-        "layer": "snapshot",
+        "layer": "core",
         "formats": [
           "parquet",
           "csv"
@@ -754,12 +773,12 @@
           "duckdb"
         ],
         "default_output_path_parts": [
-          "snapshot",
-          "dataset=cls.news_telegraph"
+          "core",
+          "table=cls_news_telegraph"
         ],
         "default_dir_name": "cls.news_telegraph",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "news_id"
         ],
@@ -779,12 +798,17 @@
             "table": "cls_news_telegraph",
             "display_name_zh": "电报快讯",
             "description": "请求财联社电报快讯，支持日期和分类，默认不入库。",
-            "layer": "snapshot",
+            "layer": "core",
             "primary_key": [
               "news_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
+              {
+                "name": "date",
+                "type": "date",
+                "description": "发布日期，格式 YYYYMMDD。"
+              },
               {
                 "name": "news_id",
                 "type": "string",
@@ -829,23 +853,31 @@
               ]
             },
             "storage": {
-              "layout": "snapshot",
+              "layout": "daily_file",
               "path_parts": [
-                "snapshot",
-                "dataset=cls.news_telegraph"
+                "core",
+                "table=cls_news_telegraph"
               ]
             },
             "default_output_path_parts": [
-              "snapshot",
-              "dataset=cls.news_telegraph"
+              "core",
+              "table=cls_news_telegraph"
             ],
             "formats": [
               "parquet",
               "csv",
               "duckdb"
-            ]
+            ],
+            "partition_by": [
+              "date"
+            ],
+            "date_field": "date"
           }
-        ]
+        ],
+        "partition_by": [
+          "date"
+        ],
+        "date_field": "date"
       },
       "quality": {
         "required_columns": [
@@ -892,8 +924,8 @@
           "dataset=cls.sector_heat"
         ],
         "default_dir_name": "cls.sector_heat",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "plate_code"
         ],
@@ -917,7 +949,7 @@
             "primary_key": [
               "plate_code"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "plate_code",
@@ -1025,8 +1057,8 @@
           "dataset=cls.sector_industry"
         ],
         "default_dir_name": "cls.sector_industry",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "plate_code"
         ],
@@ -1050,7 +1082,7 @@
             "primary_key": [
               "plate_code"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "plate_code",
@@ -1181,8 +1213,8 @@
           "dataset=cls.sector_popular_stocks"
         ],
         "default_dir_name": "cls.sector_popular_stocks",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -1206,7 +1238,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -1339,15 +1371,15 @@
           "table=cls_sector_rotation"
         ],
         "default_dir_name": "cls.sector_rotation",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
-          "trade_date"
+          "plate_code"
         ],
         "required_columns": [
           "trade_date",
-          "trade_date"
+          "plate_code"
         ],
         "snapshot_date_meta_keys": [
           "data_date",
@@ -1369,7 +1401,7 @@
             "layer": "core",
             "primary_key": [
               "trade_date",
-              "trade_date"
+              "plate_code"
             ],
             "write_mode": "upsert_by_key",
             "fields": [
@@ -1405,12 +1437,12 @@
             ],
             "default_filter_fields": [
               "trade_date",
-              "trade_date"
+              "plate_code"
             ],
             "quality_rules": {
               "required_columns": [
                 "trade_date",
-                "trade_date"
+                "plate_code"
               ]
             },
             "storage": {
@@ -1439,11 +1471,11 @@
       "quality": {
         "required_columns": [
           "trade_date",
-          "trade_date"
+          "plate_code"
         ],
         "primary_key": [
           "trade_date",
-          "trade_date"
+          "plate_code"
         ],
         "date_field": "trade_date"
       },
@@ -1488,7 +1520,7 @@
           "table=cls_stock_kline"
         ],
         "default_dir_name": "cls.stock_kline",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
@@ -1686,7 +1718,7 @@
           "table=cls_stock_timeline"
         ],
         "default_dir_name": "cls.stock_timeline",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",

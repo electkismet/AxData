@@ -658,3 +658,109 @@ def test_collector_runner_rejects_unavailable_downloader_profile(monkeypatch, tm
         assert "missing_profile" in str(exc)
     else:  # pragma: no cover
         raise AssertionError("CollectorError was not raised")
+
+
+def test_primary_key_granularity_guard_rejects_degenerate_key():
+    import pandas as pd
+
+    from axdata_core.collector_runner import _guard_primary_key_granularity, _profile_from_plan
+
+    plan = _granularity_guard_plan(["trade_date", "trade_date"])
+    profile = _profile_from_plan(plan)
+    frame = pd.DataFrame(
+        [{"trade_date": "20260826", "v": i} for i in range(10)]
+    )
+    try:
+        _guard_primary_key_granularity(profile, frame)
+    except CollectorError as exc:
+        assert "collapse" in str(exc)
+    else:  # pragma: no cover
+        raise AssertionError("CollectorError was not raised")
+
+
+def test_primary_key_granularity_guard_allows_unique_keys():
+    import pandas as pd
+
+    from axdata_core.collector_runner import _guard_primary_key_granularity, _profile_from_plan
+
+    plan = _granularity_guard_plan(["trade_date", "plate_id"])
+    profile = _profile_from_plan(plan)
+    frame = pd.DataFrame(
+        [{"trade_date": "20260826", "plate_id": f"P{i}", "v": i} for i in range(10)]
+    )
+    _guard_primary_key_granularity(profile, frame)
+
+
+def test_row_reconciliation_detects_count_mismatch(tmp_path):
+    import pandas as pd
+
+    from axdata_core.collector_runner import _reconcile_row_counts
+
+    frame = pd.DataFrame([{"trade_date": "20260826", "instrument_id": f"00000{i}.SZ"} for i in range(3)])
+    frame.to_parquet(tmp_path / "out.parquet", engine="pyarrow", index=False)
+
+    ok = _reconcile_row_counts(
+        frame,
+        key_fields=["trade_date", "instrument_id"],
+        write_metadata={"rows_written": 3, "rows_after": 3, "primary_key": ["trade_date", "instrument_id"]},
+        output_paths={"parquet": tmp_path / "out.parquet"},
+    )
+    assert ok["status"] == "ok"
+    assert ok["stored_rows"] == 3
+
+    bad = _reconcile_row_counts(
+        frame,
+        key_fields=["trade_date", "instrument_id"],
+        write_metadata={"rows_written": 2, "rows_after": 3, "primary_key": ["trade_date", "instrument_id"]},
+        output_paths={"parquet": tmp_path / "out.parquet"},
+    )
+    assert bad["status"] == "error"
+    assert "rows_written=2 != collected_rows=3" in bad["message"]
+
+
+from types import SimpleNamespace
+
+
+def _granularity_guard_plan(primary_key):
+    output = {
+        "layer": "snapshot",
+        "formats": ["parquet"],
+        "primary_key": primary_key,
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
+        "datasets": [
+            {
+                "dataset_id": "guard.demo",
+                "table": "guard_demo",
+                "fields": [
+                    {"name": "trade_date", "type": "date"},
+                    {"name": "plate_id", "type": "string"},
+                    {"name": "v", "type": "float64"},
+                ],
+            }
+        ],
+    }
+    return SimpleNamespace(
+        collector_name="guard.demo.snapshot",
+        collector_id="guard.demo.snapshot",
+        display_name_zh="守卫测试",
+        collector_plugin_id="axdata.collector.guard",
+        dataset_id="guard.demo",
+        provider_id="axdata.collector.guard",
+        effective_trust_level="community",
+        built_in=False,
+        resource_group="guard.http",
+        runner_entry="axdata_guard.demo:run",
+        is_legacy=False,
+        legacy_source=None,
+        interfaces=("guard_demo",),
+        required_interfaces=(),
+        required_datasets=(),
+        downloader_profile=None,
+        target_interface=None,
+        params={},
+        fields=None,
+        formats=["parquet"],
+        output=output,
+        quality={},
+    )

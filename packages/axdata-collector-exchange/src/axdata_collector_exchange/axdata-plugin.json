@@ -48,8 +48,8 @@
           "dataset=exchange.stock_basic_info_exchange"
         ],
         "default_dir_name": "exchange.stock_basic_info_exchange",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "instrument_id"
         ],
@@ -73,7 +73,7 @@
             "primary_key": [
               "instrument_id"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "instrument_id",
@@ -293,7 +293,7 @@
           "table=exchange_stock_historical_list_exchange"
         ],
         "default_dir_name": "exchange.stock_historical_list_exchange",
-        "file_name_template": "{dataset_id}_{run_time}",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
         "write_mode": "upsert_by_key",
         "primary_key": [
           "trade_date",
@@ -444,8 +444,8 @@
         "kind": "manual"
       },
       "default_params": {
-        "start_date": "20260617",
-        "end_date": "20260622"
+        "start_date": "",
+        "end_date": ""
       },
       "output": {
         "layer": "snapshot",
@@ -463,8 +463,8 @@
           "dataset=exchange.stock_trade_calendar_exchange"
         ],
         "default_dir_name": "exchange.stock_trade_calendar_exchange",
-        "file_name_template": "{dataset_id}_{run_time}",
-        "write_mode": "snapshot",
+        "file_name_template": "{dataset_id}_{snapshot_date}",
+        "write_mode": "upsert_by_key",
         "primary_key": [
           "cal_date"
         ],
@@ -488,7 +488,7 @@
             "primary_key": [
               "cal_date"
             ],
-            "write_mode": "snapshot",
+            "write_mode": "upsert_by_key",
             "fields": [
               {
                 "name": "cal_date",

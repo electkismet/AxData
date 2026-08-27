@@ -41,10 +41,10 @@ SCHEDULE_TIME = {
 }
 
 ID_FIELD_PRIORITY = (
-    "instrument_id",
-    "report_id",
     "announcement_id",
     "notice_id",
+    "report_id",
+    "instrument_id",
     "index_code",
     "sector_code",
     "fund_code",
@@ -59,6 +59,18 @@ PAGE_PARAMS = {"page", "limit", "pagesize"}
 VALID_ASSET_CLASSES = {"stock", "index", "etf", "fund", "bond", "future"}
 
 
+SINA_KEEP_INTERFACES = {
+    "sina_stock_restricted_release_queue_sina",
+    "sina_stock_zh_index_spot_sina",
+    "sina_tool_trade_date_hist_sina",
+    "sina_stock_lhb_detail_daily_sina",
+    "sina_stock_lhb_ggtj_sina",
+    "sina_stock_lhb_jgmx_sina",
+    "sina_stock_lhb_jgzz_sina",
+    "sina_stock_lhb_yytj_sina",
+}
+
+
 def load_interfaces(json_path: str | None) -> list[dict[str, Any]]:
     if json_path:
         payload = json.loads(Path(json_path).read_text(encoding="utf-8"))
@@ -68,15 +80,34 @@ def load_interfaces(json_path: str | None) -> list[dict[str, Any]]:
     items = payload.get("data", payload)
     if isinstance(items, dict):
         items = list(items.values())
-    return [item for item in items if item.get("source_code") in SOURCES]
+    items = [item for item in items if item.get("source_code") in SOURCES]
+    # 新浪只保留用户选定的核心接口,其余不生成采集器
+    if SINA_KEEP_INTERFACES is not None:
+        items = [
+            item
+            for item in items
+            if item.get("source_code") != "sina" or str(item.get("name")) in SINA_KEEP_INTERFACES
+        ]
+    return items
 
 
 def infer_primary_key(fields: list[str]) -> list[str]:
     field_set = set(fields)
-    id_field = next((name for name in ID_FIELD_PRIORITY if name in field_set), fields[0] if fields else "row")
+    id_field = next((name for name in ID_FIELD_PRIORITY if name in field_set), None)
     if "trade_date" in field_set:
-        return ["trade_date", id_field]
-    return [id_field]
+        if id_field and id_field != "trade_date":
+            return ["trade_date", id_field]
+        # 无证券代码类字段时用板块/事件类字段做天内区分,避免退化成重复的日期键
+        discriminator = next(
+            (
+                name
+                for name in ("plate_id", "plate_code", "sector_code", "index_code", "event_time", "tag_id", "sector_name", "plate_name", "name")
+                if name in field_set
+            ),
+            None,
+        )
+        return ["trade_date", discriminator] if discriminator else ["trade_date"]
+    return [id_field or (fields[0] if fields else "row")]
 
 
 def build_default_params(interface: dict[str, Any]) -> dict[str, Any]:
@@ -88,7 +119,9 @@ def build_default_params(interface: dict[str, Any]) -> dict[str, Any]:
             continue
         if name in PAGE_PARAMS:
             continue
-        if name == "trade_date" and not param.get("required"):
+        # 日期族参数一律空默认:不输日期由适配器按统一规则取
+        # 最新交易日/最新报告期/最近区间,绝不再钉死接口示例日期
+        if name in {"trade_date", "date", "start_date", "end_date"}:
             params[name] = ""
             continue
         value = example_request.get(name)
@@ -118,7 +151,8 @@ def build_collector(source: str, interface: dict[str, Any]) -> dict[str, Any]:
     primary_key = infer_primary_key(fields)
     dated = "trade_date" in fields
     layer = "core" if dated else "snapshot"
-    write_mode = "upsert_by_key" if dated else "snapshot"
+    # 写入模式全库统一为 upsert_by_key:同主键新值替换、补采幂等、重跑即修复
+    write_mode = "upsert_by_key"
     required_columns = [name for name in primary_key if name in fields] or fields[:1]
     query_fields = [name for name in fields if name in set(primary_key) | {
         "trade_date", "instrument_id", "symbol", "name", "close_price", "last_price",
@@ -135,7 +169,8 @@ def build_collector(source: str, interface: dict[str, Any]) -> dict[str, Any]:
             ["core", f"table={dataset_id.replace('.', '_')}"] if dated else ["snapshot", f"dataset={dataset_id}"]
         ),
         "default_dir_name": dataset_id,
-        "file_name_template": "{dataset_id}_{run_time}",
+        # 快照层按数据日期命名:同一天多次采集覆盖为最新,避免累积重复;core 层本就按交易日分文件
+        "file_name_template": "{dataset_id}_{snapshot_date}" if not dated else "{dataset_id}_{snapshot_date}",
         "write_mode": write_mode,
         "primary_key": primary_key,
         "required_columns": required_columns,
